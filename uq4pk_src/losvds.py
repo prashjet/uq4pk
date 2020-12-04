@@ -518,7 +518,56 @@ class GaussHermite(LOSVD):
         F_losvd = F_gaussian_losvd * F_gh_poly
         return F_losvd
 
+    def partial_derivs_of_ft_wrt_Theta_v(self,
+                                         coeffients,
+                                         V,
+                                         sigma,
+                                         h,
+                                         M,
+                                         omega):
+        """Evaluate partial derivatives of FT of the losvd at frequencies omega
 
+        Parameters
+        ----------
+        coeffients : array (n_herm, n_herm)
+            coefficients of hermite polynomials as given by method
+            get_hermite_polynomial_coeffients
+        V : float
+            parameter V of the GH-LOSVD
+        sigma : float
+            parameter sigma of the GH-LOSVD
+        h : array-like
+            coeffecients of the GH expansion, h[0] = h_0, etc...
+        M : int
+            maximum order H polynomial, i.e. M=4 => use h0,h1,h2,h3,h4
+        omega : array-like
+            frequencies where to evaluate the fourier transform of the GH-LOSVD
 
+        Returns
+        -------
+        array-like
+            The fourier transform of the LOSVD evaluated at omega
+
+        """
+        error_msg = f'h should have length {M+1}'
+        assert len(h)==M+1, error_msg
+        # get partial wrt h_m
+        sigma_omega = sigma*omega
+        exponent = -1j*omega*V - 0.5*(sigma_omega)**2
+        F_gaussian_losvd = np.exp(exponent)
+        H_m = np.polynomial.polynomial.polyval(sigma_omega, coeffients.T)
+        i_to_the_m = np.full(M+1, 1j)**np.arange(M+1)
+        wrt_hm = (F_gaussian_losvd * (i_to_the_m * H_m.T).T).T
+        # get partial wrt V
+        F_losvd = self.evaluate_fourier_transform(coeffients,V,sigma,h,M,omega)
+        wrt_V = - 1j * omega * F_losvd
+        # get partial wrt sigma
+        tmp1 = - sigma * omega**2. * F_losvd
+        m = np.arange(0, M+1)
+        sqrt2m = (2.*m)**0.5
+        tmp2 = np.sum(i_to_the_m[1:] * sqrt2m[1:] * h[1:] * H_m[1:,:].T, 1)
+        wrt_sigma = tmp1 + sigma * F_gaussian_losvd * tmp2
+        F_partial_derivatives = np.vstack((wrt_V, wrt_sigma, wrt_hm.T)).T
+        return F_partial_derivatives
 
 # end

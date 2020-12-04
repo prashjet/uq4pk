@@ -86,7 +86,7 @@ class ObservationOperator:
             The distribution function of (non-negative) weights of stellar-
             populations used to create the composite spectrum
         Theta_v : array-like
-            Parameters of the Gay
+            Parameters of the Gauss Hermite LOSVD
 
         Returns
         -------
@@ -113,5 +113,48 @@ class ObservationOperator:
         # IFT of F_ybar gives the signal ybar
         ybar = np.fft.irfft(F_ybar, self.ssps.n_fft)
         return ybar
+
+    def partial_derivative_wrt_Theta_v(self, f, Theta_v):
+        """Evaluate partial derivatives of the operator wrt Theta_v
+
+        Parameters
+        ----------
+        f : 2D array with dimensions compatible with the SSP grid
+            The distribution function of (non-negative) weights of stellar-
+            populations used to create the composite spectrum
+        Theta_v : array-like
+            Parameters of the Gauss Hermite LOSVD
+
+        Returns
+        -------
+        array ddTheta_V_ybar with shape (len(y), len(Theta_v))
+            where
+            - ddTheta_V_ybar[:,0] is partial derivative wrt V
+            - ddTheta_V_ybar[:,1] is partial derivative wrt sigma
+            - ddTheta_V_ybar[:,2:] are partial derivatives wrt h_0,..., h_M
+        """
+        self.validate_input(f, Theta_v)
+        # get the FT of the composite spectrum
+        # this is the integral of the FT of the templates (i.e. F_tilde_s)
+        # weighted by the distribution funtion f
+        F_tilde_S = np.sum(f * self.ssps.F_tilde_s * self.ssps.delta_zt, (1,2))
+        # get the partial derivatives of the FT of the LOSVD
+        # see method losvds.GaussHermite.evaluate_fourier_transform for details
+        V, sigma, h, M = self.unpack_Theta_v(Theta_v)
+        ddTheta_V_F_losvd = self.losvd.partial_derivs_of_ft_wrt_Theta_v(
+            self.H_coeffs,
+            V,
+            sigma,
+            h,
+            M,
+            self.omega)
+        # pointwise-product of the FTs gives the FT of the convolution
+        ddTheta_V_F_ybar = (F_tilde_S * ddTheta_V_F_losvd.T).T
+        # IFT of F_ybar gives the signal ybar
+        ddTheta_V_ybar = np.fft.irfft(ddTheta_V_F_ybar, self.ssps.n_fft, axis=0)
+        return ddTheta_V_ybar
+
+
+
 
 # end
