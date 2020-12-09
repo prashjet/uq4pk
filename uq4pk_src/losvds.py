@@ -566,7 +566,7 @@ class GaussHermite(LOSVD):
         m = np.arange(0, M+1)
         sqrt2m = (2.*m)**0.5
         tmp2 = np.sum(i_to_the_m[1:] * sqrt2m[1:] * h[1:] * H_m[1:,:].T, 1)
-        wrt_sigma = tmp1 + sigma * F_gaussian_losvd * tmp2
+        wrt_sigma = tmp1 + omega * F_gaussian_losvd * tmp2
         F_partial_derivatives = np.vstack((wrt_V, wrt_sigma, wrt_hm.T)).T
         return F_partial_derivatives
 
