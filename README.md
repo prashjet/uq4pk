@@ -13,7 +13,7 @@ Uncertainty Quantification for stellar Population-Kinematic galaxy decomposition
 
 The repository contains the following:
 
-- `data/` - contains stellar populatiotion temmplates 
+- `data/` - contains stellar populatiotion templates 
 - `notebooks/` - Jupyter notebooks with code demonstartions
 - `uq4pk_src/` - source code
 - `reports/` - PDF reports documentating project development
