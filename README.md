@@ -1,6 +1,6 @@
-# uq4pk: Uncertainty Quantification for stellar Population-Kinematic galaxy decompositions
+# uq4pk
 
-This repository contains code and reports for the in-progress project on uncertainty quantification for stellar population-kinematic galaxy decompositions.
+Uncertainty Quantification for stellar Population-Kinematic galaxy decompositions
 
 ## Authors
 
