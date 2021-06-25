@@ -1,0 +1,22 @@
+delta = 8.659061780310732e-05
+Linear model successfully initialized.
+Setting up the _solver.
+New parameter of dimension 636 added.
+Total number of parameters:  1
+Cost at starting value: 5043.028726617075
+ 
+ITERATION 1
+Linesearch converged after 1 iterations with h=1.0
+Computation time: 1.531374 seconds.
+||Delta_x||=59.56759080203257
+Current cost: 0.5492669975299999
+ 
+ITERATION 2
+Linesearch converged after 1 iterations with h=1.0
+Computation time: 1.663069 seconds.
+||Delta_x||=7.984460011038932e-14
+Current cost: 0.5492669975299996
+Delta_good
+ 
+The constrained Gauss-Newton iteration converged after 2 iterations.
+ 

@@ -1,0 +1,71 @@
+delta = 8.659061780310733e-05
+Pixel-based model successfully initialized.
+Setting up the _solver.
+New parameter of dimension 636 added.
+Total number of parameters:  1
+New parameter of dimension 7 added.
+Total number of parameters:  2
+Cost at starting value: 5043.5520504368815
+ 
+ITERATION 1
+Computation time: 3.814577 seconds.
+||Delta_x||=63.82211474985279
+Current cost: 0.5034944883092365
+Norm of reduced gradient: 0.16409443427521234
+ 
+ITERATION 2
+Computation time: 3.267517 seconds.
+||Delta_x||=52.83159515414346
+Current cost: 0.5034129309734015
+Norm of reduced gradient: 2.503162858435141
+ 
+ITERATION 3
+Computation time: 3.524313 seconds.
+||Delta_x||=51.94887381549622
+Current cost: 0.5033805354588707
+Norm of reduced gradient: 3.0564596126139287
+ 
+ITERATION 4
+Computation time: 3.784551 seconds.
+||Delta_x||=51.51270639980926
+Current cost: 0.5033672632964292
+Norm of reduced gradient: 3.595872051400341
+ 
+ITERATION 5
+Computation time: 3.894694 seconds.
+||Delta_x||=51.07859442872777
+Current cost: 0.5033360564506688
+Norm of reduced gradient: 3.714765596459096
+ 
+ITERATION 6
+Computation time: 4.343729 seconds.
+||Delta_x||=50.86300059917299
+Current cost: 0.5033061127432128
+Norm of reduced gradient: 3.8320586103825263
+ 
+ITERATION 7
+Computation time: 4.238007 seconds.
+||Delta_x||=50.64774191088426
+Current cost: 0.5032774110774829
+Norm of reduced gradient: 3.947763205102028
+ 
+ITERATION 8
+Computation time: 5.148640 seconds.
+||Delta_x||=50.432408150323276
+Current cost: 0.5032499302747941
+Norm of reduced gradient: 4.061889808925742
+ 
+ITERATION 9
+Computation time: 3.978743 seconds.
+||Delta_x||=50.21806502315855
+Current cost: 0.5032236498009315
+Norm of reduced gradient: 4.1744535843428965
+ 
+ITERATION 10
+Computation time: 4.767820 seconds.
+||Delta_x||=50.004516710115624
+Current cost: 0.5031985492306825
+Norm of reduced gradient: 4.285468817964387
+ 
+The bounded Gauss-Newton iteration stopped as it reached maximum number of iterations.
+ 

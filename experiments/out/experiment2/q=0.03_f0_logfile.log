@@ -1,0 +1,83 @@
+delta = 4.329530890155367e-05
+Pixel-based model successfully initialized.
+Setting up the _solver.
+New parameter of dimension 636 added.
+Total number of parameters:  1
+New parameter of dimension 7 added.
+Total number of parameters:  2
+Cost at starting value: 20165.012217164633
+ 
+ITERATION 1
+Armijo satisfied
+Computation time: 8.983772 seconds.
+||Delta_x||=69.05518825502482
+Current cost: 0.522970204079994
+Norm of reduced gradient: 0.33897025533410213
+ 
+ITERATION 2
+Armijo satisfied
+Computation time: 13.480001 seconds.
+||Delta_x||=12.040033521061229
+Current cost: 0.5207881635515716
+Norm of reduced gradient: 1.888250680454907
+ 
+ITERATION 3
+Computation time: 13.043823 seconds.
+||Delta_x||=10.440399641444992
+Current cost: 0.6141867056523557
+Norm of reduced gradient: 12.15714544694984
+ 
+ITERATION 4
+Armijo satisfied
+Computation time: 13.971965 seconds.
+||Delta_x||=1.6552834954126667
+Current cost: 0.6140262555509916
+Norm of reduced gradient: 10.50548414464252
+ 
+ITERATION 5
+Armijo satisfied
+Computation time: 10.540135 seconds.
+||Delta_x||=1.193314556394108
+Current cost: 0.6139555417371433
+Norm of reduced gradient: 8.526799537628483
+ 
+ITERATION 6
+Armijo satisfied
+Computation time: 7.448009 seconds.
+||Delta_x||=11.235190399532591
+Current cost: 0.5806838124094603
+Norm of reduced gradient: 41.04134211943001
+ 
+ITERATION 7
+Computation time: 12.835368 seconds.
+||Delta_x||=2.85171073601124
+Current cost: 0.6007068973132337
+Norm of reduced gradient: 38.843958266803675
+ 
+ITERATION 8
+Computation time: 15.109499 seconds.
+||Delta_x||=1.366475007474628
+Current cost: 0.6007068973132302
+Norm of reduced gradient: 38.843958266795084
+ 
+ITERATION 9
+Computation time: 14.033768 seconds.
+||Delta_x||=1.366475007220742
+Current cost: 0.6007068973132298
+Norm of reduced gradient: 38.84395826679508
+ 
+ITERATION 10
+Computation time: 15.108309 seconds.
+||Delta_x||=1.3664750078621872
+Current cost: 0.6007068973132249
+Norm of reduced gradient: 38.843958266786366
+ 
+ITERATION 11
+Computation time: 14.869822 seconds.
+||Delta_x||=1.366475007950186
+Current cost: 0.6007068973132249
+Norm of reduced gradient: 38.84395826678635
+Emergency stop!
+ 
+The bounded Gauss-Newton iteration converged after 11 iterations.
+ 

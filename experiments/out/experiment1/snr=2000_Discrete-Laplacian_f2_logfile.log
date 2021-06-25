@@ -1,0 +1,16 @@
+delta = 3.822584047563209e-06
+Linear model successfully initialized.
+Setting up the _solver.
+New parameter of dimension 636 added.
+Total number of parameters:  1
+Cost at starting value: 2011904.5637176423
+ 
+ITERATION 1
+Computation time: 4.199707 seconds.
+||Delta_x||=51.690274919534396
+Current cost: 0.5197731944760778
+Norm of reduced gradient: 1.476419342442484e-10
+Gradient good!
+ 
+The bounded Gauss-Newton iteration converged after 1 iterations.
+ 
