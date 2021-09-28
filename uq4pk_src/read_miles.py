@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from astropy.io import fits
+import spectres
 
 from . import read_miles
 
@@ -11,7 +12,8 @@ class MilesSSPs:
                  age_lim=None,
                  z_lim=None,
                  thin_age=1,
-                 thin_z=1):
+                 thin_z=1,
+                 imf_string='Mch1.30'):
         if mod_dir==None:
             self.list_mod_directories()
             return
@@ -29,6 +31,8 @@ class MilesSSPs:
             modfiles.remove('all_spectra.npy')
         self.modfiles = modfiles
         self.split_modfiles()
+        self.imf_string = imf_string
+        self.filter_by_imf_string()
         self.age_lim = age_lim
         self.z_lim = z_lim
         self.filter_age_metallicity_limits()
@@ -73,6 +77,16 @@ class MilesSSPs:
         self.tstr = np.array(tstr)
         self.t = np.array(t)
         self.endstr = np.array(endstr)
+
+    def filter_by_imf_string(self):
+        idx = np.where(self.IMFstr == self.imf_string)
+        self.modfiles = [self.modfiles[i] for i in idx[0]]
+        self.IMFstr = self.IMFstr[idx[0]]
+        self.zstr = self.zstr[idx[0]]
+        self.z = self.z[idx[0]]
+        self.tstr = self.tstr[idx[0]]
+        self.t = self.t[idx[0]]
+        self.endstr = self.endstr[idx[0]]
 
     def filter_age_metallicity_limits(self):
         if self.age_lim is None:
@@ -142,25 +156,30 @@ class MilesSSPs:
         if c1 and c2:
             if os.path.isfile(allspecfile):
                 self.X = np.load(allspecfile)
-        else:
-            s0 = self.read_spectrum(z=self.z_unq[0], t=self.t_unq[0])
-            if len(s0)!=len(self.lmd):
-                raise ValueError('len(wavelength array) != len(spectrum)')
-            n = len(s0)
-            p = self.nz * self.nt
-            X = np.zeros((n,p))
-            cnt = 0
-            for z0 in self.z_unq:
-                for t0 in self.t_unq:
-                    s0 = self.read_spectrum(z=z0, t=t0)
-                    X[:, cnt] = s0
-                    cnt += 1
-            self.X = X
+            else:
+                s0 = self.read_spectrum(z=self.z_unq[0], t=self.t_unq[0])
+                if len(s0)!=len(self.lmd):
+                    raise ValueError('len(wavelength array) != len(spectrum)')
+                n = len(s0)
+                p = self.nz * self.nt
+                X = np.zeros((n,p))
+                cnt = 0
+                for z0 in self.z_unq:
+                    for t0 in self.t_unq:
+                        s0 = self.read_spectrum(z=z0, t=t0)
+                        X[:, cnt] = s0
+                        cnt += 1
+                self.X = X
         if c1 and c2 and not os.path.isfile(allspecfile):
             np.save(allspecfile, self.X)
 
     def get_lmd(self):
-        self.lmd = np.arange(3540.5, 7409.6+0.9, 0.9)
+        if self.mod_dir == 'MILES_BASTI_CH_baseFe/':
+            self.lmd = np.arange(3540.5, 7409.6+0.9, 0.9)
+        elif self.mod_dir == 'EMILES_BASTI_BASE_BI_FITS/':
+            self.lmd = lmd = np.arange(1680.2, 49999.4+0.1, 0.9)
+        else:
+            raise ValueError('unknown `self.mod_dir`')
 
     def truncate_wavelengths(self,
                              lmd_min=None,
@@ -189,6 +208,11 @@ class MilesSSPs:
             self.lmd = tmp
             tmp = self.X[:-r, :]
             self.X = np.sum(np.reshape(tmp, (pix_per_bin, -1, p)), 0)
+
+    def resample_spectra(self, new_wavs):
+        XT = spectres.spectres(new_wavs, self.lmd, self.X.T)
+        self.X = XT.T
+        self.lmd = new_wavs
 
     def reset(self):
         self.get_lmd()

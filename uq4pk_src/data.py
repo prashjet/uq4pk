@@ -1,6 +1,7 @@
 import numpy as np
 from scipy import stats
 from . import distribution_function, losvds
+from astropy.io import fits
 
 class Noise:
 
@@ -147,5 +148,81 @@ class RandomMockData(MockData):
                          df=df,
                          losvd=losvd,
                          snr=snr)
+
+
+class MockData(Data):
+
+    def __init__(self,
+                 ssps=None,
+                 df=None,
+                 losvd=None,
+                 snr=None):
+        n, p = ssps.X.shape
+        self.ssps = ssps
+        self.df = df
+        self.S = np.dot(ssps.X, df.beta)
+        self.losvd = losvd
+        self.ybar = losvd.convolve(S=self.S, lmd_in=ssps.lmd)
+        self.snr = snr
+        sig = np.mean(np.abs(self.ybar))/snr
+        noise = Noise(n, sig=sig)
+        y = self.ybar + noise.sample()
+        super().__init__(lmd=ssps.lmd,
+                         y=y)
+
+
+class M54(Data):
+
+    def __init__(self):
+        self.datadir = losvds.__file__.replace('losvds.py', '../data/M54/')
+        self.read_spectrum()
+        self.read_ppxf_map_solution()
+        self.read_mcsims_ppxf_map_solution()
+        self.read_ground_truth()
+
+    def read_spectrum(self):
+        # observed spectrum of M54 (from a collapsed MUSE cube)
+        fname = self.datadir + 'M54_integrated_spectrum_from_stars_member_new2.fits'
+        hdu = fits.open(fname)
+        lmd = hdu[0].data
+        spectrum = hdu[1].data
+        noise = hdu[2].data
+        # truncate max wavelength
+        idx = np.where(lmd<=8951)
+        lmd = lmd[idx]
+        spectrum = spectrum[idx]
+        noise = noise[idx]
+        # mask bad pixels
+        mask = np.ones_like(lmd, dtype=bool)
+        mask[(lmd>=5850) & (lmd<=5950)] = False
+        mask[(lmd>=6858.7) & (lmd<=6964.9)] = False
+        mask[(lmd>=7562.3) & (lmd<=7695.6)] = False
+        # store
+        super().__init__(lmd=lmd, y=spectrum)
+        self.noise_level = noise
+        self.mask = mask
+
+    def read_ppxf_map_solution(self):
+        # The npz files contain the weights returned by ppxf, stored under the keyword „regul“. E.g. I do:
+        fname = self.datadir + 'M54_integrated_spectrum_from_stars_member_new2_integrated_D1_EMILESBASTI_10_cut.npz'
+        data = np.load(fname)
+        ppxf_map_solution = data['regul'].reshape(53,12)
+        self.ppxf_map_solution = ppxf_map_solution
+
+    def read_mcsims_ppxf_map_solution(self):
+        fname = self.datadir + 'M54_integrated_spectrum_from_stars_member_new2_integrated_D1_EMILESBASTI_cut_MC.npz'
+        data = np.load(fname)
+        mcsims_map_weights = data['regul'].reshape(53,12,-1)
+        self.mcsims_map_weights = mcsims_map_weights
+
+    def read_ground_truth(self):
+        # The last file is Mayte’s data binned to the age and metallicity grid of the MILES models.
+        fname = self.datadir + 'M54_single_stars_binned_to_miles.npz'
+        data = np.load(fname)
+        ground_truth = data['weights']
+        self.ground_truth = ground_truth
+
+
+
 
 # end
