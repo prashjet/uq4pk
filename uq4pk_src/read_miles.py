@@ -1,7 +1,6 @@
 import os
 import numpy as np
 from astropy.io import fits
-import spectres
 
 from . import read_miles
 
@@ -208,11 +207,6 @@ class MilesSSPs:
             self.lmd = tmp
             tmp = self.X[:-r, :]
             self.X = np.sum(np.reshape(tmp, (pix_per_bin, -1, p)), 0)
-
-    def resample_spectra(self, new_wavs):
-        XT = spectres.spectres(new_wavs, self.lmd, self.X.T)
-        self.X = XT.T
-        self.lmd = new_wavs
 
     def reset(self):
         self.get_lmd()

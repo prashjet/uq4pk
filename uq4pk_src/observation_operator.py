@@ -24,9 +24,11 @@ class ObservationOperator:
     def __init__(self,
                  ssps=model_grids.MilesSSP(),
                  dv=10.,
-                 max_order_hermite=4):
+                 max_order_hermite=4,
+                 do_log_resample=True):
         # interpolate SSPS at logarithmically spaced lambda and calculate FTs
-        ssps.logarithmically_resample(dv=dv)
+        if do_log_resample:
+            ssps.logarithmically_resample(dv=dv)
         ssps.calculate_fourier_transform(pad=False)
         # reshape the Fourier transform of the SSPs i.e. FT(tilde{s})
         ssps.F_tilde_s = np.reshape(ssps.FXw, (-1,)+ssps.par_dims)

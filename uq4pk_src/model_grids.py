@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import special, interpolate
+import spectres
 
 import matplotlib.pyplot as plt
 from . import read_miles
@@ -199,6 +200,7 @@ class MilesSSP(modelGrid):
 
     def __init__(self,
                  miles_mod_directory='MILES_BASTI_CH_baseFe',
+                 imf_string='Mch1.30',
                  pix_per_bin=1,
                  lmd_min=4700,
                  lmd_max=6500,
@@ -207,12 +209,12 @@ class MilesSSP(modelGrid):
                  thin_age=1,
                  thin_z=1,
                  normalise_models=False):
-
         ssps = read_miles.MilesSSPs(mod_dir=miles_mod_directory,
                                     age_lim=age_lim,
                                     z_lim=z_lim,
                                     thin_age=thin_age,
-                                    thin_z=thin_z)
+                                    thin_z=thin_z,
+                                    imf_string=imf_string)
         ssps.truncate_wavelengths(lmd_min=lmd_min, lmd_max=lmd_max)
         ssps.bin_pixels(pix_per_bin=pix_per_bin)
         n = ssps.X.shape[0]
@@ -281,13 +283,9 @@ class MilesSSP(modelGrid):
         speed_of_light = 299792.
         dw = dv/speed_of_light
         w_in = np.log(self.lmd)
-        f = interpolate.interp1d(w_in,
-                                 self.X.T,
-                                 kind='cubic',
-                                 bounds_error=False,
-                                 fill_value=0.)
         w = np.arange(np.min(w_in), np.max(w_in)+dw, dw)
-        Xw = f(w).T
+        lmd_new = np.exp(w)
+        Xw = spectres.spectres(lmd_new, self.lmd, self.X.T).T
         self.speed_of_light = speed_of_light
         self.dv = dv
         self.dw = dw
@@ -307,6 +305,13 @@ class MilesSSP(modelGrid):
         self.pad = pad
         self.n_fft = n_fft
         self.FXw = FXw
+
+    def resample_spectra(self, new_wavs):
+        XT = spectres.spectres(new_wavs, self.lmd, self.X.T)
+        self.lmd = new_wavs
+        self.w = np.log(self.lmd)
+        self.dw = self.w[1]-self.w[0]
+        self.Xw = XT.T
 
 
 # end

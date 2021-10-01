@@ -2,6 +2,7 @@ import numpy as np
 from scipy import stats
 from . import distribution_function, losvds
 from astropy.io import fits
+import spectres
 
 class Noise:
 
@@ -222,7 +223,29 @@ class M54(Data):
         ground_truth = data['weights']
         self.ground_truth = ground_truth
 
-
+    def logarithmically_resample(self, dv=30.):
+        speed_of_light = 299792.
+        dw = dv/speed_of_light
+        w_in = np.log(self.lmd)
+        w = np.arange(np.min(w_in), np.max(w_in)+dw, dw)
+        lmd_new = np.exp(w)
+        y, noise_level = spectres.spectres(lmd_new,
+                                           self.lmd,
+                                           self.y,
+                                           self.noise_level)
+        self.speed_of_light = speed_of_light
+        self.dv = dv
+        self.dw = dw
+        self.w = w
+        self.y = y
+        self.lmd = lmd_new
+        self.noise_level = noise_level
+        # mask bad pixels
+        mask = np.ones_like(lmd_new, dtype=bool)
+        mask[(lmd_new>=5850) & (lmd_new<=5950)] = False
+        mask[(lmd_new>=6858.7) & (lmd_new<=6964.9)] = False
+        mask[(lmd_new>=7562.3) & (lmd_new<=7695.6)] = False
+        self.mask = mask
 
 
 # end
