@@ -4,7 +4,7 @@ import numpy as np
 import time
 
 from ..filter import FilterFunction
-from ..optimization import SLSQP, SOCP
+from ..optimization import ECOS, SLSQP, SOCP
 from .filtered_value import FilterValue
 from ..linear_model import LinearModel
 
@@ -13,7 +13,7 @@ class FCIComputer:
     """
     Superclass for computation of quantity of interests.
     """
-    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction):
+    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict):
         # precompute:
         self._alpha = alpha
         self._x_map = x_map.copy()
@@ -25,9 +25,19 @@ class FCIComputer:
         self._cost_map = model.cost(x_map)
         self._tau = sqrt(16 * log(3 / alpha) / self._dim)
         self._k_alpha = self._dim * (self._tau + 1)
+        self.ftol = 1e-3
         self.RTOL = 0.01  # 1% relative tolerance for optimization
         self.ctol = self.RTOL * self._k_alpha
-        self._optimizer = SLSQP()
+        if options is None:
+            options = {}
+        solver_name = options.setdefault("solver", "slsqp")
+        if solver_name == "slsqp":
+            self._optimizer = SLSQP(ftol=self.ftol, ctol=self.ctol)
+        elif solver_name == "ecos":
+            self._optimizer = ECOS(scale=self._cost_map)
+            print("Using the ECOS solver to solve the SOC problems. WARNING: THIS CAN BE EXTREMELY SLOW.")
+        else:
+            raise KeyError(f"Unknown solver '{solver_name}'.")
 
     def compute(self):
         """
@@ -98,7 +108,6 @@ class FCIComputer:
         if not constraints_satisfied:
             print("WARNING: The solver was not able to satisfy all constraints.")
             print(error_message)
-        # return filter value
         phi = fvalue.phi(z)
         return phi
 

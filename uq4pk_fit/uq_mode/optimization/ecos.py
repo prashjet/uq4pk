@@ -1,32 +1,34 @@
 
 import cvxpy as cp
 import numpy as np
-import scipy as sp
 
+from .optimizer import Optimizer
 from .socp import SOCP
 
 
-class SOCPSolver:
+class ECOS(Optimizer):
     """
-    Solves SOCP problems using cvxopt.
+    Solves SOCP problems using ECOS (via the cvxopt interface).
     """
+    def __init__(self, scale: float = 1.):
+        self._scale = 1.
 
-    def solve(self, socp: SOCP, start: np.ndarray, scale: float):
+    def optimize(self, problem: SOCP, start: np.ndarray) -> np.ndarray:
         # define the cvxpy program
-        cp_problem, x = self._make_cp_problem(socp, scale)
+        cp_problem, x = self._make_cp_problem(problem)
         # Set starting value
         x.value = start
         # Solve
-        cp_problem.solve(warm_start=True, verbose=False, abstol=1e-1)
+        cp_problem.solve(warm_start=True, verbose=False, solver=cp.ECOS)
         x_opt = x.value
         # return value at optimum
         return x_opt
 
-    def _make_cp_problem(self, socp: SOCP, scale: float):
+    def _make_cp_problem(self, socp: SOCP) -> cp.Problem:
         # define the optimization vector
         x = cp.Variable(socp.n)
-        # add SCOP constraint
-        constraints = [cp.SOC(np.sqrt(socp.e), socp.c @ x - socp.d)]
+        # add SCOP constraint (||C x - d||_2 <= sqrt(e) <=> ||C x - d||_2^2 <= e)
+        constraints = [cp.SOC(np.sqrt(socp.e) / self._scale, (socp.c @ x - socp.d) / self._scale)]
         # add equality constraint
         if socp.equality_constrained:
             constraints += [socp.a @ x - socp.d]

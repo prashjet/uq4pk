@@ -6,6 +6,7 @@ import numpy as np
 import scipy.optimize as sciopt
 
 from .constraint import NonlinearConstraint, NullConstraint
+from .optimizer import Optimizer
 from .optimization_problem import OptimizationProblem
 from .socp import SOCP
 
@@ -13,11 +14,15 @@ from .socp import SOCP
 MAXITER = 100
 
 
-class SLSQP:
+class SLSQP(Optimizer):
     """
     Solves the optimization problem arising in the computation of the localized credible intervals.
     """
-    def optimize(self, problem: SOCP, start: np.ndarray, ctol=1e-8) -> np.ndarray:
+    def __init__(self, ftol: float = 1e-6, ctol: float = 1e-6):
+        self._ftol = ftol
+        self._ctol = ctol
+
+    def optimize(self, problem: SOCP, start: np.ndarray) -> np.ndarray:
         """
         Solves optimization problems with different methods
         :param problem: Optimization_Problem
@@ -29,7 +34,7 @@ class SLSQP:
         # Translate SOCP to OptimizationProblem
         optprob = self._translate(problem)
         # Check that the starting value satisfies constraints
-        start_feasible, errormsg = optprob.check_constraints(start, ctol)
+        start_feasible, errormsg = optprob.check_constraints(start, self._ctol)
         if not start_feasible:
             raise RuntimeError("The starting point does not satisfy the constraints." + "\n" + errormsg)
         # solve problem with scipy.optimize.minimize:
@@ -39,7 +44,7 @@ class SLSQP:
                                            x0=start,
                                            constraints=optprob.constraints,
                                            bounds=optprob.bnds,
-                                           options={"maxiter": MAXITER})
+                                           options={"maxiter": MAXITER, "ftol": self._ftol})
         # get minimizer
         minimizer = problem_solution.x
         return minimizer

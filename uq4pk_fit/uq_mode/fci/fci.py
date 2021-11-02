@@ -9,13 +9,13 @@ from ..linear_model import LinearModel
 from .fci_computer import FCIComputer
 
 
-def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction):
+def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict = None):
     """
     Computes filtered credible intervals.
     """
     _check_input(alpha, model, x_map, ffunction)
     # Compute credible intervals through optimization.
-    fci_computer = FCIComputer(alpha, model, x_map, ffunction)
+    fci_computer = FCIComputer(alpha, model, x_map, ffunction, options)
     credible_intervals = fci_computer.compute()
     return credible_intervals
 
