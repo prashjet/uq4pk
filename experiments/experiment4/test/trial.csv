@@ -1,3 +1,3 @@
 ,name,regop,trial,uqerror,uqtightness
-0,2000,OrnsteinUhlenbeck,1,0.0041338132968683616,26.002309027999555
-1,100,OrnsteinUhlenbeck,1,0.0,134.93972934268805
+0,2000,OrnsteinUhlenbeck,1,0.0,0.0023935642260093284
+1,100,OrnsteinUhlenbeck,1,0.0,0.004265355845113938

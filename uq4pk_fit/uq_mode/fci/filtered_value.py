@@ -70,16 +70,14 @@ class FilterValue:
         return x_z
 
     @property
-    def dx_dz(self):
+    def dx_dz(self) -> np.ndarray:
         """
         Returns the Jacobian of the function "x".
-        :param z: (l,) array
-        :return: (n,l) array
         """
         return self._x_jac
 
     @property
-    def initial_value(self):
+    def initial_value(self) -> np.ndarray:
         """
         The initial value for z is x_map[window].
         :return: (l,) numpy array of floats
@@ -136,3 +134,11 @@ class FilterValue:
                 # if all bounds are inactive, just return None
                 lb_z = None
         return lb_z
+
+    @property
+    def z_map(self) -> np.ndarray:
+        """
+        The vector z such that self.x(z) = x_map.
+        """
+        z = self._xmap[self._indices]
+        return z

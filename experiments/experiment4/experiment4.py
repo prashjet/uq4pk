@@ -63,7 +63,8 @@ class Experiment4(Experiment):
 
     def _setup_tests(self):
         setup_list = []
-        regop_list = ["Identity", "OrnsteinUhlenbeck", "Gradient", "Laplacian"]
+        #regop_list = ["Identity", "OrnsteinUhlenbeck", "Gradient", "Laplacian"]
+        regop_list = ["OrnsteinUhlenbeck"]
         for regop in regop_list:
             setup = TestSetup({"regop": regop})
             setup_list.append(setup)

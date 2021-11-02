@@ -4,7 +4,7 @@ import numpy as np
 import time
 
 from ..filter import FilterFunction
-from ..optimization import SLSQP, OptimizationProblem
+from ..optimization import SLSQP, SOCP
 from .filtered_value import FilterValue
 from ..linear_model import LinearModel
 
@@ -88,16 +88,80 @@ class FCIComputer:
         Computes the quantity of interest.
         """
         # Create SOCP problem
-        problem = self._create_optimization_problem(fvalue=fvalue, minmax=minmax)
+        socp = self._create_socp(fvalue=fvalue, minmax=minmax)
         # Compute minimizer/maximizer
         z0 = fvalue.initial_value
-        z = self._optimizer.optimize(problem)
+        z = self._optimizer.optimize(problem=socp, start=z0)
         assert z.size == z0.size
         # check that minimizer satisfies constraints
-        #problem.check_constraints(z, tol=self.ctol)
+        constraints_satisfied, error_message = socp.check_constraints(z, tol=self.ctol)
+        if not constraints_satisfied:
+            print("WARNING: The solver was not able to satisfy all constraints.")
+            print(error_message)
         # return filter value
         phi = fvalue.phi(z)
         return phi
+
+    def _create_socp(self, fvalue: FilterValue, minmax: int):
+        """
+        Creates the SOCP for the computation of the filtered credible interval.
+
+        The SOCP is
+        min_z w @ z
+        s.t. A_new z = b_new, ||C z - d||_2^2 <= e, z >= lb_z,
+        where
+            A_new = A dx_dz
+            b_new = b - A (x_map - dx_dz z_map)
+            C = [C1; C2], d = [d1; d2]
+            C1 = Q H dx_dz
+            C2 = R dx_dz
+            d1 = Q (y - H (x_map - dx_dz z_map))
+            d2 = R (m - (x_map - dx_dz z_map))
+            e = 2 * (cost_map + k_alpha)
+            l_z = lb[fvalue.indices]
+        """
+        if minmax == 0:
+            w = fvalue._weights
+        elif minmax == 1:
+            w = - fvalue._weights
+        else:
+            raise Exception("FATAL")
+        a = self._model.a
+        b = self._model.b
+        dx_dz = fvalue.dx_dz
+        x_map = self._x_map
+        z_map = fvalue.z_map
+        # z_map must satisfy x(z_map) = x_map
+        assert np.isclose(fvalue.x(z_map), x_map).all()
+        h = self._model.h
+        y = self._model.y
+        q = self._model.q
+        r = self._model.r
+        m = self._model.m
+        lb = self._model.lb
+        cost_map = self._cost_map
+        k_alpha = self._k_alpha
+        # check that x_map satisfies credibility constraint
+        credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x_map - y))) \
+                      - 0.5 * np.sum(np.square(r.fwd(x_map - m)))
+        assert credibility >= - self.ctol
+        if a is not None:
+            a_new = a @ dx_dz
+            b_new = b - a @ (x_map - dx_dz @ z_map)
+        else:
+            a_new = None
+            b_new = None
+        c1 = q.fwd(h @ dx_dz)
+        c2 = r.fwd(dx_dz)
+        c = np.concatenate([c1, c2], axis=0)
+        d1 = q.fwd(y - h @ (x_map - dx_dz @ z_map))
+        d2 = r.fwd(m - (x_map - dx_dz @ z_map))
+        d = np.concatenate([d1, d2], axis=0)
+        e = 2 * (cost_map + k_alpha)
+        lb_z = fvalue.lower_bound(lb)
+        # Create SOCP instance
+        socp = SOCP(w=w, a=a_new, b=b_new, c=c, d=d, e=e, lb=lb_z)
+        return socp
 
     def _cost_constraint(self, x):
         c = self._cost_map + self._k_alpha - self._costf(x)
@@ -105,29 +169,6 @@ class FCIComputer:
 
     def _cost_constraint_grad(self, x):
         return - self._costg(x)
-
-    def _create_optimization_problem(self, fvalue: FilterValue, minmax: int) -> OptimizationProblem:
-        """
-        Translates the linear model for x
-        """
-        if minmax == 0:
-            lossfun = fvalue.phi
-            lossgrad = fvalue.phi_grad
-        else:
-            def lossfun(z):
-                return - fvalue.phi(z)
-            def lossgrad(z):
-                return - fvalue.phi_grad(z)
-        cost_constraint = fvalue.transform_nonlinear_constraint(fun=self._cost_constraint, jac=self._cost_constraint_grad,
-                                                                type="ineq")
-        equality_constraint = fvalue.transform_linear_constraint(a=self._model.a, b=self._model.b, type="eq")
-        problem = OptimizationProblem(loss_fun=lossfun, loss_grad=lossgrad,
-                                      start=fvalue.initial_value,
-                                      eqcon = equality_constraint,
-                                      incon = cost_constraint,
-                                      lb = fvalue.lower_bound(self._model.lb)
-                                      )
-        return problem
 
     @staticmethod
     def _negative(v):

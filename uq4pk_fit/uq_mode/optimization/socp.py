@@ -32,30 +32,47 @@ class SOCP:
         else:
             self.bound_constrained = False
 
-    def check_constraints(self, x: np.ndarray, tol: float = 1e-10) -> bool:
+    def cost(self, x):
+        return self.w @ x
+
+    def costgrad(self, x):
+        return self.w
+
+    def check_constraints(self, x: np.ndarray, tol: float = 1e-10):
         """
         Checks that the vector x satisfies all SOCP-constraints
+
         :param x:
-        :return:
+        :returns:
+            - constraints_satisfied: bool. True if all constraints are satisfied, otherwise False.
+            - message: str. An error message specifying which constraints were violated.
         """
-        soc_violation = self.e - np.sum(np.square(self.c @ x - self.d))
-        eq_violation = 0
-        bound_violation = 0
-        constraints_satisfied = (soc_violation >= - tol)
+        soc_violation = max(0, np.sum(np.square(self.c @ x - self.d)) - self.e)
+        soc_violated = soc_violation > tol
         if self.equality_constrained:
-            eq_violation = np.linalg.norm(self.a @ x - self.b, ord=1)
-            if eq_violation > tol:
-                constraints_satisfied = False
+            eqcon_violated = self._l1norm((self.a @ x - self.b)) > tol
+        else:
+            eqcon_violated = False
         if self.bound_constrained:
-            bound_violation = np.linalg.norm(x - self.lb, ord=1)
-            if bound_violation > tol:
-                constraints_satisfied = False
-        if not constraints_satisfied:
-            print(f"Some constraints were violated (tol = {tol})")
-            print(f"Violation of SOC constraint: {soc_violation}")
-            print(f"Violation of equality constraint: {eq_violation}")
-            print(f"Violation of bound constraint: {bound_violation}")
-        return constraints_satisfied
+            bound_violated = self._l1norm((x - self.lb).clip(max=0.)) > tol
+        else:
+            bound_violated = False
+        constraints_satisfied = not (soc_violated or eqcon_violated or bound_violated)
+        message = "The following constraints have been violated: \n"
+        if soc_violated:
+            message += "cone condition \n"
+        if eqcon_violated:
+            message += "equality constraint \n"
+        if bound_violated:
+            message += "bound constraint \n"
+        return constraints_satisfied, message
+
+    @staticmethod
+    def _l1norm(x):
+        """
+        Had to build my own l1-norm since numpy.linalg.norm(..., ord=1) does not work with floats.
+        """
+        return np.sum(np.abs(x))
 
     @staticmethod
     def _check_input(w, a, b, c, d, e, lb):
