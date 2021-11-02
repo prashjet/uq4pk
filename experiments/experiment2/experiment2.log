@@ -1,0 +1,2368 @@
+Distribution functions should have shape (12, 53)
+snr=2011.6740706774178
+||y||/||y_noi-y|| = 2011.675029471572
+sre(theta_guess) = 0.001000177700459211
+delta = 3.6133551241803474e-07
+||y_sd|| = 3.6344464057314953e-07
+y_sd_min = 3.686991765717947e-09
+Distribution functions should have shape (12, 53)
+snr=1965.2165597937646
+||y||/||y_noi-y|| = 1965.213566384781
+sre(theta_guess) = 0.0010005143621429624
+delta = 3.495847709891553e-07
+||y_sd|| = 3.435048904998e-07
+y_sd_min = 3.4847114563564526e-09
+Distribution functions should have shape (12, 53)
+snr=1989.4706762236713
+||y||/||y_noi-y|| = 1989.4861560196914
+sre(theta_guess) = 0.0009995228603697467
+delta = 2.510653186964953e-07
+||y_sd|| = 2.4974354468171414e-07
+y_sd_min = 2.533542361033564e-09
+Distribution functions should have shape (12, 53)
+snr=2021.9664962218562
+||y||/||y_noi-y|| = 2021.9631705221325
+sre(theta_guess) = 0.0010000140213459734
+delta = 2.892745667069383e-07
+||y_sd|| = 2.924517410452619e-07
+y_sd_min = 2.9667989034130165e-09
+Distribution functions should have shape (12, 53)
+snr=1982.4700325896538
+||y||/||y_noi-y|| = 1982.47055742067
+sre(theta_guess) = 0.0010001528936772611
+delta = 2.8903575341535494e-07
+||y_sd|| = 2.8650235974645685e-07
+y_sd_min = 2.906444952876786e-09
+Distribution functions should have shape (12, 53)
+snr=2018.2876163493704
+||y||/||y_noi-y|| = 2018.279911233596
+sre(theta_guess) = 0.005012690234052647
+delta = 3.600746431313996e-07
+||y_sd|| = 3.633670965967613e-07
+y_sd_min = 3.686205114958774e-09
+Distribution functions should have shape (12, 53)
+snr=2007.225830326784
+||y||/||y_noi-y|| = 2007.213663718048
+sre(theta_guess) = 0.004996290388206931
+delta = 3.450079226985556e-07
+||y_sd|| = 3.462544070539634e-07
+y_sd_min = 3.5126041359098486e-09
+Distribution functions should have shape (12, 53)
+snr=2024.4871744824516
+||y||/||y_noi-y|| = 2024.48465397433
+sre(theta_guess) = 0.0050063385616771925
+delta = 2.455537862585676e-07
+||y_sd|| = 2.485602454630374e-07
+y_sd_min = 2.521538292219229e-09
+Distribution functions should have shape (12, 53)
+snr=2018.849683296174
+||y||/||y_noi-y|| = 2018.8559025561406
+sre(theta_guess) = 0.005009646215181716
+delta = 2.9093285640561216e-07
+||y_sd|| = 2.936748525074605e-07
+y_sd_min = 2.979206850556137e-09
+Distribution functions should have shape (12, 53)
+snr=1997.1333505056143
+||y||/||y_noi-y|| = 1997.118939618915
+sre(theta_guess) = 0.005004704387864289
+delta = 2.8674390853324914e-07
+||y_sd|| = 2.8633291139304184e-07
+y_sd_min = 2.9047259711832577e-09
+Distribution functions should have shape (12, 53)
+snr=1994.405331333099
+||y||/||y_noi-y|| = 1994.3910737264864
+sre(theta_guess) = 0.00992864183995124
+delta = 3.670499125208205e-07
+||y_sd|| = 3.6602315119843683e-07
+y_sd_min = 3.713149662635225e-09
+Distribution functions should have shape (12, 53)
+snr=1985.8183861927703
+||y||/||y_noi-y|| = 1985.8031105150098
+sre(theta_guess) = 0.010079020949952269
+delta = 3.4615579096425627e-07
+||y_sd|| = 3.437012670919599e-07
+y_sd_min = 3.4867036136135597e-09
+Distribution functions should have shape (12, 53)
+snr=1992.6593299521935
+||y||/||y_noi-y|| = 1992.6524594233724
+sre(theta_guess) = 0.009944266364112738
+delta = 2.537952346157624e-07
+||y_sd|| = 2.5286372107725216e-07
+y_sd_min = 2.5651952275053153e-09
+Distribution functions should have shape (12, 53)
+snr=1996.8440427395064
+||y||/||y_noi-y|| = 1996.820686157416
+sre(theta_guess) = 0.009970307040614948
+delta = 2.9018846631661914e-07
+||y_sd|| = 2.8973055511802773e-07
+y_sd_min = 2.9391936260566657e-09
+Distribution functions should have shape (12, 53)
+snr=1978.7541844871635
+||y||/||y_noi-y|| = 1978.7618673356596
+sre(theta_guess) = 0.009951802348722458
+delta = 2.9493478001466345e-07
+||y_sd|| = 2.9180171505240776e-07
+y_sd_min = 2.9602046653486527e-09
+Distribution functions should have shape (12, 53)
+snr=1984.9390647456137
+||y||/||y_noi-y|| = 1984.949528063347
+sre(theta_guess) = 0.01998067796258472
+delta = 3.703293995038672e-07
+||y_sd|| = 3.6754064594950544e-07
+y_sd_min = 3.728544003415397e-09
+Distribution functions should have shape (12, 53)
+snr=1997.7713915030172
+||y||/||y_noi-y|| = 1997.7735712025924
+sre(theta_guess) = 0.019951147914008458
+delta = 3.392778693429128e-07
+||y_sd|| = 3.388998105716845e-07
+y_sd_min = 3.4379948731963363e-09
+Distribution functions should have shape (12, 53)
+snr=2034.5303606038613
+||y||/||y_noi-y|| = 2034.5140840863182
+sre(theta_guess) = 0.019880600690607167
+delta = 2.4944366556159777e-07
+||y_sd|| = 2.5375035542269334e-07
+y_sd_min = 2.5741897569766796e-09
+Distribution functions should have shape (12, 53)
+snr=1977.6406874885242
+||y||/||y_noi-y|| = 1977.6348585814308
+sre(theta_guess) = 0.020254915988696092
+delta = 2.8919177497229016e-07
+||y_sd|| = 2.859587103361134e-07
+y_sd_min = 2.9009298601347023e-09
+Distribution functions should have shape (12, 53)
+snr=2007.8405421816549
+||y||/||y_noi-y|| = 2007.8512621426514
+sre(theta_guess) = 0.020003559244750745
+delta = 2.9103891806497064e-07
+||y_sd|| = 2.921798695217659e-07
+y_sd_min = 2.964040882089929e-09
+Distribution functions should have shape (12, 53)
+snr=1973.6412571619383
+||y||/||y_noi-y|| = 1973.6358291730169
+sre(theta_guess) = 0.050033849248908156
+delta = 3.804681382639387e-07
+||y_sd|| = 3.754538073566505e-07
+y_sd_min = 3.8088196704411425e-09
+Distribution functions should have shape (12, 53)
+snr=2006.9765245491546
+||y||/||y_noi-y|| = 2006.979040217892
+sre(theta_guess) = 0.049329383862409495
+delta = 3.4273785571843086e-07
+||y_sd|| = 3.43933415250603e-07
+y_sd_min = 3.4890586582442717e-09
+Distribution functions should have shape (12, 53)
+snr=1994.1601926061173
+||y||/||y_noi-y|| = 1994.1749974458942
+sre(theta_guess) = 0.04886851096589495
+delta = 2.7053922281077895e-07
+||y_sd|| = 2.697492743339264e-07
+y_sd_min = 2.7364920052450312e-09
+Distribution functions should have shape (12, 53)
+snr=1976.7046305708107
+||y||/||y_noi-y|| = 1976.702098170499
+sre(theta_guess) = 0.048598994977593964
+delta = 3.1060325118278524e-07
+||y_sd|| = 3.0698544244167994e-07
+y_sd_min = 3.1142371412956633e-09
+Distribution functions should have shape (12, 53)
+snr=1998.4255689908784
+||y||/||y_noi-y|| = 1998.4160617158132
+sre(theta_guess) = 0.051698657836733705
+delta = 2.6085018422800135e-07
+||y_sd|| = 2.6064483891860946e-07
+y_sd_min = 2.6441313685471083e-09
+Distribution functions should have shape (12, 53)
+snr=1978.4056680443643
+||y||/||y_noi-y|| = 1978.40352727992
+sre(theta_guess) = 0.09883284603744344
+delta = 3.9299550250153925e-07
+||y_sd|| = 3.887522648324945e-07
+y_sd_min = 3.943726882535027e-09
+Distribution functions should have shape (12, 53)
+snr=2001.2609678722945
+||y||/||y_noi-y|| = 2001.2486843088454
+sre(theta_guess) = 0.10106351752494894
+delta = 3.533583957559089e-07
+||y_sd|| = 3.5358118254813516e-07
+y_sd_min = 3.5869311664960615e-09
+Distribution functions should have shape (12, 53)
+snr=1996.634041416557
+||y||/||y_noi-y|| = 1996.6440154274314
+sre(theta_guess) = 0.10030270716673834
+delta = 2.299760688286548e-07
+||y_sd|| = 2.295890238672246e-07
+y_sd_min = 2.329083293573307e-09
+Distribution functions should have shape (12, 53)
+snr=1992.0938890494951
+||y||/||y_noi-y|| = 1992.091924146734
+sre(theta_guess) = 0.0979979687676803
+delta = 2.828445426134468e-07
+||y_sd|| = 2.817264424456237e-07
+y_sd_min = 2.857995297011304e-09
+Distribution functions should have shape (12, 53)
+snr=1977.357888955808
+||y||/||y_noi-y|| = 1977.3750536308833
+sre(theta_guess) = 0.09491341703978412
+delta = 3.117799189670473e-07
+||y_sd|| = 3.08250241193747e-07
+y_sd_min = 3.127067988317667e-09
+Distribution functions should have shape (12, 53)
+snr=2002.635528108907
+||y||/||y_noi-y|| = 2002.6173955043382
+sre(theta_guess) = 0.17742365914789776
+delta = 4.0962162153157187e-07
+||y_sd|| = 4.1016140618035256e-07
+y_sd_min = 4.160913543304497e-09
+Distribution functions should have shape (12, 53)
+snr=1986.9453603642
+||y||/||y_noi-y|| = 1986.9569972986658
+sre(theta_guess) = 0.18606832520040056
+delta = 3.4070486258130297e-07
+||y_sd|| = 3.3848097297972106e-07
+y_sd_min = 3.4337459434272617e-09
+Distribution functions should have shape (12, 53)
+snr=2019.8191308890903
+||y||/||y_noi-y|| = 2019.824966490465
+sre(theta_guess) = 0.2035442909836802
+delta = 1.5443128873757146e-07
+||y_sd|| = 1.559616357000018e-07
+y_sd_min = 1.582164661135165e-09
+Distribution functions should have shape (12, 53)
+snr=1988.7507851997582
+||y||/||y_noi-y|| = 1988.7258442958562
+sre(theta_guess) = 0.1863526527390218
+delta = 3.240392971914175e-07
+||y_sd|| = 3.2221670336250436e-07
+y_sd_min = 3.2687518247644314e-09
+Distribution functions should have shape (12, 53)
+snr=1987.9088056055184
+||y||/||y_noi-y|| = 1987.9095946981945
+sre(theta_guess) = 0.19349011975920394
+delta = 2.5218699543232047e-07
+||y_sd|| = 2.506623744395544e-07
+y_sd_min = 2.5428634993117662e-09
+Distribution functions should have shape (12, 53)
+snr=1985.9924852228448
+||y||/||y_noi-y|| = 1985.9877726075513
+sre(theta_guess) = 0.4888367087134029
+delta = 3.1074296008690466e-07
+||y_sd|| = 3.0856659178424736e-07
+y_sd_min = 3.130277230914876e-09
+Distribution functions should have shape (12, 53)
+snr=1985.6801665705425
+||y||/||y_noi-y|| = 1985.6508961931922
+sre(theta_guess) = 0.40659688256253734
+delta = 4.1809571370054615e-07
+||y_sd|| = 4.1510218321166483e-07
+y_sd_min = 4.211035631229554e-09
+Distribution functions should have shape (12, 53)
+snr=2010.0213820060485
+||y||/||y_noi-y|| = 2010.0163846126873
+sre(theta_guess) = 0.4241042966891279
+delta = 2.4380909476310994e-07
+||y_sd|| = 2.4503074680069487e-07
+y_sd_min = 2.4857330249173134e-09
+Distribution functions should have shape (12, 53)
+snr=1988.8985758499903
+||y||/||y_noi-y|| = 1988.9075290441049
+sre(theta_guess) = 0.48067540601449954
+delta = 2.565914720857542e-07
+||y_sd|| = 2.551672067033042e-07
+y_sd_min = 2.5885631124253147e-09
+Distribution functions should have shape (12, 53)
+snr=2009.6552878836183
+||y||/||y_noi-y|| = 2009.6520893735058
+sre(theta_guess) = 0.5401058063150138
+delta = 5.178920846878232e-08
+||y_sd|| = 5.2039228327297766e-08
+y_sd_min = 5.279159049765825e-10
+Distribution functions should have shape (12, 53)
+snr=100.87330484394613
+||y||/||y_noi-y|| = 100.87957374394949
+sre(theta_guess) = 0.0009994086804365743
+delta = 7.2008335563059745e-06
+||y_sd|| = 7.263718784557692e-06
+y_sd_min = 7.368734700536817e-08
+Distribution functions should have shape (12, 53)
+snr=98.10662195355178
+||y||/||y_noi-y|| = 98.11158072278181
+sre(theta_guess) = 0.0009997728930772104
+delta = 7.004879648364e-06
+||y_sd|| = 6.872250794921754e-06
+y_sd_min = 6.971607024626198e-08
+Distribution functions should have shape (12, 53)
+snr=100.6865619324506
+||y||/||y_noi-y|| = 100.68961032398904
+sre(theta_guess) = 0.000999915681223297
+delta = 4.956045943410744e-06
+||y_sd|| = 4.990072268212962e-06
+y_sd_min = 5.062216720055248e-08
+Distribution functions should have shape (12, 53)
+snr=99.56680254211899
+||y||/||y_noi-y|| = 99.58177594730955
+sre(theta_guess) = 0.0010005764307990832
+delta = 5.865692548498606e-06
+||y_sd|| = 5.840282517491392e-06
+y_sd_min = 5.924718966140138e-08
+Distribution functions should have shape (12, 53)
+snr=99.54343023977115
+||y||/||y_noi-y|| = 99.5456777477522
+sre(theta_guess) = 0.0010007409302763206
+delta = 5.758961406064354e-06
+||y_sd|| = 5.732667729781013e-06
+y_sd_min = 5.8155483272412e-08
+Distribution functions should have shape (12, 53)
+snr=99.31286791211986
+||y||/||y_noi-y|| = 99.33294654706657
+sre(theta_guess) = 0.004998795226397515
+delta = 7.3413955022188484e-06
+||y_sd|| = 7.290950418024918e-06
+y_sd_min = 7.396360037975377e-08
+Distribution functions should have shape (12, 53)
+snr=100.24375284230403
+||y||/||y_noi-y|| = 100.24229488595262
+sre(theta_guess) = 0.00500638804506059
+delta = 6.907867929359672e-06
+||y_sd|| = 6.924706053780096e-06
+y_sd_min = 7.024820660456486e-08
+Distribution functions should have shape (12, 53)
+snr=100.2663086932865
+||y||/||y_noi-y|| = 100.26545046066389
+sre(theta_guess) = 0.0049983840006747144
+delta = 4.953582773021588e-06
+||y_sd|| = 4.966774594575292e-06
+y_sd_min = 5.0385822180504754e-08
+Distribution functions should have shape (12, 53)
+snr=100.46226829216712
+||y||/||y_noi-y|| = 100.4744216938338
+sre(theta_guess) = 0.004991477570051682
+delta = 5.787555393727594e-06
+||y_sd|| = 5.814309427204406e-06
+y_sd_min = 5.8983703673914105e-08
+Distribution functions should have shape (12, 53)
+snr=99.78121867404943
+||y||/||y_noi-y|| = 99.78053862017113
+sre(theta_guess) = 0.004993780706689515
+delta = 5.765794597568351e-06
+||y_sd|| = 5.753180115696204e-06
+y_sd_min = 5.8363572729571886e-08
+Distribution functions should have shape (12, 53)
+snr=99.61956365759004
+||y||/||y_noi-y|| = 99.62747157924632
+sre(theta_guess) = 0.010087426954856305
+delta = 7.234778374197345e-06
+||y_sd|| = 7.207254647969078e-06
+y_sd_min = 7.311454228239226e-08
+Distribution functions should have shape (12, 53)
+snr=100.48185477421553
+||y||/||y_noi-y|| = 100.49417036875026
+sre(theta_guess) = 0.010045900035075666
+delta = 6.824744002092118e-06
+||y_sd|| = 6.857629356894188e-06
+y_sd_min = 6.95677419574596e-08
+Distribution functions should have shape (12, 53)
+snr=100.40948717749389
+||y||/||y_noi-y|| = 100.40915731807051
+sre(theta_guess) = 0.010000519327967913
+delta = 4.952486399749314e-06
+||y_sd|| = 4.972766196523418e-06
+y_sd_min = 5.0446604441625384e-08
+Distribution functions should have shape (12, 53)
+snr=99.81651717833867
+||y||/||y_noi-y|| = 99.82977648114603
+sre(theta_guess) = 0.010026049244727525
+delta = 5.770263708236099e-06
+||y_sd|| = 5.759676265566928e-06
+y_sd_min = 5.842947341542176e-08
+Distribution functions should have shape (12, 53)
+snr=100.0762074234535
+||y||/||y_noi-y|| = 100.08966295728104
+sre(theta_guess) = 0.009988962633088442
+delta = 5.788751986074727e-06
+||y_sd|| = 5.793163444813433e-06
+y_sd_min = 5.8769186649173834e-08
+Distribution functions should have shape (12, 53)
+snr=100.77831864880814
+||y||/||y_noi-y|| = 100.78392665054481
+sre(theta_guess) = 0.020013253556885078
+delta = 7.154489073663034e-06
+||y_sd|| = 7.210173796350301e-06
+y_sd_min = 7.314415580490141e-08
+Distribution functions should have shape (12, 53)
+snr=100.82289172473236
+||y||/||y_noi-y|| = 100.81891935536656
+sre(theta_guess) = 0.019820108331098246
+delta = 6.923746021382586e-06
+||y_sd|| = 6.9807209544340285e-06
+y_sd_min = 7.081645401947482e-08
+Distribution functions should have shape (12, 53)
+snr=99.67203626868026
+||y||/||y_noi-y|| = 99.66117586738599
+sre(theta_guess) = 0.01986317751138682
+delta = 4.8944066841263115e-06
+||y_sd|| = 4.878354805339087e-06
+y_sd_min = 4.9488840911703326e-08
+Distribution functions should have shape (12, 53)
+snr=99.12172883476728
+||y||/||y_noi-y|| = 99.10765892736734
+sre(theta_guess) = 0.019941568797491413
+delta = 5.8273029768937806e-06
+||y_sd|| = 5.776123455136975e-06
+y_sd_min = 5.859632317944175e-08
+Distribution functions should have shape (12, 53)
+snr=100.62840767530633
+||y||/||y_noi-y|| = 100.63296840590064
+sre(theta_guess) = 0.0197915268112428
+delta = 5.752402532970258e-06
+||y_sd|| = 5.788551072001963e-06
+y_sd_min = 5.8722396082804527e-08
+Distribution functions should have shape (12, 53)
+snr=100.3016597718968
+||y||/||y_noi-y|| = 100.31308864441768
+sre(theta_guess) = 0.049229526021633364
+delta = 7.101829631424479e-06
+||y_sd|| = 7.123252994491134e-06
+y_sd_min = 7.226238112741835e-08
+Distribution functions should have shape (12, 53)
+snr=99.97980294948168
+||y||/||y_noi-y|| = 99.99882179151255
+sre(theta_guess) = 0.04861824019168405
+delta = 7.270945465340457e-06
+||y_sd|| = 7.269476948811667e-06
+y_sd_min = 7.374576114006709e-08
+Distribution functions should have shape (12, 53)
+snr=100.84760894806062
+||y||/||y_noi-y|| = 100.86190401887166
+sre(theta_guess) = 0.04904196659630938
+delta = 5.356623584486051e-06
+||y_sd|| = 5.402026805302081e-06
+y_sd_min = 5.4801271296577846e-08
+Distribution functions should have shape (12, 53)
+snr=99.8562946964376
+||y||/||y_noi-y|| = 99.85543167513713
+sre(theta_guess) = 0.04886527870321974
+delta = 5.917049342705505e-06
+||y_sd|| = 5.908546228985632e-06
+y_sd_min = 5.993969606837355e-08
+Distribution functions should have shape (12, 53)
+snr=101.72847593139495
+||y||/||y_noi-y|| = 101.71246536855213
+sre(theta_guess) = 0.05123976451965123
+delta = 5.396498947847502e-06
+||y_sd|| = 5.489776133299025e-06
+y_sd_min = 5.5691451020405454e-08
+Distribution functions should have shape (12, 53)
+snr=100.79237598200089
+||y||/||y_noi-y|| = 100.79062063632189
+sre(theta_guess) = 0.10613467520823096
+delta = 6.709978853043069e-06
+||y_sd|| = 6.763147113871923e-06
+y_sd_min = 6.860925966568526e-08
+Distribution functions should have shape (12, 53)
+snr=100.03107465777059
+||y||/||y_noi-y|| = 100.02162586091856
+sre(theta_guess) = 0.10052600778541072
+delta = 5.959223204560403e-06
+||y_sd|| = 5.961075012777005e-06
+y_sd_min = 6.0472578305945e-08
+Distribution functions should have shape (12, 53)
+snr=99.59893411414372
+||y||/||y_noi-y|| = 99.6089167690061
+sre(theta_guess) = 0.09899012689578728
+delta = 5.409747077111057e-06
+||y_sd|| = 5.388050427073654e-06
+y_sd_min = 5.465948686591052e-08
+Distribution functions should have shape (12, 53)
+snr=98.84197927832612
+||y||/||y_noi-y|| = 98.8366036990035
+sre(theta_guess) = 0.09537566502666402
+delta = 6.75329031761091e-06
+||y_sd|| = 6.675085816338184e-06
+y_sd_min = 6.77159151431926e-08
+Distribution functions should have shape (12, 53)
+snr=101.00812869233542
+||y||/||y_noi-y|| = 101.02818118614795
+sre(theta_guess) = 0.09615304583431108
+delta = 5.902222935800991e-06
+||y_sd|| = 5.961724938702398e-06
+y_sd_min = 6.047917152886743e-08
+Distribution functions should have shape (12, 53)
+snr=100.92564614176779
+||y||/||y_noi-y|| = 100.92072543552813
+sre(theta_guess) = 0.24000594812142909
+delta = 6.5391587969104436e-06
+||y_sd|| = 6.599688268018119e-06
+y_sd_min = 6.695103898661201e-08
+Distribution functions should have shape (12, 53)
+snr=100.39677942052538
+||y||/||y_noi-y|| = 100.411785645218
+sre(theta_guess) = 0.20971448187514394
+delta = 5.380897704808497e-06
+||y_sd|| = 5.402247999540694e-06
+y_sd_min = 5.480351521833476e-08
+Distribution functions should have shape (12, 53)
+snr=99.36471324214337
+||y||/||y_noi-y|| = 99.3713003685305
+sre(theta_guess) = 0.18081269620216822
+delta = 5.249201645099481e-06
+||y_sd|| = 5.215854162154972e-06
+y_sd_min = 5.29126287753871e-08
+Distribution functions should have shape (12, 53)
+snr=99.51797804824231
+||y||/||y_noi-y|| = 99.51718259932403
+sre(theta_guess) = 0.20096491391296914
+delta = 7.64856849619765e-06
+||y_sd|| = 7.611700717050756e-06
+y_sd_min = 7.72174761543281e-08
+Distribution functions should have shape (12, 53)
+snr=99.74282824822828
+||y||/||y_noi-y|| = 99.74436057012146
+sre(theta_guess) = 0.2191576039731578
+delta = 5.806027608959731e-06
+||y_sd|| = 5.79109614604942e-06
+y_sd_min = 5.874821477981799e-08
+Distribution functions should have shape (12, 53)
+snr=99.66859841384438
+||y||/||y_noi-y|| = 99.6858044992771
+sre(theta_guess) = 0.4685438245124767
+delta = 2.1089294142156334e-06
+||y_sd|| = 2.1019403886860197e-06
+y_sd_min = 2.132329394895988e-08
+Distribution functions should have shape (12, 53)
+snr=99.79485558035346
+||y||/||y_noi-y|| = 99.80142405627062
+sre(theta_guess) = 0.44695452186372425
+delta = 3.575667301356057e-06
+||y_sd|| = 3.5683320194221955e-06
+y_sd_min = 3.61992152428215e-08
+Distribution functions should have shape (12, 53)
+snr=99.06384068693644
+||y||/||y_noi-y|| = 99.0519618099061
+sre(theta_guess) = 0.4696301446977523
+delta = 7.91451675976921e-06
+||y_sd|| = 7.840424274038653e-06
+y_sd_min = 7.953777965339807e-08
+Distribution functions should have shape (12, 53)
+snr=100.84079373182149
+||y||/||y_noi-y|| = 100.84368706258431
+sre(theta_guess) = 0.36793303804256133
+delta = 5.832156744857811e-06
+||y_sd|| = 5.8811931531985815e-06
+y_sd_min = 5.966221071314894e-08
+Distribution functions should have shape (12, 53)
+snr=99.72031974276567
+||y||/||y_noi-y|| = 99.74004653381094
+sre(theta_guess) = 0.37994163243960644
+delta = 7.936506366231906e-06
+||y_sd|| = 7.914309524811407e-06
+y_sd_min = 8.02873141926268e-08
+--------------------
+2000_0.001
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9956602492857562
+Relative data misfit for reference 1.0041774117157738
+Relative data misfit for truth 0.9941968379234074
+Cost at reference parameter: 0.5401369787954229
+Cost at true parameter: 0.5587135107810773
+Cost at MAP estimate: 0.5050317170474355
+Relative reconstruction error for f: 0.41748544666728465
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7835122576125904
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.000985103819556561
+Scaled reconstruction error for vartheta: 0.001001865397355793
+Sum of map: 1.0078589366597441
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0165374420887767
+Relative data misfit for reference 4.310097482512361
+Relative data misfit for truth 1.0176995456469604
+Cost at reference parameter: 9.307358518069444
+Cost at true parameter: 0.5819554528963342
+Cost at MAP estimate: 0.5254419348329787
+Relative reconstruction error for f: 0.36389216231091925
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.4370270064351301
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0009978436385094094
+Scaled reconstruction error for vartheta: 0.0006515637283848395
+Sum of map: 1.000276600801563
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0094678967405393
+Relative data misfit for reference 2.1771071618228435
+Relative data misfit for truth 1.0052925252441083
+Cost at reference parameter: 2.437645677339121
+Cost at true parameter: 0.6084952360208049
+Cost at MAP estimate: 0.5367929313045061
+Relative reconstruction error for f: 0.38590377133459186
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7139711673463119
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0009976796772094066
+Scaled reconstruction error for vartheta: 0.0009340739042511238
+Sum of map: 0.9723176109163477
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9917817752332571
+Relative data misfit for reference 4.234274569956597
+Relative data misfit for truth 0.989136073093742
+Cost at reference parameter: 9.047340286112744
+Cost at true parameter: 0.5873821290747786
+Cost at MAP estimate: 0.5117623659570228
+Relative reconstruction error for f: 0.5511036580398638
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.5783686082681957
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0009754301531066272
+Scaled reconstruction error for vartheta: 0.0005908598220623298
+Sum of map: 1.0067120778583802
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.010805231937809
+Relative data misfit for reference 1.362589510551173
+Relative data misfit for truth 1.0088424879681264
+Cost at reference parameter: 0.9621744927411272
+Cost at true parameter: 0.5611545765035203
+Cost at MAP estimate: 0.5218574931138581
+Relative reconstruction error for f: 0.4295256804404049
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.763167209107991
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0010041990997729693
+Scaled reconstruction error for vartheta: 0.0009331724547498736
+Sum of map: 1.0228369775769826
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+2000_0.005
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9932221586064875
+Relative data misfit for reference 1.0364209207029378
+Relative data misfit for truth 0.9909390434736705
+Cost at reference parameter: 0.5730350041306901
+Cost at true parameter: 0.5506233661179089
+Cost at MAP estimate: 0.5029201018161843
+Relative reconstruction error for f: 0.4163746781572504
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7781111532799254
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.004677118444971546
+Scaled reconstruction error for vartheta: 0.004395350083681995
+Sum of map: 1.0108647784159128
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9971628016532763
+Relative data misfit for reference 11.759709697133458
+Relative data misfit for truth 0.9964000910024126
+Cost at reference parameter: 69.16427444411708
+Cost at true parameter: 0.5460868182939547
+Cost at MAP estimate: 0.5060487042259006
+Relative reconstruction error for f: 0.32351855383719397
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.5245252259358515
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.004998666071892228
+Scaled reconstruction error for vartheta: 0.0039067457877301395
+Sum of map: 0.999107473513901
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9940498756709104
+Relative data misfit for reference 7.668346064353428
+Relative data misfit for truth 0.987904505006948
+Cost at reference parameter: 29.46951356165131
+Cost at true parameter: 0.5790251586438324
+Cost at MAP estimate: 0.5271129180252866
+Relative reconstruction error for f: 0.4008210687141629
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.6871822163346765
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.003435923988854753
+Scaled reconstruction error for vartheta: 0.0022186727457111552
+Sum of map: 0.9603910240968792
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9968211504373721
+Relative data misfit for reference 12.479615068244284
+Relative data misfit for truth 0.9906631566222412
+Cost at reference parameter: 77.95319584499707
+Cost at true parameter: 0.5948854361023855
+Cost at MAP estimate: 0.5212792796810842
+Relative reconstruction error for f: 0.5257284612995302
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.592573196011721
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.004374832638549819
+Scaled reconstruction error for vartheta: 0.003942432504892098
+Sum of map: 1.012559333421242
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0041006703541324
+Relative data misfit for reference 2.3466518071047013
+Relative data misfit for truth 1.0014353821159003
+Cost at reference parameter: 2.787236757502965
+Cost at true parameter: 0.5532412424516413
+Cost at MAP estimate: 0.5167428498754623
+Relative reconstruction error for f: 0.4312578539119079
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.766613673346412
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.004043777790193165
+Scaled reconstruction error for vartheta: 0.002495538728828584
+Sum of map: 1.0226294936057752
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+2000_0.01
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0043839413432474
+Relative data misfit for reference 14.249396982060944
+Relative data misfit for truth 1.0028051813635885
+Cost at reference parameter: 101.5586080178791
+Cost at true parameter: 0.5554146133585879
+Cost at MAP estimate: 0.5170317184640925
+Relative reconstruction error for f: 0.43631800411825444
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7561984308213189
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0071722854816939465
+Scaled reconstruction error for vartheta: 0.004409678320168434
+Sum of map: 1.0002010867721014
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0073543847552462
+Relative data misfit for reference 3.2340000383609517
+Relative data misfit for truth 1.0071414455147742
+Cost at reference parameter: 5.24826648774907
+Cost at true parameter: 0.5437595874726452
+Cost at MAP estimate: 0.5204420194183286
+Relative reconstruction error for f: 0.33563950788983116
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.5105319031577841
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.008538083231401945
+Scaled reconstruction error for vartheta: 0.006847689707388853
+Sum of map: 1.0027963480549744
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0088133647437185
+Relative data misfit for reference 26.58306020565498
+Relative data misfit for truth 1.0036838560096397
+Cost at reference parameter: 353.3972928290477
+Cost at true parameter: 0.5881044814251509
+Cost at MAP estimate: 0.5364197645001231
+Relative reconstruction error for f: 0.3897558406823071
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.725191712295552
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.009188295118006819
+Scaled reconstruction error for vartheta: 0.007601878455597588
+Sum of map: 0.9912591452563819
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0087035263157402
+Relative data misfit for reference 14.685688937962631
+Relative data misfit for truth 1.001580472582207
+Cost at reference parameter: 107.91752951052118
+Cost at true parameter: 0.6041435421292841
+Cost at MAP estimate: 0.5333325666952596
+Relative reconstruction error for f: 0.5205645934702036
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.6316710866866629
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.007665363469428584
+Scaled reconstruction error for vartheta: 0.003237848830978899
+Sum of map: 0.9987589073385967
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0124674458301521
+Relative data misfit for reference 35.44425474374054
+Relative data misfit for truth 1.0107369655510527
+Cost at reference parameter: 628.1814465751958
+Cost at true parameter: 0.6035909415750069
+Cost at MAP estimate: 0.5245655028101884
+Relative reconstruction error for f: 0.4409154944380141
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7538396902319173
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.009531019778931548
+Scaled reconstruction error for vartheta: 0.006609247928446981
+Sum of map: 1.0427907348608052
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+2000_0.02
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0107896848822617
+Relative data misfit for reference 22.45831581440706
+Relative data misfit for truth 1.0075876058473952
+Cost at reference parameter: 252.22392545151848
+Cost at true parameter: 0.571413896971269
+Cost at MAP estimate: 0.5225601705767061
+Relative reconstruction error for f: 0.40362674902652546
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.8041931085099162
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.01812616305975805
+Scaled reconstruction error for vartheta: 0.01109816000765084
+Sum of map: 1.0091213998997657
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0011960443808474
+Relative data misfit for reference 31.432717761057425
+Relative data misfit for truth 1.0011155473075963
+Cost at reference parameter: 494.0267612868373
+Cost at true parameter: 0.5298025626080575
+Cost at MAP estimate: 0.5100559999132332
+Relative reconstruction error for f: 0.34958917044177473
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.43810480744143365
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.01888287495728326
+Scaled reconstruction error for vartheta: 0.005205397829316485
+Sum of map: 0.9867782039028699
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9892630188526585
+Relative data misfit for reference 33.468656065235486
+Relative data misfit for truth 0.9830278469800703
+Cost at reference parameter: 560.1432172868209
+Cost at true parameter: 0.592691307106948
+Cost at MAP estimate: 0.5223086856106626
+Relative reconstruction error for f: 0.3790471904578698
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7244259852332319
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.018013139242152237
+Scaled reconstruction error for vartheta: 0.012472408040287597
+Sum of map: 0.990704627168803
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0167873267987375
+Relative data misfit for reference 41.21916142929113
+Relative data misfit for truth 1.0113060540536658
+Cost at reference parameter: 849.5924341862029
+Cost at true parameter: 0.6373799398666199
+Cost at MAP estimate: 0.5424335233739955
+Relative reconstruction error for f: 0.5306229840246561
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.6170110835059528
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.018817771191295473
+Scaled reconstruction error for vartheta: 0.014638464486604517
+Sum of map: 0.9803709374491818
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0004171058685318
+Relative data misfit for reference 37.999045910797335
+Relative data misfit for truth 0.996095037421083
+Cost at reference parameter: 721.9975944710508
+Cost at true parameter: 0.5620005425471227
+Cost at MAP estimate: 0.5232044529961511
+Relative reconstruction error for f: 0.42528463461007676
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7917660921739287
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.013493196612266415
+Scaled reconstruction error for vartheta: 0.005115688715665541
+Sum of map: 1.025996613262925
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+2000_0.05
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0164762758686336
+Relative data misfit for reference 64.1065011927827
+Relative data misfit for truth 1.0133553870250804
+Cost at reference parameter: 2054.8576984318206
+Cost at true parameter: 0.5691150509996943
+Cost at MAP estimate: 0.5273366060551401
+Relative reconstruction error for f: 0.44196449592381293
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.724562592479696
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.03964079458366741
+Scaled reconstruction error for vartheta: 0.021521749852315045
+Sum of map: 1.0232823479729434
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9975989291127282
+Relative data misfit for reference 2.4726960319329008
+Relative data misfit for truth 0.99652386340158
+Cost at reference parameter: 3.0760011968581087
+Cost at true parameter: 0.5313417856845678
+Cost at MAP estimate: 0.5156786709338042
+Relative reconstruction error for f: 0.3371138757867431
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.4517214640060899
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.026374756316865103
+Scaled reconstruction error for vartheta: 0.021982018335997413
+Sum of map: 1.0000912579145451
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0113784822670617
+Relative data misfit for reference 150.12138149349212
+Relative data misfit for truth 1.0029284545020676
+Cost at reference parameter: 11268.282338637608
+Cost at true parameter: 0.6472903886679165
+Cost at MAP estimate: 0.5460477718864433
+Relative reconstruction error for f: 0.3888117304540119
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7047966133319842
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0423809862855811
+Scaled reconstruction error for vartheta: 0.02669437622805329
+Sum of map: 1.02266193679414
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0178374682290967
+Relative data misfit for reference 98.62712629251651
+Relative data misfit for truth 1.01178495212128
+Cost at reference parameter: 4863.737820079222
+Cost at true parameter: 0.6127293466866397
+Cost at MAP estimate: 0.5487197217484175
+Relative reconstruction error for f: 0.51366712447494
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.6217919353110541
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.03082278549312909
+Scaled reconstruction error for vartheta: 0.025983448908517264
+Sum of map: 1.0486230896554658
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0032275239631778
+Relative data misfit for reference 199.4347539638398
+Relative data misfit for truth 1.0007878357010398
+Cost at reference parameter: 19887.144393714265
+Cost at true parameter: 0.5676820896926521
+Cost at MAP estimate: 0.5250978262271377
+Relative reconstruction error for f: 0.4497996415692535
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7498111200185325
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.036770114666752444
+Scaled reconstruction error for vartheta: 0.032540207996396606
+Sum of map: 0.9694368190552285
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+2000_0.1
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0123551399190824
+Relative data misfit for reference 130.3358827649476
+Relative data misfit for truth 1.010915017230505
+Cost at reference parameter: 8493.757118900776
+Cost at true parameter: 0.5764995174439015
+Cost at MAP estimate: 0.5245702940916629
+Relative reconstruction error for f: 0.4309038200388772
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7495551870271303
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.08510964114258042
+Scaled reconstruction error for vartheta: 0.008579250884605281
+Sum of map: 1.0366042423219652
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0002249613828638
+Relative data misfit for reference 53.120134396663516
+Relative data misfit for truth 0.9993699133233821
+Cost at reference parameter: 1410.8932275234865
+Cost at true parameter: 0.5343762428172204
+Cost at MAP estimate: 0.5197761991092184
+Relative reconstruction error for f: 0.3342050576698526
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.4940760993020726
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.04563672812256097
+Scaled reconstruction error for vartheta: 0.019091544017467307
+Sum of map: 1.0002965460711046
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0059807356008428
+Relative data misfit for reference 173.58072813496142
+Relative data misfit for truth 1.0016858164859577
+Cost at reference parameter: 15065.202337811997
+Cost at true parameter: 0.5876612918444142
+Cost at MAP estimate: 0.5445272888208726
+Relative reconstruction error for f: 0.3996289485961352
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7243010405664789
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.04472612374000742
+Scaled reconstruction error for vartheta: 0.0404755494608161
+Sum of map: 0.9323182081795068
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0093666737692277
+Relative data misfit for reference 71.92416191710564
+Relative data misfit for truth 1.0039687441410086
+Cost at reference parameter: 2586.6253334582366
+Cost at true parameter: 0.5985717641206479
+Cost at MAP estimate: 0.5359059093599534
+Relative reconstruction error for f: 0.5367459727298054
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.6149563685606139
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0362768881620327
+Scaled reconstruction error for vartheta: 0.0151287919504737
+Sum of map: 0.9945614765643798
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0122721081607542
+Relative data misfit for reference 140.2791701189907
+Relative data misfit for truth 1.0114506894127027
+Cost at reference parameter: 9839.156634041978
+Cost at true parameter: 0.5480968677771964
+Cost at MAP estimate: 0.5245165297279655
+Relative reconstruction error for f: 0.4291777934929852
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7709112541818842
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.02356450850165194
+Scaled reconstruction error for vartheta: 0.018282995551099458
+Sum of map: 1.0474073962881403
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+2000_0.2
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0029348378960565
+Relative data misfit for reference 227.90383405072262
+Relative data misfit for truth 0.998683970162363
+Cost at reference parameter: 25970.114738351356
+Cost at true parameter: 0.5726396890427656
+Cost at MAP estimate: 0.5162597872727025
+Relative reconstruction error for f: 0.415857951852687
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7873966019762907
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.1490861114079591
+Scaled reconstruction error for vartheta: 0.09406806127936762
+Sum of map: 1.1234188299699874
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.008733999863556
+Relative data misfit for reference 34.574551980853954
+Relative data misfit for truth 1.0065702056514558
+Cost at reference parameter: 597.7187107020756
+Cost at true parameter: 0.5512622412183886
+Cost at MAP estimate: 0.5317709406424339
+Relative reconstruction error for f: 0.3598663986914108
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.45269516555806477
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.08889250369139604
+Scaled reconstruction error for vartheta: 0.02640357518662848
+Sum of map: 1.000094409860823
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.996070298699145
+Relative data misfit for reference 1199.5612253835502
+Relative data misfit for truth 0.990187670477026
+Cost at reference parameter: 719473.6344697227
+Cost at true parameter: 0.5808732757589544
+Cost at MAP estimate: 0.5441152209000251
+Relative reconstruction error for f: 0.3853636035629578
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.702853549928731
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.052660283219980425
+Scaled reconstruction error for vartheta: 0.05068007009218602
+Sum of map: 0.9149678600933192
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0138211303220044
+Relative data misfit for reference 188.54418735170464
+Relative data misfit for truth 1.0056564225562905
+Cost at reference parameter: 17774.53809177657
+Cost at true parameter: 0.637056985221671
+Cost at MAP estimate: 0.5567000789014573
+Relative reconstruction error for f: 0.5418340695825901
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.5924979036527593
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.11591878066140297
+Scaled reconstruction error for vartheta: 0.04189022052028169
+Sum of map: 1.0472185522759696
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0111450243202253
+Relative data misfit for reference 287.1212149407684
+Relative data misfit for truth 1.0060823687486995
+Cost at reference parameter: 41219.32988393709
+Cost at true parameter: 0.5791265586453649
+Cost at MAP estimate: 0.5468152006042096
+Relative reconstruction error for f: 0.4347438210699183
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7640459071835126
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.07282088713550819
+Scaled reconstruction error for vartheta: 0.03983897256370816
+Sum of map: 1.0463342789665373
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+2000_0.5
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0170030724166241
+Relative data misfit for reference 355.6352618513003
+Relative data misfit for truth 1.0070531559818992
+Cost at reference parameter: 63238.25568686316
+Cost at true parameter: 0.5795290355782995
+Cost at MAP estimate: 0.5337274401475705
+Relative reconstruction error for f: 0.41012593783020995
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7698271705180517
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.31267911059683146
+Scaled reconstruction error for vartheta: 0.09708811462651769
+Sum of map: 0.9215962641141947
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.012070370832835
+Relative data misfit for reference 341.5742243041959
+Relative data misfit for truth 1.0072115508179698
+Cost at reference parameter: 58336.49424287027
+Cost at true parameter: 0.595233983945883
+Cost at MAP estimate: 0.5678642932742008
+Relative reconstruction error for f: 0.3654840949760808
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.4411498807436027
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.13228887208183035
+Scaled reconstruction error for vartheta: 0.05568769274189184
+Sum of map: 1.0722803326717436
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9982921705824412
+Relative data misfit for reference 36.74310620927081
+Relative data misfit for truth 0.995014290844983
+Cost at reference parameter: 675.0956748331868
+Cost at true parameter: 0.5746237545065819
+Cost at MAP estimate: 0.5343828080245954
+Relative reconstruction error for f: 0.4015895777555782
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7128968627417981
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.1108420576032602
+Scaled reconstruction error for vartheta: 0.10235023979100044
+Sum of map: 0.8706956414558221
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0084787994990236
+Relative data misfit for reference 287.6444599224895
+Relative data misfit for truth 1.0055816944538096
+Cost at reference parameter: 41369.75046176957
+Cost at true parameter: 0.6087164410060374
+Cost at MAP estimate: 0.5427326391498312
+Relative reconstruction error for f: 0.5631527525754559
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.6277462827476852
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.2671936059636443
+Scaled reconstruction error for vartheta: 0.245509400420166
+Sum of map: 0.7136922130143628
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 2.163755654962239
+Relative data misfit for reference 9016.119942588342
+Relative data misfit for truth 0.9951955502310108
+Cost at reference parameter: 40645209.443419024
+Cost at true parameter: 0.5469341171389582
+Cost at MAP estimate: 2.4184363919338456
+Relative reconstruction error for f: 0.4356584368055434
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.7607685702206006
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 1.0570360400183343
+Scaled reconstruction error for vartheta: 0.9563024342038396
+Sum of map: 0.9850609111818157
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.001
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9913582635292981
+Relative data misfit for reference 0.9933666928298307
+Relative data misfit for truth 0.9913425574259002
+Cost at reference parameter: 0.529339534907165
+Cost at true parameter: 0.5455140604955864
+Cost at MAP estimate: 0.4936936621895388
+Relative reconstruction error for f: 0.6771643196203093
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.10566091736090007
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0009989907587611645
+Scaled reconstruction error for vartheta: 0.0008919597489348445
+Sum of map: 0.9388857051155581
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0191962486645958
+Relative data misfit for reference 1.034696219889099
+Relative data misfit for truth 1.0192991870349448
+Cost at reference parameter: 0.5541864974161469
+Cost at true parameter: 0.5710264652345953
+Cost at MAP estimate: 0.5223103639367654
+Relative reconstruction error for f: 0.6368972509203291
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.34157286028635103
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0010003027022575546
+Scaled reconstruction error for vartheta: 0.0006744039775418998
+Sum of map: 0.8444427611691484
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9935447214007282
+Relative data misfit for reference 0.9931869931838117
+Relative data misfit for truth 0.9931811959880882
+Cost at reference parameter: 0.5609580820237126
+Cost at true parameter: 0.5897763648030606
+Cost at MAP estimate: 0.49746390112991706
+Relative reconstruction error for f: 0.7959097344991628
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.34311120990644256
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0009998004508284418
+Scaled reconstruction error for vartheta: 0.000840643254541446
+Sum of map: 1.0278534900844152
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0056693127227665
+Relative data misfit for reference 1.0064906552159176
+Relative data misfit for truth 1.0043508222301079
+Cost at reference parameter: 0.5893114387406664
+Cost at true parameter: 0.6095360443368147
+Cost at MAP estimate: 0.5092492651387565
+Relative reconstruction error for f: 0.7699085881609711
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.38218790490735854
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0010005285098226217
+Scaled reconstruction error for vartheta: 0.0009501766634037501
+Sum of map: 0.9221855070489068
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0048115504787938
+Relative data misfit for reference 1.004508282843676
+Relative data misfit for truth 1.0045866388080975
+Cost at reference parameter: 0.53836785075986
+Cost at true parameter: 0.5946686710779722
+Cost at MAP estimate: 0.5082814315281894
+Relative reconstruction error for f: 0.664418706420217
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.44245512210667187
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0010010120778571696
+Scaled reconstruction error for vartheta: 0.0010554933507769262
+Sum of map: 1.0480472984072469
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.005
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0067596739518423
+Relative data misfit for reference 1.0577965507004947
+Relative data misfit for truth 1.0069188626038688
+Cost at reference parameter: 0.5954176130322597
+Cost at true parameter: 0.6020330197158481
+Cost at MAP estimate: 0.509030403349584
+Relative reconstruction error for f: 0.6823652553347105
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.1224420488919917
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0049980726602037685
+Scaled reconstruction error for vartheta: 0.004330870256961946
+Sum of map: 0.9653776157885312
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9979865612889648
+Relative data misfit for reference 1.1511441057844385
+Relative data misfit for truth 0.9975683986743045
+Cost at reference parameter: 0.6814547398308789
+Cost at true parameter: 0.5407333636507742
+Cost at MAP estimate: 0.5010345230623615
+Relative reconstruction error for f: 0.6202289112083152
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3402887901969612
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.005001170773537701
+Scaled reconstruction error for vartheta: 0.004603194186368154
+Sum of map: 0.8801360713896725
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9986201175842776
+Relative data misfit for reference 1.1047826499878795
+Relative data misfit for truth 0.9973439862626123
+Cost at reference parameter: 0.6780202321660826
+Cost at true parameter: 0.5951269080391889
+Cost at MAP estimate: 0.5022207706196933
+Relative reconstruction error for f: 0.7904458192861831
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3402644819323176
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.004997662105953859
+Scaled reconstruction error for vartheta: 0.0047742901202587115
+Sum of map: 1.0133370447618948
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9959998279950248
+Relative data misfit for reference 1.0665806460854972
+Relative data misfit for truth 0.9953985879472407
+Cost at reference parameter: 0.6515968565242611
+Cost at true parameter: 0.6280845935429474
+Cost at MAP estimate: 0.49956524478482855
+Relative reconstruction error for f: 0.776750212298773
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.36438190328158154
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.004985834000925708
+Scaled reconstruction error for vartheta: 0.00479195087886325
+Sum of map: 0.913983943551692
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0024768237845538
+Relative data misfit for reference 1.0618258223688346
+Relative data misfit for truth 1.002192610281352
+Cost at reference parameter: 0.5975864441337105
+Cost at true parameter: 0.561152527197774
+Cost at MAP estimate: 0.5059703896932899
+Relative reconstruction error for f: 0.6648500646246962
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.43709751107360983
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.004985714659775565
+Scaled reconstruction error for vartheta: 0.0036568036251513553
+Sum of map: 1.056190095679756
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.01
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0034571373700045
+Relative data misfit for reference 1.3123930287058827
+Relative data misfit for truth 1.003818891876676
+Cost at reference parameter: 0.8971385725932276
+Cost at true parameter: 0.5830782910840835
+Cost at MAP estimate: 0.5054719244374553
+Relative reconstruction error for f: 0.6869238912368679
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.1346214363653071
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.010089912961288664
+Scaled reconstruction error for vartheta: 0.010260057528278844
+Sum of map: 0.9670854707969133
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9956457332234364
+Relative data misfit for reference 1.066787260181844
+Relative data misfit for truth 0.9952045593177169
+Cost at reference parameter: 0.5879058929328942
+Cost at true parameter: 0.5765299917791787
+Cost at MAP estimate: 0.49856311907371603
+Relative reconstruction error for f: 0.6342813219926948
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.334536550906146
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.01003931017411001
+Scaled reconstruction error for vartheta: 0.008273344167757796
+Sum of map: 0.8623602446069958
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9965482899284813
+Relative data misfit for reference 1.0567445167069804
+Relative data misfit for truth 0.9959218278172258
+Cost at reference parameter: 0.6261023671040971
+Cost at true parameter: 0.6045904261671479
+Cost at MAP estimate: 0.5005869493720497
+Relative reconstruction error for f: 0.7955342205478162
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.33548012402373195
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.010004865094122814
+Scaled reconstruction error for vartheta: 0.01001745443318801
+Sum of map: 1.0285644158575167
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0035710139743255
+Relative data misfit for reference 1.6682874624564084
+Relative data misfit for truth 1.0018382009996754
+Cost at reference parameter: 1.4743912479168035
+Cost at true parameter: 0.6232223873761856
+Cost at MAP estimate: 0.5073388664406491
+Relative reconstruction error for f: 0.7601194468839299
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.36691205215218436
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.01001868348236185
+Scaled reconstruction error for vartheta: 0.009115451493930287
+Sum of map: 0.8950200532962599
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9996600023315008
+Relative data misfit for reference 1.4514596004285152
+Relative data misfit for truth 0.9992385060803607
+Cost at reference parameter: 1.087216891447137
+Cost at true parameter: 0.5496222560128956
+Cost at MAP estimate: 0.5032357662490091
+Relative reconstruction error for f: 0.6713137340921617
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.45795582637231813
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.009897295155935317
+Scaled reconstruction error for vartheta: 0.009320494005318232
+Sum of map: 1.060519040124148
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.02
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9928803609241086
+Relative data misfit for reference 1.2793154864487433
+Relative data misfit for truth 0.9922769236553705
+Cost at reference parameter: 0.8542748986291197
+Cost at true parameter: 0.5786805910135473
+Cost at MAP estimate: 0.49552110454631537
+Relative reconstruction error for f: 0.6660245288316748
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.14392550386773487
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.019847965679983263
+Scaled reconstruction error for vartheta: 0.019909406147133157
+Sum of map: 0.9400132682604521
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9929198386395116
+Relative data misfit for reference 1.6916980808519921
+Relative data misfit for truth 0.9918382451578651
+Cost at reference parameter: 1.4498095620689084
+Cost at true parameter: 0.5770009326348873
+Cost at MAP estimate: 0.4958949265023863
+Relative reconstruction error for f: 0.6367009001906604
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3317933575578792
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.019602237194537842
+Scaled reconstruction error for vartheta: 0.019313639292394474
+Sum of map: 0.866246567071867
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0058376145059091
+Relative data misfit for reference 2.5153532455338783
+Relative data misfit for truth 1.0032904287260236
+Cost at reference parameter: 3.23124885521787
+Cost at true parameter: 0.624034628449017
+Cost at MAP estimate: 0.5096858841377203
+Relative reconstruction error for f: 0.7718904929778336
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3587809724583533
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.01965642086495428
+Scaled reconstruction error for vartheta: 0.01837699758883891
+Sum of map: 0.9935257007467035
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0102090754839044
+Relative data misfit for reference 1.473062697201676
+Relative data misfit for truth 1.0088605311424377
+Cost at reference parameter: 1.1677565741657214
+Cost at true parameter: 0.6366207069805216
+Cost at MAP estimate: 0.514039401638167
+Relative reconstruction error for f: 0.769356573542297
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.39237374089918203
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.019814667397972777
+Scaled reconstruction error for vartheta: 0.011722600995411578
+Sum of map: 0.9158696111617837
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9951711375167674
+Relative data misfit for reference 1.3859241811449547
+Relative data misfit for truth 0.9937551662614597
+Cost at reference parameter: 0.994242323550241
+Cost at true parameter: 0.5511751375015524
+Cost at MAP estimate: 0.4988002244875774
+Relative reconstruction error for f: 0.6697301668823717
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.4330337612857303
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.01920317128397421
+Scaled reconstruction error for vartheta: 0.01955535761426892
+Sum of map: 1.041115851817389
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.05
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9974601378895417
+Relative data misfit for reference 2.2634413397755093
+Relative data misfit for truth 0.9969924747747663
+Cost at reference parameter: 2.597534190997704
+Cost at true parameter: 0.5672710145524968
+Cost at MAP estimate: 0.4997654901939055
+Relative reconstruction error for f: 0.6763136574070336
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.14354430392851594
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.04802357205890604
+Scaled reconstruction error for vartheta: 0.03401955706533057
+Sum of map: 0.9290848406761649
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0007406512290762
+Relative data misfit for reference 5.403739879294869
+Relative data misfit for truth 1.0002020113055086
+Cost at reference parameter: 14.619090705230608
+Cost at true parameter: 0.5408852468688284
+Cost at MAP estimate: 0.5042083931986737
+Relative reconstruction error for f: 0.6560435982054549
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3016153974128449
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0454142506737138
+Scaled reconstruction error for vartheta: 0.03733480465603625
+Sum of map: 0.9014402582049708
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9928536087229921
+Relative data misfit for reference 7.699125135491092
+Relative data misfit for truth 0.9915951507735086
+Cost at reference parameter: 29.70601180628432
+Cost at true parameter: 0.595882463940905
+Cost at MAP estimate: 0.4977027826016796
+Relative reconstruction error for f: 0.8024395827199233
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.33523141333295314
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.04761494817203277
+Scaled reconstruction error for vartheta: 0.026693948816829703
+Sum of map: 1.0721675551996492
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0038292783536016
+Relative data misfit for reference 1.5704109915986044
+Relative data misfit for truth 1.0014391211290112
+Cost at reference parameter: 1.3158950604890391
+Cost at true parameter: 0.602326092684182
+Cost at MAP estimate: 0.508303051839451
+Relative reconstruction error for f: 0.7895748020550056
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.31001565678947146
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.04141035119737697
+Scaled reconstruction error for vartheta: 0.042712414612166176
+Sum of map: 0.910057517736994
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9833508699235746
+Relative data misfit for reference 4.5528483425499235
+Relative data misfit for truth 0.9830089272883571
+Cost at reference parameter: 10.398063420738877
+Cost at true parameter: 0.5447897405460168
+Cost at MAP estimate: 0.48668827034139633
+Relative reconstruction error for f: 0.6882248229671755
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.38447359151697685
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.05016270241875226
+Scaled reconstruction error for vartheta: 0.046886615955030686
+Sum of map: 1.0001816044902396
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.1
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9941439692205938
+Relative data misfit for reference 7.54352814265565
+Relative data misfit for truth 0.99213853255982
+Cost at reference parameter: 28.48835926121423
+Cost at true parameter: 0.5606284515638338
+Cost at MAP estimate: 0.4971696407104152
+Relative reconstruction error for f: 0.6839716135635737
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.10018556299090581
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.09735023088378741
+Scaled reconstruction error for vartheta: 0.09353049204109493
+Sum of map: 0.8636130269636397
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0003315204616268
+Relative data misfit for reference 15.537456786746327
+Relative data misfit for truth 0.9996893499557326
+Cost at reference parameter: 120.72517006369453
+Cost at true parameter: 0.5242438132901868
+Cost at MAP estimate: 0.50320003147871
+Relative reconstruction error for f: 0.6619356080794752
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3391282712949522
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.08287098328521313
+Scaled reconstruction error for vartheta: 0.055395477102500944
+Sum of map: 0.7557699868907547
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0090605991378894
+Relative data misfit for reference 7.461919552764856
+Relative data misfit for truth 1.0040268090158138
+Cost at reference parameter: 27.907869586276195
+Cost at true parameter: 0.6152815230695264
+Cost at MAP estimate: 0.5175212226672752
+Relative reconstruction error for f: 0.784825482495162
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.33854784745148
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.08450609123316379
+Scaled reconstruction error for vartheta: 0.0626027777832636
+Sum of map: 1.0893132061558777
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0135708755778796
+Relative data misfit for reference 12.586449972972245
+Relative data misfit for truth 1.0117158795294157
+Cost at reference parameter: 79.29216118028872
+Cost at true parameter: 0.6139465482178795
+Cost at MAP estimate: 0.5201322666379473
+Relative reconstruction error for f: 0.7745149820767728
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.32011610229761955
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.08374096774175281
+Scaled reconstruction error for vartheta: 0.0761969502145103
+Sum of map: 1.0054899797722023
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.991735980517289
+Relative data misfit for reference 3.984182991424617
+Relative data misfit for truth 0.9900193310638778
+Cost at reference parameter: 7.970706460187691
+Cost at true parameter: 0.5626087633252392
+Cost at MAP estimate: 0.4972594325370638
+Relative reconstruction error for f: 0.7038710905751256
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3817339066445224
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.08861030005671484
+Scaled reconstruction error for vartheta: 0.08368923219679375
+Sum of map: 1.0931657629082991
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.2
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9912364276339544
+Relative data misfit for reference 10.19966528659065
+Relative data misfit for truth 0.9908284348215362
+Cost at reference parameter: 52.05253682093648
+Cost at true parameter: 0.5467119642113735
+Cost at MAP estimate: 0.4991089948112107
+Relative reconstruction error for f: 0.6898611733394548
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.0918653931725001
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.19579066072992413
+Scaled reconstruction error for vartheta: 0.19738588951613703
+Sum of map: 0.8445215646747826
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9985399493682814
+Relative data misfit for reference 27.446427349109207
+Relative data misfit for truth 0.9960478869659413
+Cost at reference parameter: 376.6720754786547
+Cost at true parameter: 0.5687840120540433
+Cost at MAP estimate: 0.5044064695253841
+Relative reconstruction error for f: 0.6484319486361553
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.37586963357510594
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.19579315227370803
+Scaled reconstruction error for vartheta: 0.12859756813042073
+Sum of map: 0.6753334699887238
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0094859414847515
+Relative data misfit for reference 4.477796628199354
+Relative data misfit for truth 1.0063934845392095
+Cost at reference parameter: 10.093079202065715
+Cost at true parameter: 0.5993646635371004
+Cost at MAP estimate: 0.5251827889010589
+Relative reconstruction error for f: 0.7988632300003982
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3222029236123356
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.09966988144443241
+Scaled reconstruction error for vartheta: 0.1012305067898322
+Sum of map: 1.0434397512168605
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0075024497730318
+Relative data misfit for reference 23.332022531160163
+Relative data misfit for truth 1.0048435665717006
+Cost at reference parameter: 272.27443741650495
+Cost at true parameter: 0.6351311201743015
+Cost at MAP estimate: 0.5154836119458993
+Relative reconstruction error for f: 0.7727062980273032
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.34964768430918286
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.18302594077974807
+Scaled reconstruction error for vartheta: 0.07120492598928249
+Sum of map: 1.1317625810589127
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0039953194988056
+Relative data misfit for reference 1.4406773256560477
+Relative data misfit for truth 1.00257834830121
+Cost at reference parameter: 1.0716249839388157
+Cost at true parameter: 0.5846137649352052
+Cost at MAP estimate: 0.5108784478776598
+Relative reconstruction error for f: 0.6895297213920728
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3838771652655319
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.19846476682381914
+Scaled reconstruction error for vartheta: 0.18949802604755334
+Sum of map: 1.0420404529876828
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+100_0.5
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0090241387525696
+Relative data misfit for reference 245.79009715516804
+Relative data misfit for truth 1.0033250350805534
+Cost at reference parameter: 30206.42188061517
+Cost at true parameter: 0.5535254783549817
+Cost at MAP estimate: 0.5229415048926856
+Relative reconstruction error for f: 0.8581592687706457
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.11446097629425682
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.5084982343786086
+Scaled reconstruction error for vartheta: 0.40160944995431475
+Sum of map: 0.2592439113002362
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0082106965551199
+Relative data misfit for reference 92.94220656576069
+Relative data misfit for truth 1.0020556612708496
+Cost at reference parameter: 4319.145769019955
+Cost at true parameter: 0.5468845346607156
+Cost at MAP estimate: 0.5199009764469161
+Relative reconstruction error for f: 0.6091728497744197
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.4605083834306131
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.2724295457294742
+Scaled reconstruction error for vartheta: 0.22093797519218072
+Sum of map: 0.7218634955667351
+Sum of truth: 0.9999999999999999
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 3
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0116760198205261
+Relative data misfit for reference 36.364408596045216
+Relative data misfit for truth 1.0094500607544787
+Cost at reference parameter: 661.2528541503726
+Cost at true parameter: 0.611082328552395
+Cost at MAP estimate: 0.5469461655485117
+Relative reconstruction error for f: 0.8132689083689978
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.32211696002552315
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.43603285085889154
+Scaled reconstruction error for vartheta: 0.35315446529718636
+Sum of map: 1.304524661875167
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 4
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 0.9947188573505171
+Relative data misfit for reference 1.3862336800650652
+Relative data misfit for truth 0.991662166661862
+Cost at reference parameter: 1.0436216270955494
+Cost at true parameter: 0.5960465002723021
+Cost at MAP estimate: 0.5036481168600555
+Relative reconstruction error for f: 0.7722199323449047
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.3766877925905709
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.27663591795784515
+Scaled reconstruction error for vartheta: 0.2415427541394524
+Sum of map: 0.9706915216251587
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 5
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0023840682159848
+Relative data misfit for reference 27.60236868399351
+Relative data misfit for truth 1.0028046466152112
+Cost at reference parameter: 380.9792278891619
+Cost at true parameter: 0.5590402315506501
+Cost at MAP estimate: 0.5094708070523494
+Relative reconstruction error for f: 0.7196791381601522
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.366946112389958
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.3360908479416853
+Scaled reconstruction error for vartheta: 0.1493641348562479
+Sum of map: 1.2313853407168767
+Sum of truth: 0.9999999999999998
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)

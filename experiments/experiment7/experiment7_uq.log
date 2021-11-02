@@ -1,0 +1,88 @@
+Distribution functions should have shape (12, 53)
+snr=2001.4267614970254
+||y||/||y_noi-y|| = 2001.431831427029
+rdm = 0.9992871278007897
+sre(theta_guess) = 0.05002959139043254
+delta = 3.7368222625808456e-07
+||y_sd|| = 3.739488039643588e-07
+y_sd_min = 3.793552049199e-09
+Distribution functions should have shape (12, 53)
+snr=1985.149841638904
+||y||/||y_noi-y|| = 1985.1393597036065
+rdm = 1.0074806234016276
+sre(theta_guess) = 0.04902320965763077
+delta = 3.679768481204435e-07
+||y_sd|| = 3.652445908865397e-07
+y_sd_min = 3.7052514984071e-09
+Distribution functions should have shape (12, 53)
+snr=1980.1229712413854
+||y||/||y_noi-y|| = 1980.0967274188902
+rdm = 1.0100382799691252
+sre(theta_guess) = 0.048698727769973325
+delta = 2.7099208943763236e-07
+||y_sd|| = 2.682988306600776e-07
+y_sd_min = 2.721777869211317e-09
+Distribution functions should have shape (12, 53)
+snr=2025.210452203422
+||y||/||y_noi-y|| = 2025.21039772443
+rdm = 0.987551687689547
+sre(theta_guess) = 0.05102432558767768
+delta = 2.858693678801067e-07
+||y_sd|| = 2.894728158977888e-07
+y_sd_min = 2.936578970957543e-09
+Distribution functions should have shape (12, 53)
+snr=1997.1680765767462
+||y||/||y_noi-y|| = 1997.1594511679798
+rdm = 1.0014179695021495
+sre(theta_guess) = 0.050880898796716645
+delta = 2.910808386409681e-07
+||y_sd|| = 2.906686793184644e-07
+y_sd_min = 2.948710498273511e-09
+Distribution functions should have shape (12, 53)
+snr=99.89326732704613
+||y||/||y_noi-y|| = 99.8935946566542
+rdm = 1.0010684671330694
+sre(theta_guess) = 0.04832595803320094
+delta = 7.465804320559986e-06
+||y_sd|| = 7.457835868051152e-06
+y_sd_min = 7.565658250515951e-08
+Distribution functions should have shape (12, 53)
+snr=99.62606462520189
+||y||/||y_noi-y|| = 99.62155870892411
+rdm = 1.0037533889971957
+sre(theta_guess) = 0.04842855146397757
+delta = 7.411489772372634e-06
+||y_sd|| = 7.383775590314185e-06
+y_sd_min = 7.49052723915963e-08
+Distribution functions should have shape (12, 53)
+snr=99.66107398245586
+||y||/||y_noi-y|| = 99.66856357978786
+rdm = 1.0034007863250982
+sre(theta_guess) = 0.05095675920565395
+delta = 4.564992685103837e-06
+||y_sd|| = 4.549520737195032e-06
+y_sd_min = 4.6152958727217936e-08
+Distribution functions should have shape (12, 53)
+snr=99.66162939119427
+||y||/||y_noi-y|| = 99.67896190083665
+rdm = 1.0033951944281139
+sre(theta_guess) = 0.050307849710638224
+delta = 5.6770392595502904e-06
+||y_sd|| = 5.6578298272456075e-06
+y_sd_min = 5.7396284485007947e-08
+Distribution functions should have shape (12, 53)
+snr=99.97383469935647
+||y||/||y_noi-y|| = 99.97927078712364
+rdm = 1.0002617214866492
+sre(theta_guess) = 0.05163504193960749
+delta = 5.273184739626048e-06
+||y_sd|| = 5.271804994985438e-06
+y_sd_min = 5.3480226249394894e-08
+--------------------
+2000
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+Computing filtered credible interval 1/636 (1.1920928955078125e-06 s) Computing filtered credible interval 2/636 (3.6689021587371826 s) Computing filtered credible interval 3/636 (3.486079216003418 s) Computing filtered credible interval 4/636 (3.9775075912475586 s) Computing filtered credible interval 5/636 (2.4902215003967285 s) Computing filtered credible interval 6/636 (3.6035685539245605 s) Computing filtered credible interval 7/636 (4.1375508308410645 s) Computing filtered credible interval 8/636 (4.028579473495483 s) Computing filtered credible interval 9/636 (4.04549241065979 s) Computing filtered credible interval 10/636 (3.8880178928375244 s) Computing filtered credible interval 11/636 (3.325934648513794 s) Computing filtered credible interval 12/636 (3.6813371181488037 s) Computing filtered credible interval 13/636 (3.9814469814300537 s) Computing filtered credible interval 14/636 (3.777848958969116 s) Computing filtered credible interval 15/636 (3.937957763671875 s) Computing filtered credible interval 16/636 (3.9041318893432617 s) Computing filtered credible interval 17/636 (4.2005391120910645 s) Computing filtered credible interval 18/636 (4.076778173446655 s) Computing filtered credible interval 19/636 (4.277630805969238 s) Computing filtered credible interval 20/636 (4.1753246784210205 s) 

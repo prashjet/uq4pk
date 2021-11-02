@@ -1,0 +1,71 @@
+
+Spectres: new_wavs contains values outside the range in spec_wavs, new_fluxes and new_errs will be filled with the value set in the 'fill' keyword argument. 
+
+Distribution functions should have shape (12, 53)
+ Best Fit:       Vel     sigma        h3        h4
+ comp.  0:       145        30     0.016    -0.300
+chi2/DOF: 1.962; degree = 8; mdegree = 0
+method = capfit; Jac calls: 10; Func calls: 56; Status: 2
+linear_method = lsq_box; Nonzero Templates (>0.1%):  5 / 636
+Simulated SNR = 111.57891470349442
+y_sd_min = 8.539649894159353e-08
+
+Spectres: new_wavs contains values outside the range in spec_wavs, new_fluxes and new_errs will be filled with the value set in the 'fill' keyword argument. 
+
+Distribution functions should have shape (12, 53)
+ Best Fit:       Vel     sigma        h3        h4
+ comp.  0:       145        30     0.016    -0.300
+chi2/DOF: 1.962; degree = 8; mdegree = 0
+method = capfit; Jac calls: 10; Func calls: 56; Status: 2
+linear_method = lsq_box; Nonzero Templates (>0.1%):  5 / 636
+y_sd_min = 8.539649894159353e-08
+--------------------
+True
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0135130138722688
+Relative data misfit for reference 25.686851835288206
+Relative data misfit for truth 6.623674977320202
+Cost at reference parameter: 330.22654120946396
+Cost at true parameter: 21.96371184174363
+Cost at MAP estimate: 0.5167050552771116
+Relative reconstruction error for f: 0.6553351727035656
+Relative reconstruction error of reference: 4.420441332979344
+SSIM for f: 0.6790427482587228
+SSIM for reference: 0.3257027575867887
+Scaled reconstruction error for theta: 0.0593604444771699
+Scaled reconstruction error for vartheta: 0.04625675709447618
+Sum of map: 1.025632502785271
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+False
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 3.973171601675887
+Relative data misfit for reference 8.76025507535457
+Relative data misfit for truth 14.4651341230512
+Cost at reference parameter: 38.69039709807724
+Cost at true parameter: 104.62570581551773
+Cost at MAP estimate: 8.00441360918515
+Relative reconstruction error for f: 2.357288007074738
+Relative reconstruction error of reference: 4.420441332979344
+SSIM for f: 0.36253301297583335
+SSIM for reference: 0.3257027575867887
+Scaled reconstruction error for theta: 0.06658328005978174
+Scaled reconstruction error for vartheta: 0.07444237018928912
+Sum of map: 0.8660271410706124
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)

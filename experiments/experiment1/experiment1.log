@@ -1,0 +1,108 @@
+Distribution functions should have shape (12, 53)
+snr=1972.1874060221605
+||y||/||y_noi-y|| = 1972.1840393369125
+rdm = 1.014102409280636
+sre(theta_guess) = 0.04984329186960962
+delta = 3.555020214416639e-07
+||y_sd|| = 3.5055830475133503e-07
+y_sd_min = 3.5562653530505816e-09
+Distribution functions should have shape (12, 53)
+snr=1998.4677401698827
+||y||/||y_noi-y|| = 1998.4693118318105
+rdm = 1.0007667173201342
+sre(theta_guess) = 0.04857666949434589
+delta = 3.690481965365676e-07
+||y_sd|| = 3.687654576731025e-07
+y_sd_min = 3.7409691989894354e-09
+Distribution functions should have shape (12, 53)
+snr=2001.474088112491
+||y||/||y_noi-y|| = 2001.4811940134828
+rdm = 0.999263498777603
+sre(theta_guess) = 0.05079675585437439
+delta = 2.576014227483911e-07
+||y_sd|| = 2.5779128634590834e-07
+y_sd_min = 2.6151832877004586e-09
+Distribution functions should have shape (12, 53)
+snr=2011.5797875782062
+||y||/||y_noi-y|| = 2011.578079679679
+rdm = 0.9942434361044412
+sre(theta_guess) = 0.04945812638365964
+delta = 2.786916701773459e-07
+||y_sd|| = 2.803052653475807e-07
+y_sd_min = 2.843578057979116e-09
+Distribution functions should have shape (12, 53)
+snr=1993.8792825191192
+||y||/||y_noi-y|| = 1993.8730305982933
+rdm = 1.003069753286742
+sre(theta_guess) = 0.04970542526028016
+delta = 2.857890071043132e-07
+||y_sd|| = 2.8491439021849984e-07
+y_sd_min = 2.8903356753687824e-09
+Distribution functions should have shape (12, 53)
+snr=99.48494450607195
+||y||/||y_noi-y|| = 99.487990054685
+rdm = 1.0051772204978875
+sre(theta_guess) = 0.051075600532574074
+delta = 7.0372358723402996e-06
+||y_sd|| = 7.00099020235914e-06
+y_sd_min = 7.102207694482406e-08
+Distribution functions should have shape (12, 53)
+snr=99.05749286028572
+||y||/||y_noi-y|| = 99.05273248801763
+rdm = 1.0095147485818527
+sre(theta_guess) = 0.04934694682483262
+delta = 6.793828965376955e-06
+||y_sd|| = 6.729796642318295e-06
+y_sd_min = 6.827093327350872e-08
+Distribution functions should have shape (12, 53)
+snr=99.77454848680482
+||y||/||y_noi-y|| = 99.77168788219366
+rdm = 1.002259609455662
+sre(theta_guess) = 0.050521685021113046
+delta = 5.099229245953895e-06
+||y_sd|| = 5.087732956457603e-06
+y_sd_min = 5.1612893471338825e-08
+Distribution functions should have shape (12, 53)
+snr=100.37610428157828
+||y||/||y_noi-y|| = 100.38212030905606
+rdm = 0.9962530496250064
+sre(theta_guess) = 0.05099929020609312
+delta = 5.938118994016791e-06
+||y_sd|| = 5.960452513798498e-06
+y_sd_min = 6.046626331776883e-08
+Distribution functions should have shape (12, 53)
+snr=99.8907016800079
+||y||/||y_noi-y|| = 99.89859047493353
+rdm = 1.0010941791193162
+sre(theta_guess) = 0.049454734607233264
+delta = 6.120891424111389e-06
+||y_sd|| = 6.1142013926162925e-06
+y_sd_min = 6.20259804986182e-08
+--------------------
+2000
+--------------------
+--------------------
+TEST 1 / TRIAL 1
+--------------------
+ 
+ERROR ANALYSIS
+Relative data misfit: 1.0362570980717773
+Relative data misfit for reference 1.0141024092806359
+Relative data misfit for truth 1.0141024092806359
+Cost at reference parameter: 0.9291194795763856
+Cost at true parameter: 0.9291194795763856
+Cost at MAP estimate: 0.738160452904136
+Relative reconstruction error for f: 0.6167410050034862
+Relative reconstruction error of reference: 0.0
+SSIM for f: 0.332261066518442
+SSIM for reference: 1.0
+Scaled reconstruction error for theta: 0.0
+Scaled reconstruction error for vartheta: 0.0
+Sum of map: 0.9167403756606628
+Sum of truth: 1.0
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+--------------------
+TEST 1 / TRIAL 2
+--------------------
