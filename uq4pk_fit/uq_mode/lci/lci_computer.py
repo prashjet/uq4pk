@@ -7,30 +7,39 @@ import numpy as np
 import time
 from typing import List
 
-from ..optimization import NullConstraint, OptimizationProblem, SLSQP
+from ..linear_model import LinearModel
+from ..optimization import ECOS, NullConstraint, OptimizationProblem, SLSQP, SOCP
 from ..partition import Partition
 from .local_value import LocalValue
 
 
 class LCIComputer:
 
-    def __init__(self, alpha: float, cost: callable, costgrad: callable, x_map: np.ndarray, partition: Partition, 
-                 lb: np.ndarray = None):
+    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, partition: Partition, options: dict = None):
         self._partition = partition
         self._npartition = partition.size
         # precompute:
         self._alpha = alpha
         self._x_map = x_map.copy()
         self._dim = x_map.size
-        self._costf = cost
-        self._costg = costgrad
-        self._cost_map = cost(x_map)
+        self._model = model
+        self._costf = model.cost
+        self._costg = model.cost_grad
+        self._cost_map = model.cost(x_map)
         self._tau = sqrt(16 * log(3 / alpha) / self._dim)
         self._k_alpha = self._dim * (self._tau + 1)
         self.RTOL = 0.01  # 1% relative tolerance for optimization
+        self.ftol = 1e-6
         self.ctol = self.RTOL * self._k_alpha
-        self._lb = lb
-        self._optimizer = SLSQP()
+        if options is None:
+            options = {}
+        solver_name = options.setdefault("solver", "ecos")
+        if solver_name == "slsqp":
+            self._optimizer = SLSQP(ftol=self.ftol, ctol=self.ctol)
+        elif solver_name == "ecos":
+            self._optimizer = ECOS(scale=self._cost_map)
+        else:
+            raise KeyError(f"Unknown solver '{solver_name}'.")
         # make the partition matrix that maps a vector fo size self._npartition to a vector of size self._dim.
         self._pmat = np.zeros((self._dim, self._npartition))
         for i in range(self._npartition):
@@ -93,37 +102,66 @@ class LCIComputer:
         """
         Computes the quantity of interest.
         """
-        # Create OptimizationProblem object
-        opt_problem = self._create_optimization_problem(lvalue, minmax)
+        # Create SOCP object
+        prob = self._create_socp(lvalue, minmax)
         # Compute minimizer/maximizer
-        xi = self._optimizer.optimize(opt_problem)
-        # Check that z is truly an optimizer
-        self._check_optimality(xi, opt_problem)
+        xi = self._optimizer.optimize(prob, start=lvalue.initial_value)
+        constraints_satisfied, error_message = prob.check_constraints(xi, tol=self.ctol)
+        if not constraints_satisfied:
+            print("WARNING: The solver was not able to satisfy all constraints.")
+            print(error_message)
         return lvalue.x(xi)[lvalue._ind]
 
-    def _create_optimization_problem(self, lvalue: LocalValue, minmax: int):
+    def _create_socp(self, lvalue: LocalValue, minmax: int):
         """
-        Creates optimization problem
-        """
-        # Setup objective
-        if minmax == 0:
-            loss_fun = lvalue.loss_fun
-            loss_grad = lvalue.loss_grad
-        else:
-            def loss_fun(xi):
-                return - lvalue.loss_fun(xi)
+        Creates the SOCP for the computation of the filtered credible interval.
 
-            def loss_grad(xi):
-                return - lvalue.loss_grad(xi)
-        # Transform credibility constraint
-        cred_constraint = lvalue.transform_nonlinear_constraint(fun=self._crediblity_constraint_fun,
-                                                                jac=self._credibility_constraint_jac, type="ineq")
-        # Transform lower bound constraint
-        lb = lvalue.lower_bound(self._lb)
-        z0 = lvalue.initial_value
-        opt_problem = OptimizationProblem(loss_fun=loss_fun, loss_grad=loss_grad, start=z0, eqcon=NullConstraint(),
-                                          incon=cred_constraint, lb=lb)
-        return opt_problem
+        The SOCP is
+        min/max_xi xi
+        s.t. ||C xi - d||_2^2 <= e, xi >= lb_xi,
+        where
+            C = [C1; C2], d = [d1; d2]
+            C1 = Q H dx_dxi
+            C2 = R dx_dxi
+            d1 = Q (y - H x_map)
+            d2 = R (m - x_map)
+            e = 2 * (cost_map + k_alpha)
+            l_xi = lb[fvalue.indices]
+        """
+        if minmax == 0:
+            w = np.ones((1, ))
+        elif minmax == 1:
+            w = - np.ones((1, ))
+        else:
+            raise Exception("FATAL")
+        dx_dz = lvalue.dx_dz
+        x_map = self._x_map
+        # z_map must satisfy x(z_map) = x_map
+        assert np.isclose(lvalue.x(0), x_map).all()
+        h = self._model.h
+        y = self._model.y
+        q = self._model.q
+        r = self._model.r
+        m = self._model.m
+        lb = self._model.lb
+        cost_map = self._cost_map
+        k_alpha = self._k_alpha
+        # check that x_map satisfies credibility constraint
+        credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x_map - y))) \
+                      - 0.5 * np.sum(np.square(r.fwd(x_map - m)))
+        assert credibility >= - self.ctol
+        c1 = q.fwd(h @ dx_dz)
+        c2 = r.fwd(dx_dz)
+        c = np.concatenate([c1, c2], axis=0)
+        c = np.reshape(c, (c.size, 1))  # c must be a two-dimensional matrix
+        d1 = q.fwd(y - h @ x_map)
+        d2 = r.fwd(m - x_map)
+        d = np.concatenate([d1, d2], axis=0)
+        e = 2 * (cost_map + k_alpha)
+        lb_xi = lvalue.lower_bound(lb)
+        # Create SOCP instance
+        socp = SOCP(w=w, c=c, d=d, e=e, lb=lb_xi, a=None, b=None)
+        return socp
 
     def _crediblity_constraint_fun(self, x):
         """

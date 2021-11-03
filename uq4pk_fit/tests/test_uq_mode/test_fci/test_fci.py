@@ -5,8 +5,8 @@ Test for "fci.py"
 
 import numpy as np
 
-import tests.unconstrained_problem as testproblem
-import uq_mode as um
+import uq4pk_fit.tests.test_uq_mode.unconstrained_problem as testproblem
+import uq4pk_fit.uq_mode as um
 
 
 def test_fci():

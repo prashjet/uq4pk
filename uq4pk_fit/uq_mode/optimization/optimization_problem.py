@@ -34,7 +34,10 @@ class OptimizationProblem:
         """
         eqcon_error = self._l1norm(self.eqcon.fun(x))
         incon_error = self._l1norm(self.incon.fun(x).clip(max=0.))
-        bound_error = self._l1norm((x - self.lb).clip(max=0.))
+        if self.lb is not None:
+            bound_error = self._l1norm((x - self.lb).clip(max=0.))
+        else:
+            bound_error = 0.
         eqcon_violated = eqcon_error > tol
         incon_violated = incon_error > tol
         bound_violated = bound_error > tol

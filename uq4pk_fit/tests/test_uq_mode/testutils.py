@@ -1,6 +1,7 @@
 
-import uq_mode
+import uq4pk_fit.uq_mode as uq_mode
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 import math
 import numpy as np
 import scipy.linalg as scilin
@@ -57,7 +58,7 @@ def matrix_inv_sqrt(mat):
     return s
 
 
-def plot_result(name, x_true, x_map, boundary1=None, boundary2=None, x_lci = None, x_pci = None, samples=None,
+def plot_result(name, x_true, x_map, xi = None, boundary2=None, x_lci = None, x_pci = None, samples=None,
                 lb=None):
     """
     Does some plotting, and also saves the figure under 'name.png'.
@@ -66,25 +67,25 @@ def plot_result(name, x_true, x_map, boundary1=None, boundary2=None, x_lci = Non
     fig = plt.figure(0)
     if lb is None:
         lb = -np.inf*np.ones(2)
-    if boundary1 is not None:
-        # if boundary lies in constraint set, remove
-        boundary1 = boundary1.clip(min=lb[:,np.newaxis])
-        plt.plot(boundary1[0, :], boundary1[1, :], 'b--', ms=2, label='Exact 95%-Credible region')
+    if xi is not None:
+        # plot square centered at MAP with side length 2 xi
+        plt.gca().add_patch(Rectangle(x_map - xi, 2 * xi, 2 * xi, edgecolor="green", facecolor="none", lw=0.5,
+                                      linestyle="--"))
     if boundary2 is not None:
         boundary2 = boundary2.clip(min=lb[:, np.newaxis])
-        plt.plot(boundary2[0, :], boundary2[1, :], 'y--', ms=2, label='95%-Credible region')
+        plt.plot(boundary2[0, :], boundary2[1, :], 'b--', ms=2, label='95%-Credible region')
     if samples is not None:
         plt.plot(samples[0, :], samples[1, :], 'rx', ms=1, label="Posterior samples")
     plt.plot(x_map[0], x_map[1], 'bo', label='MAP estimate')
     plt.plot(x_true[0], x_true[1], 'ko', label="True value")
     if x_pci is not None:
         x_pci_0, x_pci_1 = x_pci
-        plt.plot(x_pci_0[0, :], x_pci_0[1, :], 'c--|', label="Pixelwise credible intervals")
-        plt.plot(x_pci_1[0, :], x_pci_1[1, :], 'c--_')
+        plt.plot(x_pci_0[0, :], x_pci_0[1, :], 'r--|', label="Pixelwise credible intervals")
+        plt.plot(x_pci_1[0, :], x_pci_1[1, :], 'r--_')
     if x_lci is not None:
         x_lci_0, x_lci_1 = x_lci
-        plt.plot(x_lci_0[0, :], x_lci_0[1, :], 'g--|', label='Local credible intervals')
-        plt.plot(x_lci_1[0, :], x_lci_1[1, :], 'g--_')
+        plt.plot(x_lci_0[0, :], x_lci_0[1, :], 'g-|', label='Local credible intervals')
+        plt.plot(x_lci_1[0, :], x_lci_1[1, :], 'g-_')
     plt.axhline(y=0, color='k', lw=0.5)
     plt.axvline(x=0, color='k', lw=0.5)
     plt.legend(loc='upper right')
@@ -94,7 +95,7 @@ def plot_result(name, x_true, x_map, boundary1=None, boundary2=None, x_lci = Non
     plt.show()
 
 
-def credible_region(alpha, H, y, Q, xbar, xmap):
+def credible_region(alpha, H, y, Q, xbar, xmap, x_xi):
     """
     Computes the level that determines the (1-alpha) Pereyra credible region
     ||A(x-h)||_2^2 <= lvl for the linear Gaussian model

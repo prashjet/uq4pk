@@ -50,7 +50,8 @@ class LocalValue:
         x[self._ind] += xi
         return x
 
-    def dx_dz(self, xi: float) -> np.ndarray:
+    @property
+    def dx_dz(self) -> np.ndarray:
         return self._zeta
 
     @property

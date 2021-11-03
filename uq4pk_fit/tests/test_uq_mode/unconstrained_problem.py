@@ -1,6 +1,7 @@
-from uq_mode.external_packages import cgn
+from uq4pk_fit.uq_mode.external_packages import cgn
 
-from tests.testutils import *
+from uq4pk_fit.tests.test_uq_mode.testutils import *
+import uq4pk_fit.uq_mode as uq_mode
 
 
 def get_problem() -> TestProblem:
@@ -31,7 +32,7 @@ def get_problem() -> TestProblem:
     print(f"Posterior mean error: {np.linalg.norm(x_map-x_post)}")
     print(f"Posterior precision error: {np.linalg.norm(prec_hat - prec_post)}")
     # Build linear model
-    model = uq_mode.LinearModel(h = a, y=y, q=np.eye(2) / sigma, m=x_bar, r=np.eye(2), a=None, b=None, lb=None)
-
+    model = uq_mode.LinearModel(h = a, y=y, q=cgn.DiagonalOperator(dim=2, s=1 / sigma), m=x_bar,
+                                r=cgn.IdentityOperator(dim=2), a=None, b=None, lb=None)
     test_problem = TestProblem(x_map=x_map, x_true=x_true, model=model, optimization_problem=cgn_problem)
     return test_problem
