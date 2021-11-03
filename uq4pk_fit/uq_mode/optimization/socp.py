@@ -6,15 +6,20 @@ from typing import Union
 class SOCP:
     """
     Formalizes optimization problems of the form
-    min w @ x
+    min / max_w @ x
     s.t. A x = b
         ||C x - d ||_2^2 <= e
         x >= lb
     """
     def __init__(self, w: np.ndarray, a: Union[np.ndarray, None], b: Union[np.ndarray, None],
-                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None]):
+                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None], minmax: int):
         # check input
         self._check_input(w, a, b, c, d, e, lb)
+        assert minmax in [0, 1]
+        if minmax == 0:
+            self.sign = 1
+        else:
+            self.sign = -1
         self.w = deepcopy(w)
         self.n = w.size
         self.a = deepcopy(a)

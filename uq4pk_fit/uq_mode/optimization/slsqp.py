@@ -55,9 +55,9 @@ class SLSQP(Optimizer):
         """
         # setup loss function
         def loss_fun(x):
-            return problem.w @ x
+            return problem.sign * problem.w @ x
         def loss_grad(x):
-            return problem.w
+            return problem.sign * problem.w
         # Setup inequality constraint (always present)
         def incon_fun(x):
             return problem.e - np.sum(np.square(problem.c @ x - problem.d))

@@ -34,6 +34,6 @@ class ECOS(Optimizer):
             constraints += [socp.a @ x - socp.d]
         if socp.bound_constrained:
             constraints += [x >= socp.lb]
-        problem = cp.Problem(cp.Minimize(socp.w.T @ x), constraints)
+        problem = cp.Problem(cp.Minimize(socp.sign * socp.w.T @ x), constraints)
         return problem, x
 

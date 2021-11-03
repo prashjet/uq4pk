@@ -2,12 +2,12 @@
 from math import sqrt, log
 import numpy as np
 import time
+import ray
 
 from ..filter import FilterFunction
-from ..optimization import ECOS, SLSQP, SOCP
+from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
 from .filtered_value import FilterValue
 from ..linear_model import LinearModel
-
 
 class FCIComputer:
     """
@@ -28,8 +28,11 @@ class FCIComputer:
         self.ftol = 1e-3
         self.RTOL = 0.01  # 1% relative tolerance for optimization
         self.ctol = self.RTOL * self._k_alpha
+        # Read options.
         if options is None:
             options = {}
+        self._use_ray = options.setdefault("use_ray", True)
+        self._num_cpus = options.setdefault("num_cpus", 8)
         solver_name = options.setdefault("solver", "slsqp")
         if solver_name == "slsqp":
             self._optimizer = SLSQP(ftol=self.ftol, ctol=self.ctol)
@@ -51,12 +54,14 @@ class FCIComputer:
         # For every coordinate, compute the value of the lower and upper bounds of the kernel localization functional
         # over the credible region.
         print(" ")
+        if self._use_ray:
+            ray.init(num_cpus=self._num_cpus)
         t0 = time.time()
         for i in range(self._ffunction.size):
             t = time.time() - t0
-            t0 = time.time()
             print("\r", end="")
-            print(f"Computing filtered credible interval {i + 1}/{self._ffunction.size} ({t} s)", end=" ")
+            print(f"Computing filtered credible interval {i + 1}/{self._ffunction.size} ({t} s)",
+                  end=" ")
             # Compute the lower bound for the local credible interval with respect to the i-th localization functional.
             filter = self._ffunction.filter(i)
             fvalue = FilterValue(x_map=self._x_map, filter=filter)
@@ -64,10 +69,17 @@ class FCIComputer:
             x_upper = self._maximize(fvalue)
             x_lower_list.append(x_lower)
             x_upper_list.append(x_upper)
-        # The results are now converted to an array. The j-th row of the array corresponds to the credible interval
+        if self._use_ray:
+            x_lower_list_result = ray.get(x_lower_list)
+            x_upper_list_result = ray.get(x_upper_list)
+        else:
+            x_lower_list_result = x_lower_list
+            x_upper_list_result = x_upper_list
+        ray.shutdown()
+        # The Ray results are now converted to an array. The j-th row of the array corresponds to the credible interval
         # associated to the j-th window-frame pair.
-        x_lower = np.array(x_lower_list)
-        x_upper = np.array(x_upper_list)
+        x_lower = np.array(x_lower_list_result)
+        x_upper = np.array(x_upper_list_result)
         # The vectors are enlarged so that they are of the same dimension as the estimate:
         x_lower_enlarged = self._ffunction.enlarge(x_lower)
         x_upper_enlarged = self._ffunction.enlarge(x_upper)
@@ -101,14 +113,10 @@ class FCIComputer:
         socp = self._create_socp(fvalue=fvalue, minmax=minmax)
         # Compute minimizer/maximizer
         z0 = fvalue.initial_value
-        z = self._optimizer.optimize(problem=socp, start=z0)
-        assert z.size == z0.size
-        # check that minimizer satisfies constraints
-        constraints_satisfied, error_message = socp.check_constraints(z, tol=self.ctol)
-        if not constraints_satisfied:
-            print("WARNING: The solver was not able to satisfy all constraints.")
-            print(error_message)
-        phi = fvalue.phi(z)
+        if self._use_ray:
+            phi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer)
+        else:
+            phi = socp_solve(socp=socp, start=z0, optimizer=self._optimizer)
         return phi
 
     def _create_socp(self, fvalue: FilterValue, minmax: int):
@@ -116,7 +124,7 @@ class FCIComputer:
         Creates the SOCP for the computation of the filtered credible interval.
 
         The SOCP is
-        min_z w @ z
+        min / max_z w @ z
         s.t. A_new z = b_new, ||C z - d||_2^2 <= e, z >= lb_z,
         where
             A_new = A dx_dz
@@ -169,7 +177,7 @@ class FCIComputer:
         e = 2 * (cost_map + k_alpha)
         lb_z = fvalue.lower_bound(lb)
         # Create SOCP instance
-        socp = SOCP(w=w, a=a_new, b=b_new, c=c, d=d, e=e, lb=lb_z)
+        socp = SOCP(w=w, a=a_new, b=b_new, c=c, d=d, e=e, lb=lb_z, minmax=minmax)
         return socp
 
     def _cost_constraint(self, x):
