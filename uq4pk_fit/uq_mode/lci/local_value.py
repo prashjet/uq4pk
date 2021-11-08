@@ -35,7 +35,7 @@ class LocalValue:
             return y
         def jac_z(z):
             x = self.x(z)
-            j = jac(x) @ self.dx_dz(z)
+            j = jac(x) @ self.dx_dz
             return j
         constraint_z = NonlinearConstraint(fun=fun_z, jac=jac_z, type=type)
         return constraint_z

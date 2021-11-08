@@ -16,7 +16,7 @@ class DistanceFilterFunction(ImageFilterFunction):
     Special case of ImageFilterFunction that associates to each pixel a correspondingly positioned distance filter.
     See also uq_mode.fci.DistanceFunction.
     """
-    def __init__(self, m, n, a, b, c, d):
+    def __init__(self, m, n, a, b, c, d, h):
         """
         :param m: int
             Number of rows of the image.
@@ -34,13 +34,16 @@ class DistanceFilterFunction(ImageFilterFunction):
         # Make a filter for the downsampled image
         m_down = np.floor(m / a).astype(int)
         n_down = np.floor(n / b).astype(int)
+        c_down = np.floor(c / a).astype(int)
+        d_down = np.floor(d / b).astype(int)
         trivial_partition = TrivialImagePartition(m=m_down, n=n_down)
         filter_list = []
         index_list = trivial_partition.get_element_list()
         for index in index_list:
             # Get x-y-coordinates of "index" in the (m,n)-image.
             position = indices_to_coords(m_down, n_down, index).flatten()
-            filter = DistanceFilter(m=m_down, n=n_down, a=c, b=d, position=position, weighting=self._weighting)
+            filter = DistanceFilter(m=m_down, n=n_down, a=c_down, b=d_down, position=position, weighting=self._weighting,
+                                    scaling = h / np.array([a, b]))
             filter_list.append(filter)
         downsampled_ffunction = ImageFilterFunction(image_partition=trivial_partition, filter_list=filter_list)
         # translate the filter function for the superpixel-image to a filter function for the original image

@@ -16,10 +16,7 @@ class SOCP:
         # check input
         self._check_input(w, a, b, c, d, e, lb)
         assert minmax in [0, 1]
-        if minmax == 0:
-            self.sign = 1
-        else:
-            self.sign = -1
+        self.minmax = minmax
         self.w = deepcopy(w)
         self.n = w.size
         self.a = deepcopy(a)

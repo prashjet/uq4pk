@@ -7,7 +7,7 @@ from experiments.experiment_kit import *
 from experiments.experiment1 import Experiment1
 
 
-name = "out"
+name = "test"
 logger = Logger(f"experiment1.log")
 logger.activate()
 

@@ -3,13 +3,76 @@
   <component name="ChangeListManager">
     <list default="true" id="6165f9aa-995a-43f8-9e95-2af9833d676a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment1/experiment1.log" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment1/experiment1.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment1/experiment1_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment1/experiment1_run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/experiments/experiment4/experiment4.log" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/experiment4.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/experiment4.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/experiment4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/experiment4_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/experiment4_run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/V_and_sigma.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ci_lower.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ci_lower.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ci_size.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ci_size.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ci_upper.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ci_upper.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/map.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/map.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ref.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/ref.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/truth.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_Identity_trial1/truth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/V_and_sigma.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ci_lower.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ci_lower.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ci_size.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ci_size.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ci_upper.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ci_upper.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/h.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/map.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/map.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ref.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/ref.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/truth.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/out/2000/_OrnsteinUhlenbeck_trial1/truth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/V_and_sigma.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/V_and_sigma.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_lower.csv" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_lower.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_lower.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_lower.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_size.csv" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_size.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_size.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_size.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_upper.csv" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_upper.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_upper.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ci_upper.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/h.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/h.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/map.csv" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/map.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/map.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/map.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ref.csv" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ref.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ref.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/ref.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/truth.csv" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/truth.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/truth.png" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment4/test/2000/_OrnsteinUhlenbeck_trial1/truth.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment6/experiment6.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment6/experiment6.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment7/experiment7.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment7/experiment7.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment7/experiment7_uq.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment7/experiment7_uq.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment8/experiment8.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment8/experiment8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment_kit/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment_kit/experiment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment_kit/test_setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment_kit/test_setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment_kit/trial.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment_kit/trial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment_kit/trial_result.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment_kit/trial_result.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/examples/problems_with_lcis/problems_with_lcis.png" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/examples/problems_with_lcis/problems_with_lcis.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/examples/problems_with_lcis/problems_with_lcis.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/examples/problems_with_lcis/problems_with_lcis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/inference/fitted_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/inference/fitted_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/fci_computer.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/fci_computer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/filtered_value.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/filtered_value.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/exponential_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/exponential_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/squared_exponential_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/squared_exponential_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/lci_computer.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/lci_computer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/local_value.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/local_value.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/ecos.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/ecos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/slsqp.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/slsqp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/socp.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/socp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/socp_solve.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/socp_solve.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +108,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/uq4pk_fit/uq_mode_parallel" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="PyScientificConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -135,12 +198,12 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in unit" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest in test_fci.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="uq4pk" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -148,7 +211,7 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci/test_fci.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
@@ -156,9 +219,9 @@
       <list>
         <item itemvalue="Python.experiment4_run" />
         <item itemvalue="Python.problems_with_lcis" />
+        <item itemvalue="Python tests.pytest in test_fci.py" />
         <item itemvalue="Python tests.pytest for test_lci.test_lci" />
         <item itemvalue="Python tests.pytest in acceptance" />
-        <item itemvalue="Python tests.pytest in unit" />
       </list>
     </recent_temporary>
   </component>
@@ -175,7 +238,10 @@
       <workItem from="1624617379841" duration="6000" />
       <workItem from="1635838561233" duration="2697000" />
       <workItem from="1635848370923" duration="15261000" />
-      <workItem from="1635927978250" duration="11187000" />
+      <workItem from="1635927978250" duration="11786000" />
+      <workItem from="1636012779045" duration="65000" />
+      <workItem from="1636030741445" duration="5358000" />
+      <workItem from="1636354634801" duration="1586000" />
     </task>
     <servers />
   </component>
@@ -236,12 +302,13 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/uq4pk$problems_with_lcis.coverage" NAME="problems_with_lcis Coverage Results" MODIFIED="1635932200759" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/examples/problems_with_lcis" />
+    <SUITE FILE_PATH="coverage/uq4pk$problems_with_lcis.coverage" NAME="problems_with_lcis Coverage Results" MODIFIED="1636033189629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/examples/problems_with_lcis" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment7_uq_run.coverage" NAME="experiment7_uq_run Coverage Results" MODIFIED="1635839597813" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment7" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment7_run.coverage" NAME="experiment7_run Coverage Results" MODIFIED="1635839590036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment7" />
+    <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_fci_py.coverage" NAME="pytest in test_fci.py Coverage Results" MODIFIED="1636031988996" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_acceptance.coverage" NAME="pytest in acceptance Coverage Results" MODIFIED="1635845138114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/acceptance" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment1.coverage" NAME="experiment1 Coverage Results" MODIFIED="1624616501290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
-    <SUITE FILE_PATH="coverage/uq4pk$experiment4_run.coverage" NAME="experiment4_run Coverage Results" MODIFIED="1635942183511" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment4" />
+    <SUITE FILE_PATH="coverage/uq4pk$experiment4_run.coverage" NAME="experiment4_run Coverage Results" MODIFIED="1636035857976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment4" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment4.coverage" NAME="experiment4 Coverage Results" MODIFIED="1624616633532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment1_run.coverage" NAME="experiment1_run Coverage Results" MODIFIED="1635839519126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment1" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_lci_test_lci.coverage" NAME="pytest for test_lci.test_lci Coverage Results" MODIFIED="1635867718250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_lci" />

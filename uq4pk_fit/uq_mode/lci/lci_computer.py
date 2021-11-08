@@ -80,7 +80,7 @@ class LCIComputer:
         # The enlarged array is then returned to the calling function (and then, to the user).
         return lci_arr
 
-    def _minimize(self, lvalue: LocalValue):
+    def _minimize(self, lvalue: LocalValue) -> float:
         """
         Computes the minimal value of the quantity of interest, with respect to the loss function and the constraints.
         :return: float
@@ -88,7 +88,7 @@ class LCIComputer:
         minimum = self._compute(lvalue, 0)
         return minimum
 
-    def _maximize(self, lvalue: LocalValue):
+    def _maximize(self, lvalue: LocalValue) -> float:
         """
         Computes the maximal value of the quantity of interest, with respect to the loss function and the constraints.
         :return: float
@@ -98,7 +98,7 @@ class LCIComputer:
 
     # PROTECTED
 
-    def _compute(self, lvalue: LocalValue, minmax: int, plot=False) -> float:
+    def _compute(self, lvalue: LocalValue, minmax: int, plot=False):
         """
         Computes the quantity of interest.
         """
@@ -128,16 +128,9 @@ class LCIComputer:
             e = 2 * (cost_map + k_alpha)
             l_xi = lb[fvalue.indices]
         """
-        if minmax == 0:
-            w = np.ones((1, ))
-        elif minmax == 1:
-            w = - np.ones((1, ))
-        else:
-            raise Exception("FATAL")
+        w = np.ones((1, ))
         dx_dz = lvalue.dx_dz
-        x_map = self._x_map
-        # z_map must satisfy x(z_map) = x_map
-        assert np.isclose(lvalue.x(0), x_map).all()
+        x_bar = lvalue.x(lvalue.initial_value)
         h = self._model.h
         y = self._model.y
         q = self._model.q
@@ -146,21 +139,21 @@ class LCIComputer:
         lb = self._model.lb
         cost_map = self._cost_map
         k_alpha = self._k_alpha
-        # check that x_map satisfies credibility constraint
-        credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x_map - y))) \
-                      - 0.5 * np.sum(np.square(r.fwd(x_map - m)))
+        # check that x_bar satisfies credibility constraint
+        credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x_bar - y))) \
+                      - 0.5 * np.sum(np.square(r.fwd(x_bar - m)))
         assert credibility >= - self.ctol
         c1 = q.fwd(h @ dx_dz)
         c2 = r.fwd(dx_dz)
         c = np.concatenate([c1, c2], axis=0)
         c = np.reshape(c, (c.size, 1))  # c must be a two-dimensional matrix
-        d1 = q.fwd(y - h @ x_map)
-        d2 = r.fwd(m - x_map)
+        d1 = q.fwd(y - h @ x_bar)
+        d2 = r.fwd(m - x_bar)
         d = np.concatenate([d1, d2], axis=0)
         e = 2 * (cost_map + k_alpha)
         lb_xi = lvalue.lower_bound(lb)
         # Create SOCP instance
-        socp = SOCP(w=w, c=c, d=d, e=e, lb=lb_xi, a=None, b=None)
+        socp = SOCP(w=w, c=c, d=d, e=e, lb=lb_xi, a=None, b=None, minmax=minmax)
         return socp
 
     def _crediblity_constraint_fun(self, x):
@@ -176,7 +169,7 @@ class LCIComputer:
         jac = - self._costg(x)
         return jac
 
-    def _translate(self, xi_list: List[np.ndarray]) -> np.ndarray:
+    def _translate(self, xi_list: List[float]) -> np.ndarray:
         """
         Enlarges a vector of size :py:attr:`self._npartition` to a vector of size :py:attr:`self._dim`.
 

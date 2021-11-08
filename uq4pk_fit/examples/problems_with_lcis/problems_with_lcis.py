@@ -18,7 +18,6 @@ part = Partition(dim=2, elements=[np.array([0, 1])])
 local_credible = lci(alpha=alpha, model=prob.model, x_map=prob.x_map, partition=part)
 ffunction = IdentityFilterFunction(dim=2)
 pixelwise_credible = fci(alpha=alpha, x_map=prob.x_map, model=prob.model, ffunction=ffunction)
-
 # visualize lci-points
 x_lci = get_points(local_credible, prob.x_map)
 # visualize pci_points
@@ -32,6 +31,6 @@ P, h, a = credible_region(alpha=alpha, H=model.h, y=model.y, Q=model.q.mat, xbar
 circ = circle_points(r=np.sqrt(a))
 cr_boundary = prob.x_map[:, np.newaxis] + P @ circ
 
-plot_result(name="problems_with_lcis", x_true=prob.x_true, x_map=prob.x_map, xi=xi ,boundary2=cr_boundary, x_lci=x_lci,
+plot_result(name="problems_with_lcis", x_true=prob.x_true, x_map=prob.x_map, xi=xi, boundary2=cr_boundary, x_lci=x_lci,
             x_pci=x_pci)
 

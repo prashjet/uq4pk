@@ -12,7 +12,7 @@ class DistanceFilter(MatrixFilter):
     A distance filter is a filter that is determined by the distance function. The distance function is then
     translated into a weight via a weighting function.
     """
-    def __init__(self, m, n, a, b, position, weighting):
+    def __init__(self, m, n, a, b, position, weighting, scaling: np.ndarray):
         """
         :param m: int
             Number of rows of the image.
@@ -22,16 +22,15 @@ class DistanceFilter(MatrixFilter):
             Vertical width of the localization window.
         :param b: int
             Horizontal width of the localization window.
-        :param c: int
-            Vertical width of the localization window.
-        :param d: int
-            Vertical width of the
         :param weighting: callable
             The weighting function.
+        :param scaling: A factor with which the distance is multiplied. This is used in downsampling, so that
+            the distance function still refers to the distances in the original image.
         """
         self._weighting = weighting
         self.a = a
         self.b = b
+        self._scaling = scaling
         rows = 2 * a + 1
         cols = 2 * b + 1
         # initialize the weight matrix
@@ -55,5 +54,5 @@ class DistanceFilter(MatrixFilter):
         :return: float
             The distance between the two points.
         """
-        d = np.linalg.norm(pos1 - pos2)
+        d = np.linalg.norm((pos1 - pos2) / self._scaling)
         return d

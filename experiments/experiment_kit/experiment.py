@@ -107,7 +107,9 @@ class Experiment:
                     print("--------------------")
                     print(f"TEST {test_counter} / TRIAL {trial_counter}")
                     print("--------------------")
-                    outname = self._create_testname(f"{name}/{testname}_trial{trial_counter}")
+                    outname = self._create_testname(f"trial{trial_counter}/{name}/{testname}")
+                    if not os.path.exists(outname):
+                        os.makedirs(outname)
                     trial = self.ChildTest(outname=outname, data=data, setup=setup)
                     trial_result = trial.do_test()
                     trial_result_list.append(trial_result)
@@ -152,4 +154,4 @@ class Experiment:
             dataframe.loc[i] = test_summary.get_values()
             i += 1
         # store the dataframe as csv-file
-        dataframe.to_csv(f"{self._output_directory}/trial.csv")
+        dataframe.to_csv(f"{self._output_directory}/trials.csv")

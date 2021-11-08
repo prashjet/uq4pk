@@ -18,8 +18,8 @@ class FilterValue:
 
     def __init__(self, x_map: ArrayLike, filter: Filter):
         self._xmap = x_map
-        self._indices = filter.indices
-        self._weights = filter.weights
+        self.indices = filter.indices
+        self.weights = filter.weights
         # Since x(z)_i = x_i if i in window and x(z)_i = xmap otherwise, the Jacobian of the map z -> x(z) is
         # an (n,l) matrix (where l is the window size), where for the j-th index in window the window[j]-th row is set
         # equal to the j-th row of the lxl-identity matrix, and all other rows are equal zero.
@@ -27,35 +27,10 @@ class FilterValue:
         self._n = x_map.size
         self._x_jac = np.zeros((self._n, self._l))
         id_l = np.identity(self._l)
-        self._x_jac[self._indices, :] = id_l[:, :]
+        self._x_jac[self.indices, :] = id_l[:, :]
         # Define the gradient of the loss function (with respect to z). Since the loss function with respect to z can be
         # written as phi(z) = sum_i w_i z_i, the gradient is just the "weights" vector.
-        self._lossgrad = self._weights
-
-    def phi(self, z):
-        """.
-        :param z: (l,) array
-        :return: float
-        """
-        phi = self._weights @ z
-        return phi
-
-    def phi_grad(self, z):
-        """
-        The gradient of "loss_fun".
-        :param z: (l,) array
-        :return: (l,) array
-        """
-        nabla_phi = self._lossgrad
-        return nabla_phi
-
-    def phi_hess(self, z):
-        """
-        The Hessian of "loss_fun".
-        :param z:
-        :return:
-        """
-        return np.zeros((self._l, self._l))
+        self._lossgrad = self.weights
 
     def x(self, z):
         """
@@ -66,7 +41,7 @@ class FilterValue:
             Here, "n" denotes the dimension of the full parameter space.
         """
         x_z = self._xmap.copy()
-        x_z[self._indices] = z
+        x_z[self.indices] = z
         return x_z
 
     @property
@@ -82,7 +57,7 @@ class FilterValue:
         The initial value for z is x_map[window].
         :return: (l,) numpy array of floats
         """
-        return self._xmap[self._indices]
+        return self._xmap[self.indices]
 
     def transform_linear_constraint(self, a: Union[ArrayLike, None], b: Union[ArrayLike, None], type: str) -> Constraint:
         """
@@ -129,7 +104,7 @@ class FilterValue:
         if lb is None:
             lb_z = None
         else:
-            lb_z = lb[self._indices]
+            lb_z = lb[self.indices]
             if np.isinf(lb_z).all():
                 # if all bounds are inactive, just return None
                 lb_z = None
@@ -140,5 +115,5 @@ class FilterValue:
         """
         The vector z such that self.x(z) = x_map.
         """
-        z = self._xmap[self._indices]
+        z = self._xmap[self.indices]
         return z

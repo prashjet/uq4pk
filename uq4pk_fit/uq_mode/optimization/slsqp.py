@@ -54,15 +54,19 @@ class SLSQP(Optimizer):
         Translates an SOCP to an equivalent "OptimizationProblem" object.
         """
         # setup loss function
+        if problem.minmax == 0:
+            w = problem.w.copy()
+        else:
+            w = - problem.w.copy()
         def loss_fun(x):
-            return problem.sign * problem.w @ x
+            return w @ x
         def loss_grad(x):
-            return problem.sign * problem.w
+            return w
         # Setup inequality constraint (always present)
         def incon_fun(x):
             return problem.e - np.sum(np.square(problem.c @ x - problem.d))
         def incon_jac(x):
-            return - problem.c.T @ (problem.c @ x - problem.d)
+            return - 2 * problem.c.T @ (problem.c @ x - problem.d)
         incon = NonlinearConstraint(fun=incon_fun, jac=incon_jac, type="ineq")
         # Setup equality constraint (Null if not active).
         if problem.equality_constrained:

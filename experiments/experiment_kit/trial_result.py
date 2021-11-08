@@ -14,9 +14,11 @@ from uq4pk_fit.inference.uq_result import UQResult
 
 
 class TrialResult:
-    def __init__(self, savename, setup: TestSetup, fitted_model: FittedModel, statmodel: StatModel, uq: UQResult,
+    def __init__(self, savename, setup: TestSetup, fitted_model: FittedModel, statmodel: StatModel,
+                 uq: UQResult,
                  f_true: ArrayLike, f_ref: ArrayLike, theta_true: ArrayLike, theta_ref: ArrayLike):
         # read input
+        self._savename = savename
         self._setup = deepcopy(setup)
         self._fitted_model = deepcopy(fitted_model)
         self._statmodel = deepcopy(statmodel)
@@ -34,10 +36,10 @@ class TrialResult:
         self.uqerr_f, self.uqtightness_f, self.uqsize_f, self.uqerr_theta, self.uqtightness_theta = self._uq_error_analysis()
 
         # default plotting
-        self.plot(savename)
+        self.plot()
 
         # additional plotting
-        self._additional_plotting(savename)
+        self._additional_plotting()
 
         # now, the actual results are computed
         self._names, self._values = self._compute_results()
@@ -56,8 +58,9 @@ class TrialResult:
 
     # ADAPT OPTIONALLY
 
-    def _additional_plotting(self, savename):
-        pass
+    def _additional_plotting(self):
+        scale = self._f_true.max()
+        self._plot_f(name="scaled", scale=scale)
 
     # DO NOT ADAPT:
 
@@ -71,9 +74,9 @@ class TrialResult:
         """
         return self._values.copy()
 
-    def plot(self, savename):
-        self._plot_f(savename=savename)
-        self._plot_theta_v(savename=savename)
+    def plot(self):
+        self._plot_f()
+        self._plot_theta_v()
 
     #   PROTECTED
 
@@ -149,30 +152,56 @@ class TrialResult:
                                             regop=P_vartheta)
         return sre_theta, sre_theta_less
 
-    def _plot_f(self, savename):
+    def _plot_f(self, name = None, scale = None):
+        if name is None:
+            postfix = ""
+        else:
+            postfix = f"_{name}"
         # make images
         f_true_image = self._image(self._f_true)
-        f_map_image = self._image(self._fitted_model._f_map)
+        f_map = self._fitted_model.f_map
+        f_map_image = self._image(f_map)
         f_ref_image = self._image(self._f_ref)
         f_all = np.concatenate((f_map_image.flatten(), f_ref_image.flatten(), f_true_image.flatten()))
-        vmax = np.max(f_all)
+        # determine v_max
+        if scale is None:
+            vmax = np.max(f_all)
+        else:
+            vmax = scale
         vmin = 0.
         # Plot true distribution function vs MAP estimate
-        plot_with_colorbar(image=f_true_image, savename=f"{savename}/truth", vmax=vmax, vmin=vmin)
-        plot_with_colorbar(image=f_map_image, savename=f"{savename}/map", vmax=vmax, vmin=vmin)
-        plot_with_colorbar(image=f_ref_image, savename=f"{savename}/ref", vmax=vmax, vmin=vmin)
+        plot_with_colorbar(image=f_true_image, savename=f"{self._savename}/truth{postfix}", vmax=vmax, vmin=vmin)
+        plot_with_colorbar(image=f_map_image, savename=f"{self._savename}/map{postfix}", vmax=vmax, vmin=vmin)
+        plot_with_colorbar(image=f_ref_image, savename=f"{self._savename}/ref{postfix}", vmax=vmax, vmin=vmin)
         ci_f = self._uq.ci_f
         if ci_f is not None:
             f_min = ci_f[:, 0]
             f_max = ci_f[:, 1]
             f_min_image = self._image(f_min)
             f_max_image = self._image(f_max)
+            if scale is None:
+                vmax = f_max.max()
+            else:
+                vmax = scale
             f_size_image = self._image(f_max-f_min)
-            plot_with_colorbar(image=f_min_image, savename=f"{savename}/ci_lower", vmax=vmax, vmin=vmin)
-            plot_with_colorbar(image=f_max_image, savename=f"{savename}/ci_upper", vmax=vmax, vmin=vmin)
-            plot_with_colorbar(image=f_size_image, savename=f"{savename}/ci_size", vmax=vmax, vmin=vmin)
+            plot_with_colorbar(image=f_min_image, savename=f"{self._savename}/lower{postfix}", vmax=vmax, vmin=vmin)
+            plot_with_colorbar(image=f_max_image, savename=f"{self._savename}/upper{postfix}", vmax=vmax, vmin=vmin)
+            plot_with_colorbar(image=f_size_image, savename=f"{self._savename}/size{postfix}", vmax=vmax, vmin=vmin)
+            filter = self._uq.filter_f
+            phi_true = filter.enlarge(filter.evaluate(self._f_true))
+            phi_map = filter.enlarge(filter.evaluate(f_map))
+            phi_true_image = self._image(phi_true)
+            phi_map_image = self._image(phi_map)
+            plot_with_colorbar(image=phi_true_image, vmax=vmax, savename=f"{self._savename}/filtered_truth{postfix}")
+            plot_with_colorbar(image=phi_map_image, vmax=vmax, savename=f"{self._savename}/filtered_map{postfix}")
+            # plot treshold map (1 = lower, 2 = upper)
+            eps = vmax * 0.05
+            lower_on = (f_min_image > eps).astype(int)
+            upper_on = (f_max_image > eps).astype(int)
+            treshold_image = lower_on + upper_on
+            plot_with_colorbar(image=treshold_image, savename=f"{self._savename}/treshold")
 
-    def _plot_theta_v(self, savename):
+    def _plot_theta_v(self):
         """
         Assuming that V and sigma are not fixed...
         """
@@ -193,8 +222,8 @@ class TrialResult:
         else:
             errorbars1 = None
             errorbars2 = None
-        savename1 = f"{savename}/V_and_sigma"
-        savename2 = f"{savename}/h"
+        savename1 = f"{self._savename}/V_and_sigma"
+        savename2 = f"{self._savename}/h"
         names1 = ["V", "sigma"]
         plot_triple_bar(safename=savename1, name_list=names1, values1=theta_ref[0:2],
                         values2=theta_map[0:2], values3=theta_true[0:2], name1="Guess",

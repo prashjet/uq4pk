@@ -33,6 +33,9 @@ class FittedModel:
         self._problem = deepcopy(problem)
         # create linearized model
         self._linearized_model = self._create_linearized_model(problem)
+        cost_map = self._problem.costfun(*x_map)
+        cost_lin = self._linearized_model.cost(self._x_map_vec)
+        assert np.isclose(cost_map, cost_lin)
         # create f_map and theta_map by translating x_map
         self._f_map, self._theta_map = parameter_map.f_theta(x_map)
         self._m_f = m_f
@@ -119,7 +122,8 @@ class FittedModel:
         # Create appropriate filter
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # compute filtered credible intervals
-        ci_x = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model, ffunction=filter_function)
+        ci_x = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model, ffunction=filter_function,
+                           options=options)
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
         uq_result = UQResult(ci_f=ci_f, filter_f=filter_f, ci_theta=ci_theta, filter_theta=filter_theta)
         return uq_result
@@ -140,9 +144,8 @@ class FittedModel:
         a = options.setdefault("a", 2)
         b = options.setdefault("b", 2)
         partition = uq_mode.rectangle_partition(m=self._m_f, n=self._n_f, a=a, b=b)
-        lci_f = uq_mode.lci(alpha=alpha, x_map=self._x_map_vec, cost=self._linearized_model.cost,
-                            costgrad=self._linearized_model.cost_grad, partition=partition,
-                            lb=self._linearized_model.lb)
+        lci_f = uq_mode.lci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec, partition=partition,
+                            options=options)
         filter_f = uq_mode.IdentityFilterFunction(dim=self._dim_f)
         uq_result = UQResult(ci_f=lci_f, filter_f=filter_f, ci_theta=None, filter_theta=None)
         return uq_result

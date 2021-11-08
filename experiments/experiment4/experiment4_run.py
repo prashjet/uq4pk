@@ -8,8 +8,8 @@ name = "test"
 logger = Logger(f"experiment4.log")
 logger.activate()
 
-list_of_f = get_f("../data5", numbers=[0])
-snr_list = [2000, 100]
+list_of_f = get_f("../data5", numbers=[1])
+snr_list = [2000]
 # create data list
 data_list_list = []
 for snr in snr_list:

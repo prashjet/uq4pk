@@ -19,9 +19,6 @@ class Trial:
     """
     def __init__(self, outname, data: ExperimentData, setup: TestSetup):
         self.outname = outname
-        # create the lci_vs_fci-directory
-        if not os.path.exists(outname):
-            os.makedirs(outname)
         self.setup = setup
         # READ DATA
         self.f = data.f_true
@@ -64,7 +61,8 @@ class Trial:
     # CONCRETE METHODS --- DO NOT OVERWRITE!
 
     def _make_testresult(self, fitted_model: FittedModel, uq) -> TrialResult:
-        test_result = self.ResultType(savename=self.outname, setup=self.setup, fitted_model=fitted_model,
+        test_result = self.ResultType(savename=self.outname, setup=self.setup,
+                                      fitted_model=fitted_model,
                                       statmodel=self.model, uq=uq, f_true=self.f, f_ref=self.f_ref,
                                       theta_true=self.theta_true, theta_ref=self.theta_guess)
         return test_result

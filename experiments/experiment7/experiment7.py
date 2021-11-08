@@ -28,10 +28,6 @@ class Experiment7Result(TrialResult):
         attributes = [err_f, ssimf, sreless]
         return names, attributes
 
-    def _additional_plotting(self, savename):
-        pass
-        # no additional plotting
-
 
 class Experiment7Trial(Trial):
     def _choose_test_result(self):

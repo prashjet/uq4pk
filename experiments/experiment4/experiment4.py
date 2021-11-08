@@ -23,7 +23,16 @@ class Experiment4Result(TrialResult):
         return names, attributes
 
     def _additional_plotting(self, savename):
-        pass
+        f_truth = self._f_true
+        f_map = self._fitted_model.f_map
+        filter = self._uq.filter_f
+        phi_true = filter.enlarge(filter.evaluate(f_truth))
+        phi_map = filter.enlarge(filter.evaluate(f_map))
+        phi_true_image = self._image(phi_true)
+        phi_map_image = self._image(phi_map)
+        vmax = np.max(f_truth)
+        plot_with_colorbar(image=phi_true_image, vmax=vmax, savename=f"{savename}/filtered_truth.png")
+        plot_with_colorbar(image=phi_map_image, vmax=vmax, savename=f"{savename}/filtered_map.png")
 
 
 class Experiment4Trial(Trial):
@@ -40,8 +49,9 @@ class Experiment4Trial(Trial):
             self.model.beta1 = 1e4
         elif regop == "OrnsteinUhlenbeck":
             h = np.array([6, 2])
+            self.model.normalize()
             self.model.P1 = OrnsteinUhlenbeck(m=self.model.m_f, n=self.model.n_f, h=h)
-            self.model.beta1 = 100 * 1e4
+            #self.model.beta1 = 100 * 1e4
         elif regop == "Gradient":
             self.model.P1 = DiscreteGradient(m=self.model.m_f, n=self.model.n_f)
             self.model.beta1 = 1e4

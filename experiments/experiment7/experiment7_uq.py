@@ -22,20 +22,6 @@ class Experiment7UQResult(TrialResult):
         attributes = [uq_error_f, uq_tightness_f, uq_error_theta, uq_tightness_theta]
         return names, attributes
 
-    def _additional_plotting(self, savename):
-        pass
-        # plot kernel functionals of ground truth
-        f_truth = self._f_true
-        f_map = self._fitted_model.f_map
-        filter = self._uq.filter_f
-        phi_true = filter.enlarge(filter.evaluate(f_truth))
-        phi_map = filter.enlarge(filter.evaluate(f_map))
-        phi_true_image = self._image(phi_true)
-        phi_map_image = self._image(phi_map)
-        vmax = np.max(f_truth)
-        plot_with_colorbar(image=phi_true_image, vmax=vmax, savename=f"{savename}/filtered_truth.png")
-        plot_with_colorbar(image=phi_map_image, vmax=vmax, savename=f"{savename}/filtered_map.png")
-
 
 class Experiment7UQTest(Experiment7Trial):
     def _choose_test_result(self):

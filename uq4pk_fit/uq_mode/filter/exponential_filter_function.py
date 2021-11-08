@@ -13,7 +13,7 @@ class ExponentialFilterFunction(DistanceFilterFunction):
     """
     def __init__(self, m, n, a, b, c, d, h=1.):
         self._h = h
-        DistanceFilterFunction.__init__(self, m, n, a, b, c, d)
+        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h)
 
 
     def _weighting(self, d):
@@ -25,6 +25,6 @@ class ExponentialFilterFunction(DistanceFilterFunction):
         :return: float
             The weight w(d).
         """
-        w = exp(- d / self._h)
+        w = exp(- d)
         return w
 

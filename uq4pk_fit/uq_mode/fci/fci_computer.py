@@ -9,6 +9,11 @@ from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
 from .filtered_value import FilterValue
 from ..linear_model import LinearModel
 
+
+RTOL = 0.01     # relative tolerance for the cost-constraint
+FTOL = 1e-6
+
+
 class FCIComputer:
     """
     Superclass for computation of quantity of interests.
@@ -25,17 +30,15 @@ class FCIComputer:
         self._cost_map = model.cost(x_map)
         self._tau = sqrt(16 * log(3 / alpha) / self._dim)
         self._k_alpha = self._dim * (self._tau + 1)
-        self.ftol = 1e-3
-        self.RTOL = 0.01  # 1% relative tolerance for optimization
-        self.ctol = self.RTOL * self._k_alpha
+        self._ctol = RTOL * self._k_alpha
         # Read options.
         if options is None:
             options = {}
         self._use_ray = options.setdefault("use_ray", True)
-        self._num_cpus = options.setdefault("num_cpus", 8)
+        self._num_cpus = options.setdefault("num_cpus", 7)
         solver_name = options.setdefault("solver", "slsqp")
         if solver_name == "slsqp":
-            self._optimizer = SLSQP(ftol=self.ftol, ctol=self.ctol)
+            self._optimizer = SLSQP(ftol=FTOL)
         elif solver_name == "ecos":
             self._optimizer = ECOS(scale=self._cost_map)
             print("Using the ECOS solver to solve the SOC problems. WARNING: THIS CAN BE EXTREMELY SLOW.")
@@ -56,19 +59,24 @@ class FCIComputer:
         print(" ")
         if self._use_ray:
             ray.init(num_cpus=self._num_cpus)
-        t0 = time.time()
+        t_list = []
+        t_avg = "undefined"
         for i in range(self._ffunction.size):
-            t = time.time() - t0
             print("\r", end="")
-            print(f"Computing filtered credible interval {i + 1}/{self._ffunction.size} ({t} s)",
+            print(f"Computing filtered credible interval {i + 1}/{self._ffunction.size} (avg {t_avg} s)",
                   end=" ")
             # Compute the lower bound for the local credible interval with respect to the i-th localization functional.
+            t0 = time.time()
             filter = self._ffunction.filter(i)
             fvalue = FilterValue(x_map=self._x_map, filter=filter)
             x_lower = self._minimize(fvalue)
             x_upper = self._maximize(fvalue)
             x_lower_list.append(x_lower)
             x_upper_list.append(x_upper)
+            t = time.time() - t0
+            t_list.append(t)
+            t_avg = np.mean(np.array(t_list))
+        print("Collecting ...", end="")
         if self._use_ray:
             x_lower_list_result = ray.get(x_lower_list)
             x_upper_list_result = ray.get(x_upper_list)
@@ -76,10 +84,12 @@ class FCIComputer:
             x_lower_list_result = x_lower_list
             x_upper_list_result = x_upper_list
         ray.shutdown()
+        print(" done.")
         # The Ray results are now converted to an array. The j-th row of the array corresponds to the credible interval
         # associated to the j-th window-frame pair.
         x_lower = np.array(x_lower_list_result)
         x_upper = np.array(x_upper_list_result)
+        assert np.all(x_lower <= x_upper + 1e-8)
         # The vectors are enlarged so that they are of the same dimension as the estimate:
         x_lower_enlarged = self._ffunction.enlarge(x_lower)
         x_upper_enlarged = self._ffunction.enlarge(x_upper)
@@ -114,9 +124,9 @@ class FCIComputer:
         # Compute minimizer/maximizer
         z0 = fvalue.initial_value
         if self._use_ray:
-            phi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer)
+            phi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
         else:
-            phi = socp_solve(socp=socp, start=z0, optimizer=self._optimizer)
+            phi = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
         return phi
 
     def _create_socp(self, fvalue: FilterValue, minmax: int):
@@ -137,12 +147,7 @@ class FCIComputer:
             e = 2 * (cost_map + k_alpha)
             l_z = lb[fvalue.indices]
         """
-        if minmax == 0:
-            w = fvalue._weights
-        elif minmax == 1:
-            w = - fvalue._weights
-        else:
-            raise Exception("FATAL")
+        w = fvalue.weights
         a = self._model.a
         b = self._model.b
         dx_dz = fvalue.dx_dz
@@ -161,7 +166,7 @@ class FCIComputer:
         # check that x_map satisfies credibility constraint
         credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x_map - y))) \
                       - 0.5 * np.sum(np.square(r.fwd(x_map - m)))
-        assert credibility >= - self.ctol
+        assert credibility >= - self._ctol
         if a is not None:
             a_new = a @ dx_dz
             b_new = b - a @ (x_map - dx_dz @ z_map)
@@ -178,6 +183,7 @@ class FCIComputer:
         lb_z = fvalue.lower_bound(lb)
         # Create SOCP instance
         socp = SOCP(w=w, a=a_new, b=b_new, c=c, d=d, e=e, lb=lb_z, minmax=minmax)
+        self._check_socp(fvalue, socp)
         return socp
 
     def _cost_constraint(self, x):
@@ -192,3 +198,13 @@ class FCIComputer:
         vminus = -v
         vneg = vminus.clip(min=0.)
         return vneg
+
+    def _check_socp(self, fvalue: FilterValue, socp: SOCP):
+        m = 5
+        n_z = socp.w.size
+        for i in range(m):
+            z_test = np.random.randn(n_z)
+            x_test = fvalue.x(z_test)
+            cost_x = self._model.cost(x_test)
+            cost_z = 0.5 * np.sum(np.square(socp.c @ z_test - socp.d))
+            assert np.isclose(cost_x, cost_z)
