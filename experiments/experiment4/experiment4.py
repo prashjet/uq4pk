@@ -13,37 +13,22 @@ import numpy as np
 from uq4pk_fit.inference import *
 from uq4pk_fit.cgn import IdentityOperator
 from uq4pk_fit.special_operators import DiscreteGradient, DiscreteLaplacian, OrnsteinUhlenbeck
-from experiments.experiment_kit import *
+from experiment_kit import *
 
 
-class Experiment4Result(TrialResult):
-    def _compute_results(self):
-        names = ["uqerror", "uqtightness"]
-        attributes = [self.uqerr_f, self.uqtightness_f]
-        return names, attributes
+class Test4(Test):
 
-    def _additional_plotting(self, savename):
-        f_truth = self._f_true
-        f_map = self._fitted_model.f_map
-        filter = self._uq.filter_f
-        phi_true = filter.enlarge(filter.evaluate(f_truth))
-        phi_map = filter.enlarge(filter.evaluate(f_map))
-        phi_true_image = self._image(phi_true)
-        phi_map_image = self._image(phi_map)
-        vmax = np.max(f_truth)
-        plot_with_colorbar(image=phi_true_image, vmax=vmax, savename=f"{savename}/filtered_truth.png")
-        plot_with_colorbar(image=phi_map_image, vmax=vmax, savename=f"{savename}/filtered_map.png")
+    def _read_setup(self, setup: dict):
+        self.regop = setup["regop"]
 
-
-class Experiment4Trial(Trial):
-
-    def _choose_test_result(self):
-        return Experiment4Result
+    def _create_name(self) -> str:
+        test_name = f"{self.regop}"
+        return test_name
 
     def _change_model(self):
         # want linear inference
         self.model.fix_theta_v(indices=np.arange(self.dim_theta), values=self.theta_true)
-        regop = self.setup.parameters["regop"]
+        regop = self.regop
         if regop == "Identity":
             self.model.P1 = IdentityOperator(dim=self.model.dim_f)
             self.model.beta1 = 1e4
@@ -66,16 +51,15 @@ class Experiment4Trial(Trial):
         return uq
 
 
-class Experiment4(Experiment):
+class Supertest4(SuperTest):
 
-    def _set_child_test(self):
-        return Experiment4Trial
+    _ChildTest = Test4
 
     def _setup_tests(self):
         setup_list = []
         #regop_list = ["Identity", "OrnsteinUhlenbeck", "Gradient", "Laplacian"]
         regop_list = ["OrnsteinUhlenbeck"]
         for regop in regop_list:
-            setup = TestSetup({"regop": regop})
+            setup = {"regop": regop}
             setup_list.append(setup)
         return setup_list

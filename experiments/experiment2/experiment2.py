@@ -4,49 +4,31 @@ reconstructions. We test this by adding random noise of different sizes to the t
 and then fit the nonlinear inference with the noisy value as initial guess (prior mean).
 """
 
-from uq4pk_fit.inference import *
-
-from experiments.experiment_kit import *
-
+from experiment_kit import *
+from uq4pk_fit.inference import FittedModel, UQResult
 
 
-class Experiment2Result(TrialResult):
+class Test2(Test):
 
-    def _compute_results(self):
-        names = ["mapcost", "truthcost", "rdm", "errorf",
-                      "erortheta"]
-        map_cost = self.cost_map
-        truth_cost = self.cost_truth
-        rdm = self.rdm
-        err_f = self.err_f
-        err_theta_v = self.sre_tv
-        attributes = [map_cost, truth_cost, rdm, err_f, err_theta_v]
-        return names, attributes
-
-    def _additional_plotting(self, savename):
+    def _read_setup(self, setup: dict):
         pass
 
-
-class Experiment2Trial(Trial):
-    def _choose_test_result(self):
-        return Experiment2Result
+    def _create_name(self) -> str:
+        test_name = "guess_test"
+        return test_name
 
     def _change_model(self):
-        self.model.beta1 = 100 * 1e4
-        self.model.beta2 = 1
+        pass
 
     def _quantify_uncertainty(self, fitted_model: FittedModel):
         # turned off
         pass
 
 
-class Experiment2(Experiment):
+class Supertest2(SuperTest):
 
-    def _set_child_test(self):
-        return Experiment2Trial
+    _ChildTest = Test2
 
     def _setup_tests(self):
-        setup_list = []
-        setup = TestSetup({})
-        setup_list.append(setup)
-        return setup_list
+        only_setup = {}
+        return [only_setup]

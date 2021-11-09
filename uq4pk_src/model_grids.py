@@ -97,7 +97,7 @@ class modelGrid:
         par_idx = np.meshgrid(*par_idx_arrays, indexing='ij')
         par_idx = np.array(par_idx)
         par_idx = par_idx.reshape(self.npars, -1)
-        # mask out entries
+        # mask out_old entries
         if self.par_mask_function is not None:
             par_mask_nd = self.par_mask_function(par_grid_nd)
             par_mask_1d = self.par_mask_function(pars)

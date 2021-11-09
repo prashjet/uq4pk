@@ -5,23 +5,17 @@ we also obtain local credible intervals for theta_v, which we evaluate graphical
 
 from uq4pk_fit.inference import *
 
-from experiments.experiment_kit import *
+from experiment_kit import *
 
 
-class Experiment5Result(TrialResult):
-    def _compute_results(self):
-        names = ["uqerrorf", "uqtightnessf", "uqerrortheta", "uqtightnesstheta"]
-        values = [self.uqerr_f, self.uqtightness_f, self.uqerr_theta, self.uqtightness_theta]
-        return names, values
+class Test5(Test):
 
-    def _additional_plotting(self, savename):
+    def _read_setup(self, setup: dict):
         pass
 
-
-class Experiment5Trial(Trial):
-
-    def _choose_test_result(self):
-        return Experiment5Result
+    def _create_name(self) -> str:
+        test_name = f"nonlinear"
+        return test_name
 
     def _change_model(self):
         pass
@@ -31,13 +25,13 @@ class Experiment5Trial(Trial):
         return uq
 
 
-class Experiment5(Experiment):
+class Supertest5(SuperTest):
 
     def _set_child_test(self):
-        return Experiment5Trial
+        return Supertest5
 
     def _setup_tests(self):
         setup_list = []
-        setup = TestSetup({})
+        setup = {}
         setup_list.append(setup)
         return setup_list

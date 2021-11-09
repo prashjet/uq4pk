@@ -16,8 +16,8 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     kernel = options.setdefault("kernel", "laplace")
     a = options.setdefault("a", 1)
     b = options.setdefault("b", 1)
-    c = options.setdefault("c", 6)
-    d = options.setdefault("d", 6)
+    c = options.setdefault("c", 3)
+    d = options.setdefault("d", 9)
     h = options.setdefault("h", 3)
     serious = options.setdefault("serious", False)
     # Create filter function for f

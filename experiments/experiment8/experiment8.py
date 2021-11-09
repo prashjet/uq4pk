@@ -4,45 +4,36 @@ computed via RML (as a baseline).
 The basic model is the nonlinear one, with theta_v not fixed at all.
 """
 
-import numpy as np
-
 from uq4pk_fit.inference import *
-from experiments.experiment_kit import *
+from experiment_kit import *
 
 
-class Experiment8Result(TrialResult):
-    def _compute_results(self):
-        names = ["uqerrorf", "uqtightnessf", "uqerrortheta", "uqtightnesstheta"]
-        uq_error_f = self.uqerr_f
-        uq_tightness_f = self.uqtightness_f
-        uq_error_theta = self.uqerr_theta
-        uq_tightness_theta = self.uqtightness_theta
-        values = [uq_error_f, uq_tightness_f, uq_error_theta, uq_tightness_theta]
-        return names, values
+class Test8(Test):
 
+    def _read_setup(self, setup: dict):
+        self.method = setup["method"]
 
-class Experiment8Trial(Trial):
-    def _choose_test_result(self):
-        return Experiment8Result
+    def _create_name(self) -> str:
+        test_name = str(self.method)
+        return test_name
 
     def _change_model(self):
         self.model.normalize()
 
     def _quantify_uncertainty(self, fitted_model: FittedModel):
-        method = self.setup.parameters["method"]
+        method = self.method
         uq = fitted_model.uq(method=method, options={"nsamples": 100})
         return uq
 
 
-class Experiment8(Experiment):
+class Supertest8(SuperTest):
 
-    def _set_child_test(self):
-        return Experiment8Trial
+    _ChildTest = Test8
 
     def _setup_tests(self):
         setup_list = []
         uq_type_list = ["mc", "fci"]
         for uq_type in uq_type_list:
-            setup = TestSetup(parameters={"method": uq_type})
+            setup = {"method": uq_type}
             setup_list.append(setup)
         return setup_list

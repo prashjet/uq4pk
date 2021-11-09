@@ -1,10 +1,10 @@
-from experiments.experiment_kit import *
+from experiment_kit import *
 
-from experiment7 import Experiment7
+from experiment7 import Supertest7
 
 
 # ------------------------------------------------------------------- RUN
-name = "out"
+name = "experiment7"
 logger = Logger(f"experiment7.log")
 logger.activate()
 
@@ -14,10 +14,18 @@ snr_list = [2000, 100]
 data_list_list = []
 for snr in snr_list:
     data_list = []
+    i = 1
     for f in list_of_f:
-        data_list.append(simulate(snr, f))
+        data_list.append(simulate(name=f"f{i}", snr=snr, f_im=f))
+        i += 1
     data_list_list.append(data_list)
-super_test = Experiment7(outname=name, name_list=snr_list, data_list_list=data_list_list)
-super_test.perform_tests()
+experiment7 = make_experiment(name=name,
+                              supertest = Supertest7(),
+                              name_list=snr_list,
+                              data_list_list=data_list_list)
+experiment7.run()
+experiment7.evaluate()
+experiment7.plot()
+experiment7.make_summary()
 
 logger.deactivate()

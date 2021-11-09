@@ -11,7 +11,7 @@ from ..linear_model import LinearModel
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
-FTOL = 1e-6
+FTOL = 1e-5
 
 
 class FCIComputer:
@@ -35,7 +35,7 @@ class FCIComputer:
         if options is None:
             options = {}
         self._use_ray = options.setdefault("use_ray", True)
-        self._num_cpus = options.setdefault("num_cpus", 7)
+        self._num_cpus = options.setdefault("num_cpus", 8)
         solver_name = options.setdefault("solver", "slsqp")
         if solver_name == "slsqp":
             self._optimizer = SLSQP(ftol=FTOL)

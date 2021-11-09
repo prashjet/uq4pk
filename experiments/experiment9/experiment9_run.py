@@ -1,10 +1,10 @@
-from experiments.experiment_kit import *
+from experiment_kit import *
 
-from experiment9 import Experiment9
+from experiment9 import Supertest9
 
 
 
-name = "lci_vs_fci"
+name = "experiment9"
 logger = Logger(f"experiment9.log")
 logger.activate()
 
@@ -13,9 +13,16 @@ logger.activate()
 simulate = [True, False]
 data_list_list = []
 for sim in simulate:
-    data_list = [get_real_data(simulate=sim)]
-    data_list_list.append(data_list)
-super_test = Experiment9(outname=name, name_list=simulate, data_list_list=data_list_list)
-super_test.perform_tests()
+    expdata = get_real_data(simulate=sim)
+    expdata.setup["simulate"] = simulate
+    data_list_list.append([expdata])
+experiment9 = make_experiment(name=name,
+                              supertest=Supertest9(),
+                              name_list=simulate,
+                              data_list_list=data_list_list)
+experiment9.run()
+experiment9.evaluate()
+experiment9.plot()
+experiment9.make_summary()
 
 logger.deactivate()

@@ -10,40 +10,30 @@ We test 4 different regularization operators:
 - the discrete Laplacian;
 """
 
+
 import numpy as np
+from typing import List
 
 from uq4pk_fit.cgn import IdentityOperator
 from uq4pk_fit.special_operators import DiscreteLaplacian, DiscreteGradient, OrnsteinUhlenbeck
 from uq4pk_fit.inference import *
-from experiments.experiment_kit import *
+from experiment_kit import *
 
 
-class Experiment1Result(TrialResult):
-    def _compute_results(self):
-        names = ["mapcost", "truthcost",
-                 "rdm", "errorf", "ssim"]
-        map_cost = self.cost_map
-        truth_cost = self.cost_truth
-        rdm = self.rdm
-        err_f = self.err_f
-        ssim = self.ssim_f
-        attributes = [map_cost, truth_cost, rdm, err_f, ssim]
-        return names, attributes
+class Test1(Test):
 
-    def _additional_plotting(self, savename):
-        pass
+    def _read_setup(self, setup: dict):
+        self.regop = setup["regop"]
 
-
-class Experiment1Trial(Trial):
-
-    def _choose_test_result(self):
-        return Experiment1Result
+    def _create_name(self) -> str:
+        test_name = f"{self.regop}"
+        return test_name
 
     def _change_model(self):
         # set inference to linear
         self.model.fix_theta_v(indices=np.arange(self.dim_theta), values=self.theta_true)
         snr = self.model.snr
-        regop = self.setup.parameters["regop"]
+        regop = self.regop
         if regop == "Identity":
             self.model.P1 = IdentityOperator(dim=self.model.dim_f)
             self.model.beta1 = snr * 1e3
@@ -63,15 +53,15 @@ class Experiment1Trial(Trial):
         pass
 
 
-class Experiment1(Experiment):
+class SuperTest1(SuperTest):
 
-    def _set_child_test(self):
-        return Experiment1Trial
+    _ChildTest = Test1
 
-    def _setup_tests(self):
+    def _setup_tests(self) -> List[dict]:
         setup_list = []
-        regop_list = ["Identity", "OrnsteinUhlenbeck", "DiscreteGradient", "DiscreteLaplacian"]
+        #regop_list = ["Identity", "OrnsteinUhlenbeck", "DiscreteGradient", "DiscreteLaplacian"]
+        regop_list = ["OrnsteinUhlenbeck", "DiscreteGradient"]
         for regop in regop_list:
-            setup = TestSetup({"regop": regop})
+            setup = {"regop": regop}
             setup_list.append(setup)
         return setup_list

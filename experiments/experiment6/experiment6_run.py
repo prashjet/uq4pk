@@ -1,23 +1,31 @@
-from experiments.experiment_kit import *
+from experiment_kit import *
 
-from experiment6 import Experiment6
+from experiment6 import Supertest6
 
 
 # ------------------------------------------------------------------- RUN
-name = "lci_vs_fci"
-logger = Logger(f"experiment5.log")
+name = "experiment6"
+logger = Logger(f"experiment6.log")
 logger.activate()
 
-list_of_f = get_f("../data5", numbers=[1])
-snr_list = [4000]
+list_of_f = get_f("../data5", numbers=[1, 2])
+snr_list = [2000, 100]
 # create data list
 data_list_list = []
 for snr in snr_list:
     data_list = []
+    i = 1
     for f in list_of_f:
-        data_list.append(simulate(snr, f))
+        data_list.append(simulate(name=f"f{i}", snr=snr, f_im=f))
+        i += 1
     data_list_list.append(data_list)
-super_test = Experiment6(outname=name, name_list=snr_list, data_list_list=data_list_list)
-super_test.perform_tests()
+experiment6 = make_experiment(name=name,
+                              supertest = Supertest6(),
+                              name_list=snr_list,
+                              data_list_list=data_list_list)
+experiment6.run()
+experiment6.evaluate()
+experiment6.plot()
+experiment6.make_summary()
 
 logger.deactivate()
