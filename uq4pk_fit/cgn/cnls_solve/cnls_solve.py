@@ -1,14 +1,17 @@
 """
 Contains function "cnls_solve"
 """
+import numpy as np
 
 from .constrained_gauss_newton import ConstrainedGaussNewton
 from .cnls import CNLS
+from .cnls_solution import CNLSSolution
 from .linesearch_options import LinesearchOptions
 from .solveroptions import Solveroptions
 
 
-def cnls_solve(cnls: CNLS, start, options: Solveroptions, linesearch_options: LinesearchOptions):
+def cnls_solve(cnls: CNLS, start: np.ndarray, options: Solveroptions, linesearch_options: LinesearchOptions)\
+        -> CNLSSolution:
     """
     Solves an CNLS problem using the constrained Gauss-Newton method.
     """

@@ -114,12 +114,12 @@ class Experiment:
                     trial_result = trial.run()
                     trial_result_list.append(trial_result)
                     # make trial summary
-                    trial_summary = TrialSummary(name=name, parameters=testsetup.parameters, trial_number=trial_counter,
+                    trial_summary = TrialSummary(name=name, parameters=testsetup._parameter_list, trial_number=trial_counter,
                                                  trial_result=trial_result)
                     trial_summary_list.append(trial_summary)
                     trial_counter += 1
                 # make test summary
-                test_summary = TestSummary(name=name, parameters=setup.parameters, trial_result_list=trial_result_list)
+                test_summary = TestSummary(name=name, parameters=setup._parameter_list, trial_result_list=trial_result_list)
                 test_summary_list.append(test_summary)
                 test_counter += 1
         self._create_summary_table(test_summary_list)

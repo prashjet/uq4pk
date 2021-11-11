@@ -1,32 +1,82 @@
 Distribution functions should have shape (12, 53)
-snr=1996.089092804325
-||y||/||y_noi-y|| = 1996.0841363291183
-rdm = 1.0019592848885235
-sre(theta_guess) = 0.05073266023950929
-delta = 3.594741113726769e-07
-||y_sd|| = 3.5877117642826315e-07
-y_sd_min = 3.639581453675923e-09
+snr=1998.1892396351361
+||y||/||y_noi-y|| = 1998.1768585893865
+rdm = 1.0009062006385323
+sre(theta_guess) = 0.04961153859889239
+delta = 3.556123466145408e-07
+||y_sd|| = 3.552903822432881e-07
+y_sd_min = 3.6042702726445404e-09
 Distribution functions should have shape (12, 53)
-snr=2003.645980894582
-||y||/||y_noi-y|| = 2003.6519711205362
-rdm = 0.9981803267995717
-sre(theta_guess) = 0.05067445771999116
-delta = 3.265808374493277e-07
-||y_sd|| = 3.27176191196265e-07
-y_sd_min = 3.319063725846315e-09
+snr=2016.0973038254779
+||y||/||y_noi-y|| = 2016.105931254811
+rdm = 0.9920156116498288
+sre(theta_guess) = 0.0485983285244124
+delta = 3.2703280198043723e-07
+||y_sd|| = 3.2966497516762565e-07
+y_sd_min = 3.3443113839066507e-09
 Distribution functions should have shape (12, 53)
-snr=99.927934486417
-||y||/||y_noi-y|| = 99.93695572168261
-rdm = 1.0007211748541924
-sre(theta_guess) = 0.04957701317384996
-delta = 7.139702112126655e-06
-||y_sd|| = 7.134556849131246e-06
-y_sd_min = 7.237705393952333e-08
+snr=100.3072597942117
+||y||/||y_noi-y|| = 100.3013123602976
+rdm = 0.9969368139968926
+sre(theta_guess) = 0.050325130173520374
+delta = 7.580272008344106e-06
+||y_sd|| = 7.603563136517609e-06
+y_sd_min = 7.713492385043063e-08
 Distribution functions should have shape (12, 53)
-snr=99.89127469487293
-||y||/||y_noi-y|| = 99.88993981857195
-rdm = 1.0010884364571297
-sre(theta_guess) = 0.049903655989204265
-delta = 7.120578192436832e-06
-||y_sd|| = 7.112836322070273e-06
-y_sd_min = 7.215670840273258e-08
+snr=101.49072964015457
+||y||/||y_noi-y|| = 101.4925455179606
+rdm = 0.9853116669331271
+sre(theta_guess) = 0.048212930523690696
+delta = 7.039319420789705e-06
+||y_sd|| = 7.144256641860557e-06
+y_sd_min = 7.247545422372003e-08
+Run supertest on trial 2000
+Stored in 'out/test/2000/f1/OrnsteinUhlenbeck'.
+Stored in 'out/test/2000/f1/DiscreteGradient'.
+Stored in 'out/test/2000/f2/OrnsteinUhlenbeck'.
+Stored in 'out/test/2000/f2/DiscreteGradient'.
+Run supertest on trial 100
+Stored in 'out/test/100/f1/OrnsteinUhlenbeck'.
+Stored in 'out/test/100/f1/DiscreteGradient'.
+Stored in 'out/test/100/f2/OrnsteinUhlenbeck'.
+Stored in 'out/test/100/f2/DiscreteGradient'.
+Evaluating test result in out/test/100/f2/OrnsteinUhlenbeck
+Evaluating test result in out/test/100/f2/DiscreteGradient
+Evaluating test result in out/test/100/f1/OrnsteinUhlenbeck
+Evaluating test result in out/test/100/f1/DiscreteGradient
+Evaluating test result in out/test/2000/f2/OrnsteinUhlenbeck
+Evaluating test result in out/test/2000/f2/DiscreteGradient
+Evaluating test result in out/test/2000/f1/OrnsteinUhlenbeck
+Evaluating test result in out/test/2000/f1/DiscreteGradient
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Removing out/test/100/f2/OrnsteinUhlenbeck/test_result.pickle.
+Removing out/test/100/f2/DiscreteGradient/test_result.pickle.
+Removing out/test/100/f1/OrnsteinUhlenbeck/test_result.pickle.
+Removing out/test/100/f1/DiscreteGradient/test_result.pickle.
+Removing out/test/2000/f2/OrnsteinUhlenbeck/test_result.pickle.
+Removing out/test/2000/f2/DiscreteGradient/test_result.pickle.
+Removing out/test/2000/f1/OrnsteinUhlenbeck/test_result.pickle.
+Removing out/test/2000/f1/DiscreteGradient/test_result.pickle.

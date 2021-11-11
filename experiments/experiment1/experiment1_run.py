@@ -26,9 +26,6 @@ experiment1 = make_experiment(name=name,
                               supertest = SuperTest1(),
                               name_list=snr_list,
                               data_list_list=data_list_list)
-experiment1.run()
-experiment1.evaluate()
-experiment1.plot()
-experiment1.make_summary()
+experiment1.do_all()
 
 logger.deactivate()

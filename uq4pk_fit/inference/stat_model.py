@@ -6,7 +6,7 @@ import numpy as np
 from numpy.typing import ArrayLike
 from typing import List
 
-from ..cgn import CGN, DiagonalOperator, Problem
+from ..cgn import CGN, DiagonalOperator, Problem, Parameter, LinearConstraint
 from ..special_operators import OrnsteinUhlenbeck
 
 from .parameter_map import ParameterMap
@@ -58,12 +58,12 @@ class StatModel:
 
         # SET DEFAULT REGULARIZATION PARAMETERS
         # set regularization parameters for f
-        self.beta1 = self.snr * 1e3 # rule of thumb found after hours of trial-and-error
+        self.beta1 = self.snr * 1e3     # rule of thumb found after hours of trial-and-error
         self.f_bar = np.zeros(self.dim_f)
         h = np.array([4, 2])
         self.P1 = OrnsteinUhlenbeck(m=self.m_f, n=self.n_f, h=h)
         # set regularization parameters for theta_v
-        self.beta2 = 10.  # see experiment 3
+        self.beta2 = 1.
         self.theta_bar = np.array([20, 90, 0., 0., 0., 0., 0.])
         self._theta_sd = np.array([10., 10., 1., 1., 1., 1., 1.])
         self.P2 = DiagonalOperator(dim=self.dim_theta, s=np.divide(1, self._theta_sd))
@@ -105,7 +105,9 @@ class StatModel:
         # Translate starting values
         x_start = self._parameter_map.x(self.f_start, self.theta_v_start)
         solution = self._solver.solve(problem=problem, starting_values=x_start)
-        x_map = solution.minimizer
+        x_map = [solution.minimizer("f")]
+        if not self._parameter_map.theta_fixed:
+            x_map.append(solution.minimizer("theta"))
         if not solution.success:
             print("WARNING: Optimization did not converge.")
         # assemble the FittedModel object
@@ -147,24 +149,31 @@ class StatModel:
         self._eqcon = {"a": a, "b": b}
 
     def _setup_problem(self):
-        # create an object of type cgn.Problem
-        problem = Problem(dims=self._parameter_map.dims,
-                              fun=self._misfit_handler.misfit,
-                              jac=self._misfit_handler.misfitjac,
-                              q=self._R,
-                              scale=self._scale
-                              )
-        # Set regularization.
-        x_bar = self._parameter_map.x(self.f_bar, self.theta_bar)
-        p_x = self._parameter_map.p_x(self.P1, self.P2)
-        beta = [self.beta1, self.beta2]
-        assert len(x_bar) == len(p_x)
-        for i in range(len(x_bar)):
-            problem.set_regularization(i=i, m=x_bar[i], r=p_x[i], beta=beta[i])
-        # Add equality constraints and bound constraints
+        # Create parameter objects
+        f = Parameter(dim=self._parameter_map.dims[0], name="f")
+        f.mean = self.f_bar
+        f.beta = self.beta1
+        f.regop = self.P1
+        f.lb = self.lb_f
+        parameters = [f]
+        if not self._parameter_map.theta_fixed:
+            theta = Parameter(dim=self._parameter_map.dims[1], name="theta")
+            theta.beta = self.beta2
+            theta.mean = self._parameter_map.x(self.f_bar, self.theta_bar)[1]
+            theta.regop = self._parameter_map.p_x(self.P1, self.P2)[1]
+            parameters.append(theta)
+        # Add equality constraints
         if self._eqcon is not None:
-            problem.add_equality_constraint(i=0, a=self._eqcon["a"], b=self._eqcon["b"])
-        problem.set_lower_bound(i=0, lb=self.lb_f)
+            constraints = [LinearConstraint(parameters=[f], a=self._eqcon["a"], b=self._eqcon["b"], ctype="eq")]
+        else:
+            constraints = None
+        # create an object of type cgn.Problem
+        problem = Problem(parameters=parameters,
+                          fun=self._misfit_handler.misfit,
+                          jac=self._misfit_handler.misfitjac,
+                          q=self._R,
+                          constraints=constraints,
+                          scale=self._scale)
         return problem
 
     @staticmethod

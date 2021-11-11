@@ -27,7 +27,7 @@ x_pci = get_points(pixelwise_credible, prob.x_map)
 model = prob.model
 xi = local_credible[0, 1] - prob.x_map[0]
 x_xi = local_credible[:, 1]
-P, h, a = credible_region(alpha=alpha, H=model.h, y=model.y, Q=model.q.mat, xbar=model.m, xmap=prob.x_map, x_xi=x_xi)
+P, h, a = credible_region(alpha=alpha, H=model.h, y=model.y, Q=model.q.a, xbar=model.m, xmap=prob.x_map, x_xi=x_xi)
 circ = circle_points(r=np.sqrt(a))
 cr_boundary = prob.x_map[:, np.newaxis] + P @ circ
 

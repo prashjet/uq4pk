@@ -1,0 +1,2 @@
+,beta1,theta_noise,rdm,costmap,costtruth,errof,ssimf,errortheta,errorvartheta,uqerrorf,uqtightnessf,uqsizef,uqerrortheta,uqtightnesstheta
+0,50000.0,0.05,100.01925930387533,4860.3788986429445,0.4938927120522817,1.000000000000012,0.06938561170161339,0.34522853170620466,0.30115604725837203,-1.0,-1.0,-1.0,-1.0,-1.0

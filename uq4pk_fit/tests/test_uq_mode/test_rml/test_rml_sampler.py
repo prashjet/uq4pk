@@ -28,7 +28,7 @@ def test_rml_sampler():
         return noise_regop.fwd(test_problem.H)
 
     # Setup MultiParameterProblem
-    pars = cgn.Parameters()
+    pars = cgn.MultiParameter()
     pars.add_parameter(dim=2, mean=xbar, p=regop)
     model = cgn.MultiParameterProblem(fun=forward, jac=forward_jac, params=pars)
     # Initialize sampler from test_problem.

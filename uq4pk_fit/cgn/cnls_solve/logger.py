@@ -6,7 +6,7 @@ import logging
 import numpy as np
 from prettytable import PrettyTable
 
-from ..cnls_solve.optimization_solution import OptimizationSolution, OptimizationStatus
+from ..cnls_solve.cnls_solution import CNLSSolution, OptimizationStatus
 
 COLUMN_NAMES = ["Iteration",
                 "Cost                   ",
@@ -51,7 +51,7 @@ class Logger:
         self._table.add_row([k, cost, stepsize, steplength, time])
         self._logger.info("\n".join(self._table.get_string().splitlines()[-2:]))
 
-    def print_epilogue(self, solution: OptimizationSolution):
+    def print_epilogue(self, solution: CNLSSolution):
         niter = solution.niter
         status = solution.status
         if status == OptimizationStatus.converged:

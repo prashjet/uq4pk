@@ -33,6 +33,6 @@ experiment2 = make_experiment(name=name,
                              supertest=Supertest2(),
                              name_list=name_list,
                              data_list_list=data_list_list)
-experiment2.clean()
+experiment2.do_all()
 
 logger.deactivate()

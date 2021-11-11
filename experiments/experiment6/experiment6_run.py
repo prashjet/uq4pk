@@ -9,7 +9,7 @@ logger = Logger(f"experiment6.log")
 logger.activate()
 
 list_of_f = get_f("../data5", numbers=[1, 2])
-snr_list = [2000, 100]
+snr_list = [100, 2000]
 # create data list
 data_list_list = []
 for snr in snr_list:
@@ -25,7 +25,7 @@ experiment6 = make_experiment(name=name,
                               data_list_list=data_list_list)
 experiment6.run()
 experiment6.evaluate()
-experiment6.plot()
-experiment6.make_summary()
+experiment6.plot(extra_scale=0.015)
+experiment6.clean()
 
 logger.deactivate()

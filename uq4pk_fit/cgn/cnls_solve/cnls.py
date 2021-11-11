@@ -7,7 +7,7 @@ import numpy as np
 from numpy.typing import ArrayLike
 
 from ..regop import RegularizationOperator
-from ..problem.linear_constraint import LinearConstraint
+from .cnls_constraint import CNLSConstraint, NullConstraint
 
 
 class CNLS:
@@ -19,7 +19,7 @@ class CNLS:
     The regularization term is optional.
     """
     def __init__(self, func: callable, jac: callable, q: RegularizationOperator, m: ArrayLike, r: RegularizationOperator,
-                 eqcon: LinearConstraint, incon: LinearConstraint, lb: ArrayLike, scale: float):
+                 eqcon: CNLSConstraint, incon: CNLSConstraint, lb: ArrayLike, scale: float):
         self._check_input(m, r, eqcon, incon, lb)
         self.func = deepcopy(func)
         self.jac = deepcopy(jac)
@@ -28,13 +28,13 @@ class CNLS:
         self.r = deepcopy(r)
         self.scale = scale
         self.dim = m.size
-        self.a = deepcopy(eqcon.mat)
-        self.b = deepcopy(eqcon.vec)
-        self.c = deepcopy(incon.mat)
-        self.d = deepcopy(incon.vec)
+        self.a = deepcopy(eqcon.a)
+        self.b = deepcopy(eqcon.b)
+        self.c = deepcopy(incon.a)
+        self.d = deepcopy(incon.b)
         self.lb = deepcopy(lb)
-        self.equality_constrained = (self.a is not None)
-        self.inequality_constrained = (self.c is not None)
+        self.equality_constrained = not isinstance(eqcon, NullConstraint)
+        self.inequality_constrained = not isinstance(incon, NullConstraint)
         self.bound_constrained = np.isfinite(self.lb).any()
 
     def satisfies_constraints(self, x, tol=1e-5):
@@ -43,11 +43,11 @@ class CNLS:
         The error norm is the l^1-norm
         """
         constraint_error = 0.
-        if self.a is not None:
+        if self.equality_constrained:
             constraint_error += np.linalg.norm(self.a @ x - self.b)
-        if self.c is not None:
+        if self.inequality_constrained:
             constraint_error += np.linalg.norm((self.c @ x - self.d).clip(max=0.))
-        if self.lb is not None:
+        if self.bound_constrained:
             constraint_error += np.linalg.norm((x - self.lb).clip(max=0.))
         if constraint_error <= tol:
             return True

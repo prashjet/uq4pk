@@ -8,6 +8,7 @@ from numpy.typing import ArrayLike
 from typing import List
 
 import uq4pk_fit.cgn as cgn
+from uq4pk_fit.cgn.translator.translator import Translator
 import uq4pk_fit.uq_mode as uq_mode
 from .make_filter_function import make_filter_function
 from .parameter_map import ParameterMap
@@ -92,7 +93,7 @@ class FittedModel:
 
     def _create_linearized_model(self, problem: cgn.Problem) -> uq_mode.LinearModel:
         # Then, compute all entities necessary for building the linearized model from the CNLS problem.
-        translator = cgn.problem.Translator(problem)
+        translator = Translator(problem)
         cnls = translator.translate()
         f_map = cnls.func(self._x_map_vec)
         j_map = cnls.jac(self._x_map_vec)

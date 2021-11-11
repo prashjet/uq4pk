@@ -74,11 +74,11 @@ class Experiment:
             summary = self._summarize(combined_result, parameter_names)
             summary.to_csv(f"out/{self._name}/{trial.name}/{SUMMARY_FILE}")
 
-    def plot(self):
+    def plot(self, extra_scale: float = None):
         list_of_savedirs = self._find_savedirs(TESTRESULT_FILE)
         for savedir in list_of_savedirs:
             test_result = load_testresult(savedir)
-            plot_testresult(savedir=savedir, test_result=test_result)
+            plot_testresult(savedir=savedir, test_result=test_result, extra_scale=extra_scale)
 
     def _summarize(self, result: pandas.DataFrame, parameter_names: list):
         """

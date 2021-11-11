@@ -6,11 +6,11 @@ from .plot_triple_bar import plot_triple_bar
 from .plot_with_colorbar import plot_with_colorbar
 
 
-def plot_testresult(savedir: str, test_result: TestResult):
+def plot_testresult(savedir: str, test_result: TestResult, extra_scale):
     """
     Creates plots from a TestResult object and saves them in the given location.
     """
-    plot_f(savedir, test_result)
+    plot_f(savedir, test_result, extra_scale)
     plot_theta_v(savedir, test_result)
 
 
@@ -26,7 +26,6 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
     scales = [scale1]
     if ci_f is not None:
         ci_upper = ci_f[:, 1]
-        ci_lower = ci_f[:, 0]
         scale2 = ci_upper.max() # uq scale
         scales.append(scale2)
     scale_postfixes = ["", "_scaled"]

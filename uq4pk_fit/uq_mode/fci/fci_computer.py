@@ -11,7 +11,7 @@ from ..linear_model import LinearModel
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
-FTOL = 1e-5
+FTOL = 1e-6
 
 
 class FCIComputer:

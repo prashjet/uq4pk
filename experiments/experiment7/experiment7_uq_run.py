@@ -22,9 +22,6 @@ experiment7uq = make_experiment(name=name,
                                 supertest = Supertest7Uq(),
                                 name_list=snr_list,
                                 data_list_list=data_list_list)
-experiment7uq.run()
-experiment7uq.evaluate()
-experiment7uq.plot()
-experiment7uq.make_summary()
+experiment7uq.do_all()
 
 logger.deactivate()

@@ -23,4 +23,5 @@ experiment4 = make_experiment(name=name,
                               supertest=Supertest4(),
                               name_list=snr_list,
                               data_list_list=data_list_list)
+experiment4.do_all()
 logger.deactivate()

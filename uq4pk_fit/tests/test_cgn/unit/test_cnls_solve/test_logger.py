@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 from uq4pk_fit.cgn.cnls_solve.logger import Logger
-from uq4pk_fit.cgn.cnls_solve.optimization_solution import OptimizationSolution, OptimizationStatus
+from uq4pk_fit.cgn.cnls_solve.cnls_solution import CNLSSolution, OptimizationStatus
 
 
 def test_logger_instance():
@@ -20,7 +20,7 @@ def test_logger_instance():
         h = 0.5 ** k
         t1 = time.time() - t0
         logger.print_iteration_info(k=k, cost=cost, p=p, steplength=h, time=t1)
-    dummy_solution = OptimizationSolution(minimizer="[MINIMIZER]",
+    dummy_solution = CNLSSolution(minimizer="[MINIMIZER]",
                                           min_cost="[MINIMUM]",
                                           precision=None,
                                           status=OptimizationStatus.converged,

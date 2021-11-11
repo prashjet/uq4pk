@@ -7,7 +7,7 @@ import numpy as np
 from time import time
 
 from ..cls_solve import CLS, cls_solve
-from ..cnls_solve.optimization_solution import OptimizationSolution, OptimizationStatus
+from ..cnls_solve.cnls_solution import CNLSSolution, OptimizationStatus
 from ..regop import NullOperator
 from .cnls import CNLS
 from .linesearch_options import LinesearchOptions
@@ -34,7 +34,7 @@ class ConstrainedGaussNewton:
         self._linesearch = WaechterBiegler(create_state=self._create_state, cnls=cnls, costfun=self._cost,
                                            options=linesearch_options)
 
-    def solve(self, start):
+    def solve(self, start) -> CNLSSolution:
         """
         Manages the outer loop of the iteration.
         :param start: starting value for the iteration
@@ -95,7 +95,7 @@ class ConstrainedGaussNewton:
         precision = p.adj(p.fwd(i_d)) + j_min.T @ j_min
         return precision
 
-    def _build_solution(self, state, niter, status) -> OptimizationSolution:
+    def _build_solution(self, state, niter, status) -> CNLSSolution:
         """
         Builds an object of type BNLSSolution given the last state
         :param state: CGNState
@@ -107,7 +107,7 @@ class ConstrainedGaussNewton:
         # create costfunction that is returned as part of the solution
         current_cost = self._cost(state)
         # put maxiter in info
-        solution = OptimizationSolution(minimizer=state.x, precision=precision, min_cost=current_cost, niter=niter,
+        solution = CNLSSolution(minimizer=state.x, precision=precision, min_cost=current_cost, niter=niter,
                                         status=status)
         return solution
 

@@ -52,7 +52,7 @@ class LOSVD(object):
         lmd_out : array
             wavelengths [angstrom] to evaluate convolution, default = lmd_in
         v_lim : array size two
-            (v_min, v_max) [km/s] limits for integration
+            (v_min, v_max) [km/s] limits for benchmarks
         kwargs : dict
             other kwargs passed to specific convolve_methods
 

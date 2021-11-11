@@ -16,12 +16,8 @@ class RMLSampler:
         """
         # Change the regularization in the problem
         self._problem = deepcopy(problem)
-        for i in range(self._problem.nparams):
-            param = self._problem.parameters.list[i]
-            self._problem.set_regularization(i=i,
-                                             m=param.mean,
-                                             r=param.regop,
-                                             beta=param.beta / reduction)
+        for param in self._problem._parameter_list:
+            param.beta = param.beta / reduction
         self._starting_values = starting_values
         # Initialize solver
         self._solver = cgn.CGN()
@@ -30,7 +26,7 @@ class RMLSampler:
         self._solver.options.maxiter = solver_options.setdefault("maxiter", self._solver.options.maxiter)
         self._solver.options.set_verbosity(2)
         # Also need the root-covariance for creating the noise:
-        self._qinv = np.linalg.inv(self._problem.q.mat)
+        self._qinv = np.linalg.inv(self._problem.q.a)
 
     def sample(self, n):
         """

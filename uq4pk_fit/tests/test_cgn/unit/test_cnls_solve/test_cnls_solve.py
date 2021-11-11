@@ -4,7 +4,7 @@ import pytest
 
 from uq4pk_fit.cgn.regop import IdentityOperator
 from uq4pk_fit.cgn.cnls_solve import CNLS, cnls_solve
-from uq4pk_fit.cgn.problem.linear_constraint import LinearConstraint
+from uq4pk_fit.cgn.cnls_solve.cnls_constraint import ConcreteConstraint
 from uq4pk_fit.cgn.cnls_solve.solveroptions import Solveroptions
 from uq4pk_fit.cgn.cnls_solve.linesearch_options import LinesearchOptions
 
@@ -30,8 +30,8 @@ def test_cnls_solve():
     c = a.copy()
     d = b - 1
     # make CNLS
-    eqcon = LinearConstraint(dim=n, mat=a, vec=b)
-    incon = LinearConstraint(dim=n, mat=c, vec=d)
+    eqcon = ConcreteConstraint(dim=n, a=a, b=b)
+    incon = ConcreteConstraint(dim=n, a=c, b=d)
     cnls = CNLS(func=fun, jac=jac, q=IdentityOperator(dim=n), m=mean, r=regop, eqcon=eqcon, incon=incon, lb=lb,
                 scale=1.)
     # solve
