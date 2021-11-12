@@ -11,7 +11,7 @@ from .optimization_problem import OptimizationProblem
 from .socp import SOCP
 
 
-MAXITER = 100
+MAXITER = 500   # if you set this too low, you provoke an "unable to satisfy constraints" error.
 
 
 class SLSQP(Optimizer):

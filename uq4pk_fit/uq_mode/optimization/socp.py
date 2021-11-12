@@ -15,6 +15,8 @@ class SOCP:
                  c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None], minmax: int):
         # check input
         self._check_input(w, a, b, c, d, e, lb)
+        # check that the equality constraints satisfy constraint qualification
+        self._check_constraint_qualification(a, b)
         assert minmax in [0, 1]
         self.minmax = minmax
         self.w = deepcopy(w)
@@ -75,6 +77,12 @@ class SOCP:
         Had to build my own l1-norm since numpy.linalg.norm(..., ord=1) does not work with floats.
         """
         return np.sum(np.abs(x))
+
+    def _check_constraint_qualification(self, a: Union[np.ndarray, None], b: Union[np.ndarray, None]):
+        if a is not None:
+            c = a.shape[0]
+            if not np.linalg.matrix_rank(a) >= c:
+                raise Exception("Exception in definition of SCOP: 'a' does not satisfy constraint qualification.")
 
     @staticmethod
     def _check_input(w, a, b, c, d, e, lb):

@@ -1,2 +1,0 @@
-,regop,theta_noise,rdm,costmap,costtruth,errof,ssimf,errortheta,errorvartheta,uqerrorf,uqtightnessf,uqsizef,uqerrortheta,uqtightnesstheta
-0,DiscreteGradient,0.05,1.016655259740587,0.5345141405129995,0.7570542494306918,0.5719619039935167,0.4952017762035566,0.0,0.0,-1,-1,-1,-1,-1

@@ -26,7 +26,7 @@ class RMLSampler:
         self._solver.options.maxiter = solver_options.setdefault("maxiter", self._solver.options.maxiter)
         self._solver.options.set_verbosity(2)
         # Also need the root-covariance for creating the noise:
-        self._qinv = np.linalg.inv(self._problem.q.a)
+        self._qinv = np.linalg.inv(self._problem.q.mat)
 
     def sample(self, n):
         """
@@ -75,6 +75,6 @@ class RMLSampler:
         self._problem.fun = new_func
         # Solve perturbed optimization problem with CGN
         optsol = self._solver.solve(problem=self._problem, starting_values=self._starting_values)
-        x_map_list = optsol.minimizer
+        x_map_list = optsol.minimizer_tuple
         # Return the solution
         return x_map_list

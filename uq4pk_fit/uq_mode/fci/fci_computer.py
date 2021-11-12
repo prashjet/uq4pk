@@ -11,7 +11,7 @@ from ..linear_model import LinearModel
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
-FTOL = 1e-6
+FTOL = 1e-5
 
 
 class FCIComputer:
@@ -170,6 +170,11 @@ class FCIComputer:
         if a is not None:
             a_new = a @ dx_dz
             b_new = b - a @ (x_map - dx_dz @ z_map)
+            # If equality constraint does not satisfy constraint qualification, it is removed.
+            satisfies_cq = (np.linalg.matrix_rank(a_new) >= a_new.shape[0])
+            if not satisfies_cq:
+                a_new = None
+                b_new = None
         else:
             a_new = None
             b_new = None

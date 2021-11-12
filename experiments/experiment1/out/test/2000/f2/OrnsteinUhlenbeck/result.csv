@@ -1,2 +1,0 @@
-,regop,theta_noise,rdm,costmap,costtruth,errof,ssimf,errortheta,errorvartheta,uqerrorf,uqtightnessf,uqsizef,uqerrortheta,uqtightnesstheta
-0,OrnsteinUhlenbeck,0.05,0.993031549041926,0.4961459493988807,0.5118520438146107,0.3175907836525953,0.6293642774387292,0.0,0.0,-1,-1,-1,-1,-1

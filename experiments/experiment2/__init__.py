@@ -1,1 +1,1 @@
-from experiment2 import Experiment2
+from experiment2 import Supertest2

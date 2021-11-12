@@ -1,1 +1,2 @@
-from experiment6 import Experiment6
+
+from .experiment6 import Supertest6

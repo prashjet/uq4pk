@@ -19,7 +19,7 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     c = options.setdefault("c", 3)
     d = options.setdefault("d", 9)
     h = options.setdefault("h", 3)
-    serious = options.setdefault("serious", True)
+    serious = options.setdefault("serious", False)
     # Create filter function for f
     if kernel == "gauss":
         ffunction_f = uq_mode.SquaredExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h)
