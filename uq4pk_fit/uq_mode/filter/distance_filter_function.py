@@ -1,5 +1,5 @@
 """
-Filter function associated to "DistanceFilter".
+LinearFilter function associated to "DistanceFilter".
 """
 
 import numpy as np

@@ -7,15 +7,15 @@ import numpy as np
 import typing
 
 from ..partition import Partition
-from .filter import Filter
+from .linearfilter import LinearFilter
 
 
 class FilterFunction:
     """
-    A filter function maps elements of a given partition to individual Filter-objects, and thus determines how the
+    A filter function maps elements of a given partition to individual LinearFilter-objects, and thus determines how the
     parameter space is filtered in the computation of the filtered credible intervals.
     """
-    def __init__(self, partition: Partition, filter_list: typing.List[Filter]):
+    def __init__(self, partition: Partition, filter_list: typing.List[LinearFilter]):
         """
         :param partition: uq_mode.partition.Partition
             The partition from which the filter function maps.
@@ -30,13 +30,13 @@ class FilterFunction:
         self.size = partition.size
         self._filter_list = filter_list.copy()
 
-    def change_filter(self, i, filter: Filter):
+    def change_filter(self, i, filter: LinearFilter):
         """
         Changes the filter to which the i-th partition element is associated.
         :param i: int
             Number of the partition element to be remapped.
-        :param filter: uq_mode.fci.Filter
-            The new Filter object to which the i-th partition element is mapped.
+        :param filter: uq_mode.fci.LinearFilter
+            The new LinearFilter object to which the i-th partition element is mapped.
         """
         self._filter_list[i] = filter
 
@@ -98,6 +98,6 @@ class FilterFunction:
         """
         Returns the filter associated to the i-th partition element.
         :param i: int
-        :return: Filter
+        :return: LinearFilter
         """
         return self._filter_list[i]

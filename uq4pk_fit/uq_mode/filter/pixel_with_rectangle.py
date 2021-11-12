@@ -6,7 +6,7 @@ Contains class "PixelWithRectangle"
 import numpy as np
 
 from .image_filter_function import ImageFilterFunction
-from ..filter import Filter
+from ..filter import LinearFilter
 from .geometry2d import rectangle_indices, indices_to_coords
 from ..partition.trivial_image_partition import TrivialImagePartition
 
@@ -46,7 +46,7 @@ class PixelWithRectangle(ImageFilterFunction):
             # make the weight vector where only the index j_i is weighted
             weights_i = np.zeros(window_i.size)
             weights_i[j_i] = 1.
-            lfunctional_i = Filter(indices=window_i, weights=weights_i)
+            lfunctional_i = LinearFilter(indices=window_i, weights=weights_i)
             filter_list.append(lfunctional_i)
         ImageFilterFunction.__init__(self, image_partition=partition, filter_list=filter_list)
 

@@ -1,6 +1,6 @@
 from .direct_sum import direct_sum
 from .exponential_filter_function import ExponentialFilterFunction
-from .filter import Filter
+from .linearfilter import LinearFilter
 from .filter_function import FilterFunction
 from .identity_filter_function import IdentityFilterFunction
 from .image_filter_function import ImageFilterFunction

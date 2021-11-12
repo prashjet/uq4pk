@@ -1,7 +1,7 @@
 
 import numpy as np
 from .image_filter_function import ImageFilterFunction
-from .filter import Filter
+from .linearfilter import LinearFilter
 from ..partition import rectangle_partition
 
 
@@ -58,7 +58,7 @@ class Upsampler:
             indices_i = np.concatenate(indices_list)
             weights_i = np.concatenate(weights_list)
             assert indices_i.size == weights_i.size
-            upsampled_filter_i = Filter(indices=indices_i, weights=weights_i)
+            upsampled_filter_i = LinearFilter(indices=indices_i, weights=weights_i)
             upsampled_filter_list.append(upsampled_filter_i)
         # make the filter function and return it
         upsampled_filter_function = ImageFilterFunction(image_partition=self._superpixels,

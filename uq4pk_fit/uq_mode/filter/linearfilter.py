@@ -6,9 +6,9 @@ import numpy as np
 import numpy.typing as npt
 
 
-class Filter:
+class LinearFilter:
     """
-    A (local) filter consists of a weight vector and an associated index set that defines the support
+    A LINEAR filter consists of a weight vector and an associated index set that defines the support
     of the filter functional (and its center).
     """
     def __init__(self, indices, weights):
@@ -29,7 +29,7 @@ class Filter:
     def evaluate(self, v: npt.ArrayLike):
         """
         Evaluates the filter. That is, it returns the value
-            phi(v) = Filter.weights @ v[Filter.indices].
+            phi(v) = LinearFilter.weights @ v[LinearFilter.indices].
         :param v: numpy array
         :return: float
         """

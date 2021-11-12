@@ -5,10 +5,10 @@ Contains class "MatrixFilter"
 import numpy as np
 
 from ..filter.geometry2d import rectangle_indices
-from .filter import Filter
+from .linearfilter import LinearFilter
 
 
-class MatrixFilter(Filter):
+class MatrixFilter(LinearFilter):
     """
     Base class for two-dimensional filter that can be represented by a matrix kernel.
     """
@@ -38,4 +38,4 @@ class MatrixFilter(Filter):
         # Create the filter from the rectangle indices and the weights.
         if normalized:
             mat_inside = mat_inside / np.sum(mat_inside)
-        Filter.__init__(self, indices=indices, weights=mat_inside)
+        LinearFilter.__init__(self, indices=indices, weights=mat_inside)

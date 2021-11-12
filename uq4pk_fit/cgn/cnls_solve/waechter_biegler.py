@@ -26,7 +26,7 @@ class WaechterBiegler:
     """
     Implements the Lagrange-multiplier-free linesearch algorithm proposed by
     Wächter and Biegler in
-    "Line Search Filter Methods for Nonlinear Programming: Motivation and Global Convergence" (2005).
+    "Line Search LinearFilter Methods for Nonlinear Programming: Motivation and Global Convergence" (2005).
     """
     def __init__(self, create_state, cnls: CNLS, costfun: callable, options: LinesearchOptions):
         self.p = options

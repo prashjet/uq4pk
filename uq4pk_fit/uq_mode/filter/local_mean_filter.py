@@ -4,10 +4,10 @@ Contains class "LocalMeanFilter".
 
 import numpy as np
 
-from ..filter import Filter
+from ..filter import LinearFilter
 
 
-class LocalMeanFilter(Filter):
+class LocalMeanFilter(LinearFilter):
     """
     Defines the local mean filter that computes the local mean on a prescribed set of indices,
     with another set of indices as "localization window".
@@ -27,4 +27,4 @@ class LocalMeanFilter(Filter):
         # The other indices in "window" are not weighted at all.
         weights = np.zeros(window.size)
         weights[relative_indices] = 1 / relative_indices.size
-        Filter.__init__(self, indices=window, weights=weights)
+        LinearFilter.__init__(self, indices=window, weights=weights)
