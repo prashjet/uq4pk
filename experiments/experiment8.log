@@ -1,0 +1,41 @@
+Distribution functions should have shape (12, 53)
+snr=100.09726016676454
+||y||/||y_noi-y|| = 100.08351178244179
+rdm = 0.999028343367216
+sre(theta_guess) = 0.049955895240643755
+delta = 4.757004344476656e-06
+||y_sd|| = 4.761631014835083e-06
+y_sd_min = 4.830472755189988e-08
+Run supertest on trial 100
+ 
+Computing sample 1/10 Using reduction 42
+Computing sample 2/10 Using reduction 42
+Computing sample 3/10 Using reduction 42
+Computing sample 4/10 Using reduction 42
+Computing sample 5/10 Using reduction 42
+Computing sample 6/10 Using reduction 42
+Computing sample 7/10 Using reduction 42
+Computing sample 8/10 Using reduction 42
+Computing sample 9/10 Using reduction 42
+Computing sample 10/10 Using reduction 42
+Stored in 'out/experiment8/100/f1/mc'.
+Evaluating test result in out/experiment8/100/f1/mc
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Distribution functions should have shape (12, 53)
+Removing out/experiment8/100/f1/mc/test_result.pickle.

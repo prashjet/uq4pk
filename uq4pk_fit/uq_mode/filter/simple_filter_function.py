@@ -1,8 +1,6 @@
-"""
-Contains class "SimpleFilterFunction"
-"""
 
 import numpy as np
+from typing import List
 
 from ..filter import LinearFilter
 from .filter_function import FilterFunction
@@ -14,11 +12,10 @@ class SimpleFilterFunction(FilterFunction):
     Simple version of a filter function that associates to each coordinate a weighted sum of the complete parameter
     vector.
     """
-    def __init__(self, dim, weights):
+    def __init__(self, dim: int, weights: List[np.ndarray]):
         """
-        :param dim: int
-        :param weights: list of length dim
-            Each element in weights must be a (dim,) numpy array that determines the weights for each coordinate.
+        :param dim: The dimension of the underlying parameter space.
+        :param weights: Each element in ``weights`` must be a numpy array of shape (``dim``,).
         """
         # make trivial partition
         partition = TrivialPartition(dim)

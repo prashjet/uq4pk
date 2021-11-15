@@ -3,6 +3,7 @@ from math import sqrt, log
 import numpy as np
 import ray
 import time
+from typing import Literal
 
 from ..linear_model import LinearModel
 from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
@@ -50,12 +51,12 @@ class CIComputer:
         else:
             raise KeyError(f"Unknown solver '{solver_name}'.")
 
-    def compute(self) -> np.ndarray:
+    def compute_all(self) -> np.ndarray:
         """
         Computes all credible intervals.
-        :return: (n, 2) array
+        :return: Of shape (n, 2)
             The j-th row of the array corresponds to the lower and upper bound for the credible interval that is
-            associated to the j-th coordinate by LMCIComputer.window_function.
+            associated to the j-th coordinate.
         """
         x_lower_list = []
         x_upper_list = []
@@ -97,37 +98,41 @@ class CIComputer:
         assert np.all(x_lower <= x_upper + 1e-8)
         return np.column_stack([x_lower, x_upper])
 
-    def _minimize(self, aefun: AffineEvaluationFunctional) -> np.ndarray:
+    def _minimize(self, aefun: AffineEvaluationFunctional):
         """
         Computes the minimal value of the quantity of interest, with respect to the loss function and the constraints.
-        :return: float
         """
         minimum = self._compute(aefun, 0)
         return minimum
 
-    def _maximize(self, aefun: AffineEvaluationFunctional) -> np.ndarray:
+    def _maximize(self, aefun: AffineEvaluationFunctional):
         """
         Computes the maximal value of the quantity of interest, with respect to the loss function and the constraints.
-        :return: float
         """
         maximum = self._compute(aefun, 1)
         return maximum
 
     # PROTECTED
 
-    def _compute(self, aefun: AffineEvaluationFunctional, minmax) -> np.ndarray:
+    def _compute(self, aefun: AffineEvaluationFunctional, minmax: Literal[0, 1]):
         """
-        Computes the quantity of interest.
+        Depending on the value of minmax, computes the minimum or maximum inside the credible region of the quantity
+        of interest defined by an affine evaluation functional.
+
+        :param aefun:
+        :param minmax: If 0, then the minimum is returned. If 1, then the maximum is returned.
         """
         # Create SOCP problem
         socp = self._create_socp(aefun=aefun, minmax=minmax)
         # Compute minimizer/maximizer
         z0 = aefun.z0
         if self._use_ray:
-            phi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
+            qoi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
+                                           qoi=aefun.phi)
         else:
-            phi = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
-        return phi
+            z_opt = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
+            qoi = aefun.phi(z_opt)
+        return qoi
 
     def _create_socp(self, aefun: AffineEvaluationFunctional, minmax: int) -> SOCP:
         """
@@ -195,19 +200,37 @@ class CIComputer:
         return socp
 
     def _cost_constraint(self, x: np.ndarray) -> float:
+        """
+        The cost constraint is
+        c(x) >= 0, where c(x) = J(x_map) + k_\alpha - J(x),
+        where J is the MAP cost functional, and k_\alpha = N * (\tau_\alpha + 1).
+        """
         c = self._cost_map + self._k_alpha - self._costf(x)
         return c
 
     def _cost_constraint_grad(self, x: np.ndarray) -> np.ndarray:
+        """
+        Returns the gradient of the cost constraint function. That is
+
+        :math:`\\nabla c(x) = - \\nabla J(x).
+        """
         return - self._costg(x)
 
     @staticmethod
     def _negative(v: np.ndarray):
+        """
+        Returns the negative part of a vector v.
+
+        For example, the vector :math:`v = [-1, 0, 3]` has negative part :math:`v^- = [1, 0, 0]`.
+        """
         vminus = -v
         vneg = vminus.clip(min=0.)
         return vneg
 
     def _check_socp(self, aefun: AffineEvaluationFunctional, socp: SOCP):
+        """
+        Rough check that the SOCP was initialized correctly.
+        """
         m = 5
         n_z = socp.w.size
         for i in range(m):

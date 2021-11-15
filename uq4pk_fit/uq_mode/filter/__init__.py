@@ -10,4 +10,3 @@ from .matrix_filter import MatrixFilter
 from .pixel_with_rectangle import PixelWithRectangle
 from .simple_filter_function import SimpleFilterFunction
 from .squared_exponential_filter_function import SquaredExponentialFilterFunction
-from .geometric_filter_function import GeometricFilterFunction

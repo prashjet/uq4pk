@@ -35,7 +35,7 @@ class TranslatedSolution(ProblemSolution):
         assert len(parameters) == len(minimizers)
         for minimizer, parameter in zip(minimizers, parameters):
             assert minimizer.shape == (parameter.dim, )
-        assert cost > 0
+        assert cost >= 0
         overall_dim = 0
         for param in parameters:
             overall_dim += param.dim

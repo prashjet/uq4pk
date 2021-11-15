@@ -10,9 +10,19 @@ from ..linear_model import LinearModel
 from .filter_function_to_evaluation_map import filter_function_to_evaluation_map
 
 
-def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict = None):
+def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict = None) \
+        -> np.ndarray:
     """
-    Computes filtered credible intervals.
+    Computes filtered credible intervals using the Pereyra approximation.
+
+    :param alpha: The credibility parameter. For example, alpha = 0.05 corresponds to 95%-credibility.
+    :param model: Defines the (Bayesian) linear statistical model.
+    :param x_map: The MAP estimate corresponding to ``model``.
+    :param ffunction: A filter function that determines the filtering.
+    :param options: A dictionary with additional options.
+            - "use_ray": If True, then the computation is parallelized with the Ray framework.
+            - "num_cpus": Number of CPUs used by Ray.
+            - "solver": The optimization solver. "slsqp" for SLSQP, "ecos" for ECOS solver.
     """
     _check_input(alpha, model, x_map, ffunction)
     # Generate an affine evaluation map from the filter function

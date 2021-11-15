@@ -1,6 +1,3 @@
-"""
-Contains class "MatrixFilter"
-"""
 
 import numpy as np
 
@@ -12,17 +9,16 @@ class MatrixFilter(LinearFilter):
     """
     Base class for two-dimensional filter that can be represented by a matrix kernel.
     """
-    def __init__(self, m, n, position, mat, center, normalized=False):
+    def __init__(self, m: int, n: int, position: np.ndarray, mat: np.ndarray, center: np.ndarray,
+                 normalized: bool = False):
         """
-        :param m: int
-        :param n: int
-        :param pos: (int, int)
-            The desired position of the matrix filter.
-        :param mat: (k,l)-numpy array
-        :param center: (2,) numpy array of ints
-            Center indices for the matrix array, i.e. must denote the position that defines the "center" of the matrix.
-        :param normalized: bool
-            If True, the filter weights are always normalized so that they sum to 1.
+        :param m: Number of rows of the image.
+        :param n: Number of columns of the image.
+        :param pos: The pixel at which the filter is centered.
+        :param mat: The filter matrix.
+        :param center: Center indices for the matrix array, i.e. must denote the position that defines the "center"
+                of the matrix.
+        :param normalized: If True, the filter weights are always normalized so that they sum to 1.
         """
         self.m = m
         self.n = n

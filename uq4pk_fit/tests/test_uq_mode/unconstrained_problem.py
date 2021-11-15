@@ -1,5 +1,5 @@
-from uq4pk_fit.uq_mode.external_packages import cgn
 
+import uq4pk_fit.cgn as cgn
 from uq4pk_fit.tests.test_uq_mode.testutils import *
 import uq4pk_fit.uq_mode as uq_mode
 
@@ -7,6 +7,8 @@ import uq4pk_fit.uq_mode as uq_mode
 def get_problem() -> TestProblem:
     # SETUP PROBLEM
     a = np.array( [[1., 2.], [3., 4]] )
+    x = cgn.Parameter(dim=2, name="x")
+    x.beta = 1.
     sigma = .1
     x_true = np.random.randn(2)
     #x_true = np.zeros((2,))
@@ -17,13 +19,12 @@ def get_problem() -> TestProblem:
         return (a @ x - y)
     def misfitjac(x):
         return a
-    cgn_problem = cgn.Problem(dims=[2], fun=misfit, jac=misfitjac, q=cgn.DiagonalOperator(dim=2, s=1 / sigma))
-    cgn_problem.set_regularization(i=0, beta=1.)
+    cgn_problem = cgn.Problem(parameters=[x], fun=misfit, jac=misfitjac, q=cgn.DiagonalOperator(dim=2, s=1 / sigma))
     gauss_newton = cgn.CGN()
     # COMPUTE SOLUTION
-    gauss_newton.options.set_verbosity(lvl=2)
+    gauss_newton.options.set_verbosity(lvl=0)
     ggn_sol = gauss_newton.solve(cgn_problem, starting_values=[np.zeros(2)])
-    x_map = ggn_sol.minimizer[0]
+    x_map = ggn_sol.minimizer("x")
     prec_hat = ggn_sol.precision
     # CHECK MAP AND COVARIANCE ESTIMATES
     prec_post = a.T @ a / (sigma**2) + np.identity(2)

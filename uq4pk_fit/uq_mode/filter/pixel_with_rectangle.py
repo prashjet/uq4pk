@@ -4,6 +4,7 @@ Contains class "PixelWithRectangle"
 
 
 import numpy as np
+from typing import List
 
 from .image_filter_function import ImageFilterFunction
 from ..filter import LinearFilter
@@ -16,16 +17,12 @@ class PixelWithRectangle(ImageFilterFunction):
     For a rectangular image, this filter functions simply associates to each pixel its own value, but uses
     a rectangular localization window.
     """
-    def __init__(self, m, n, a, b):
+    def __init__(self, m: int, n: int, a: int, b: int):
         """
-        :param m: int
-            Number of rows of the image.
-        :param n: int
-            Number of columns of the image.
-        :param a: int
-            Vertical width of the localization window.
-        :param b: int
-            Horizontal width of the localization window.  For example, if a=1 and b=2, then each window will be a
+        :param m: Number of rows of the image.
+        :param n: Number of columns of the image.
+        :param a: Vertical width of the localization window.
+        :param b: Horizontal width of the localization window.  For example, if a=1 and b=2, then each window will be a
             3x5 rectangle centered at the active pixel.
         """
         self._a = a
@@ -50,11 +47,10 @@ class PixelWithRectangle(ImageFilterFunction):
             filter_list.append(lfunctional_i)
         ImageFilterFunction.__init__(self, image_partition=partition, filter_list=filter_list)
 
-    def _setup_windows(self):
+    def _setup_windows(self) -> List[np.ndarray]:
         """
         Creates a list of windows around each pixel.
-        :return: list
-            A list of numpy arrays of the same length as 'self.windows'.
+        :returns: A list of numpy arrays of the same length as 'self.windows'.
         """
         windows = []
         for i in range(self.dim):

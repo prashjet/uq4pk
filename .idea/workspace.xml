@@ -2,30 +2,57 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6165f9aa-995a-43f8-9e95-2af9833d676a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_geometry_2d/test_geometry2d.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uq4pk.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/uq4pk.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/cgn/cnls_solve/waechter_biegler.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/cgn/cnls_solve/waechter_biegler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_geometry2d.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_squared_exponential_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_squared_exponential_filter_function.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_rml/test_rml.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc/test_rml.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_rml/test_rml_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc/test_rml_sampler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment6.log" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment6.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment6_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment6_run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment8.log" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment8.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment8/experiment8.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment8/experiment8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/experiment8_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/experiment8_run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/run_6_7_8.py" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/run_6_7_8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/cgn/translator/translated_solution.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/cgn/translator/translated_solution.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/examples/two_dimensions/rml_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/examples/two_dimensions/rml_demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/inference/fitted_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/inference/fitted_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci/test_fci.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci/test_fci.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci/test_filter_to_evaluation_map.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci/test_filter_function_to_evaluation_map.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_direct_sum.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_direct_sum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_matrix_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_matrix_filter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_squared_exponential_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/examples/filters/test_squared_exponential_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_lci/test_lci.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_lci/test_lci.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc/test_rml.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc/test_rml.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc/test_rml_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc/test_rml_sampler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/unconstrained_problem.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/unconstrained_problem.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/ci_computer/ci_computer.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/ci_computer/ci_computer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/ci_computer/compute_credible_intervals.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/ci_computer/compute_credible_intervals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/external_packages.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/fci.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/fci.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/fci_computer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/filtered_value.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/filter_functional.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci/filter_functional.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/direct_sum.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/direct_sum.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/distance_filter_function.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/downsampling.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/downsampling.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/linearfilter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/exponential_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/exponential_filter_function.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/geometric_filter_function.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/identity_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/identity_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/image_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/image_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/image_local_means.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/image_local_means.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/linearfilter.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/linearfilter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/local_mean_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/local_mean_filter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/matrix_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/matrix_filter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/pixel_with_rectangle.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/pixel_with_rectangle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/simple_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/simple_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/squared_exponential_filter_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/squared_exponential_filter_function.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/is_credible.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/is_credible.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/lci.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/lci.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/lci_computer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/local_value.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/linear_model/linear_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/linear_model/linear_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/ecos.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/ecos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/socp_solve.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/socp_solve.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/uq_mc/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/uq_mc/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/uq_mc/rml_ci.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/uq_mc/rml_ci.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uq4pk_fit/uq_mode/uq_mc/rml_sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/uq4pk_fit/uq_mode/uq_mc/rml_sampler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,53 +89,85 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/uq4pk_fit/uq_mode_parallel" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/uq4pk_fit/examples/filters" />
       <recent name="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter/test_geometry_2d" />
       <recent name="$PROJECT_DIR$/uq4pk_fit/uq_mode/fci" />
       <recent name="$PROJECT_DIR$/uq4pk_fit/uq_mode/evaluation" />
       <recent name="$PROJECT_DIR$/experiments" />
-      <recent name="$PROJECT_DIR$/uq4pk_fit/cgn/translator" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest for test_filter_functional.test_z0_is_mapped_to_map">
-    <configuration name="pytest for test_filter_functional.test_phi_returns_phidim" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.run_6_7_8">
+    <configuration name="experiment6_run" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="uq4pk" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/experiments" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_filter_functional.test_phi_returns_phidim&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/experiments/experiment6_run.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_filter_functional.test_the_filter_parameters_are_copied_correctly" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="experiment8_run" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="uq4pk" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/experiments" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_filter_functional.test_the_filter_parameters_are_copied_correctly&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/experiments/experiment8_run.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="run_6_7_8" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="uq4pk" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/experiments" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/experiments/run_6_7_8.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="pytest for test_filter_functional.test_x_works" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
@@ -128,12 +187,12 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest for test_filter_functional.test_z0_is_mapped_to_map" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+    <configuration name="pytest in test_uq_mode" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="uq4pk" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -141,34 +200,17 @@
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_parameters" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_filter_functional.test_z0_is_mapped_to_map&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest in test_affine_evaluation_map.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="uq4pk" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_evaluation" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_evaluation/test_affine_evaluation_map.py&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.pytest for test_filter_functional.test_z0_is_mapped_to_map" />
-        <item itemvalue="Python tests.pytest for test_filter_functional.test_the_filter_parameters_are_copied_correctly" />
-        <item itemvalue="Python tests.pytest for test_filter_functional.test_phi_returns_phidim" />
+        <item itemvalue="Python.run_6_7_8" />
+        <item itemvalue="Python.experiment8_run" />
         <item itemvalue="Python tests.pytest for test_filter_functional.test_x_works" />
-        <item itemvalue="Python tests.pytest in test_affine_evaluation_map.py" />
+        <item itemvalue="Python.experiment6_run" />
+        <item itemvalue="Python tests.pytest in test_uq_mode" />
       </list>
     </recent_temporary>
   </component>
@@ -195,6 +237,8 @@
       <workItem from="1636538591920" duration="13527000" />
       <workItem from="1636611405847" duration="29983000" />
       <workItem from="1636707379852" duration="10957000" />
+      <workItem from="1636961208174" duration="19461000" />
+      <workItem from="1636984838501" duration="817000" />
     </task>
     <servers />
   </component>
@@ -230,11 +274,6 @@
           <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/ecos.py</url>
           <line>1</line>
           <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci/test_fci.py</url>
-          <line>5</line>
-          <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/parallelization/parallelization.py</url>
@@ -285,12 +324,55 @@
           <line>31</line>
           <option name="timeStamp" value="87" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_optimization/test_ecos.py</url>
+          <line>11</line>
+          <option name="timeStamp" value="96" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/lci/lci_evaluation_functional.py</url>
+          <line>23</line>
+          <option name="timeStamp" value="122" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/ci_computer/ci_computer.py</url>
+          <line>134</line>
+          <option name="timeStamp" value="130" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/filter/simple_filter_function.py</url>
+          <line>1</line>
+          <option name="timeStamp" value="139" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/optimization/optimization_problem.py</url>
+          <line>36</line>
+          <option name="timeStamp" value="147" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/ci_computer/ci_computer.py</url>
+          <line>178</line>
+          <option name="timeStamp" value="149" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/uq_mode/ci_computer/ci_computer.py</url>
+          <line>125</line>
+          <option name="timeStamp" value="151" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/uq4pk_fit/inference/fitted_model.py</url>
+          <line>125</line>
+          <option name="timeStamp" value="152" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_problem_solution_test_problem_solution.coverage" NAME="pytest for test_problem_solution.test_problem_solution Coverage Results" MODIFIED="1636555103355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_linear_model_test_linear_model_defaults_lb.coverage" NAME="pytest for test_linear_model.test_linear_model_defaults_lb Coverage Results" MODIFIED="1636962437603" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_linear_model" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_parameter_py.coverage" NAME="pytest in test_parameter.py Coverage Results" MODIFIED="1636556297085" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_linear_model_test_linear_model_cost_and_cost_grad.coverage" NAME="pytest for test_linear_model.test_linear_model_cost_and_cost_grad Coverage Results" MODIFIED="1636962333059" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_linear_model" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_lci_py.coverage" NAME="pytest in test_lci.py Coverage Results" MODIFIED="1636969691782" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_lci" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_translated_solution_test_translated_solution.coverage" NAME="pytest for test_translated_solution.test_translated_solution Coverage Results" MODIFIED="1636556700806" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_translator" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_acceptance.coverage" NAME="pytest in acceptance Coverage Results" MODIFIED="1635845138114" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/acceptance" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_get_sub_matrix_test_get_sub_matrix.coverage" NAME="pytest for test_get_sub_matrix.test_get_sub_matrix Coverage Results" MODIFIED="1636551073873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
@@ -302,25 +384,35 @@
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_parameter_test_parameter_exceptions.coverage" NAME="pytest for test_parameter.test_parameter_exceptions Coverage Results" MODIFIED="1636469361297" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_linear_constraint_test_multiple_parameters.coverage" NAME="pytest for test_linear_constraint.test_multiple_parameters Coverage Results" MODIFIED="1636611753902" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_parameter_test_rdim.coverage" NAME="pytest for test_parameter.test_rdim Coverage Results" MODIFIED="1636615921525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_direct_sum_test_direct_sum.coverage" NAME="pytest for test_direct_sum.test_direct_sum Coverage Results" MODIFIED="1636969295565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_osborne_py.coverage" NAME="pytest in test_osborne.py Coverage Results" MODIFIED="1636624235651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/benchmarks" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment1.coverage" NAME="experiment1 Coverage Results" MODIFIED="1624616501290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment4.coverage" NAME="experiment4 Coverage Results" MODIFIED="1624616633532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_cnls_test_cnls.coverage" NAME="pytest for test_cnls.test_cnls Coverage Results" MODIFIED="1636617219418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_cnls_solve" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_unit_test_translator_test_translator_test_translate_unconstrained.coverage" NAME="pytest for unit.test_translator.test_translator.test_translate_unconstrained Coverage Results" MODIFIED="1636623467614" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_rml_py.coverage" NAME="pytest in test_rml.py Coverage Results" MODIFIED="1636971505842" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment1_run.coverage" NAME="experiment1_run Coverage Results" MODIFIED="1636625888900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment1" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_cgn.coverage" NAME="pytest in test_cgn Coverage Results" MODIFIED="1636624531543" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_downsampling_test_upsample_ffunction.coverage" NAME="pytest for test_downsampling.test_upsample_ffunction Coverage Results" MODIFIED="1636967867445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_problem_test_constraints_must_depend_on_problem_parameters.coverage" NAME="pytest for test_problem.test_constraints_must_depend_on_problem_parameters Coverage Results" MODIFIED="1636611711320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_slsqp_test_translate.coverage" NAME="pytest for test_slsqp.test_translate Coverage Results" MODIFIED="1636965949645" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_optimization" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_rml_test_rml.coverage" NAME="pytest for test_rml.test_rml Coverage Results" MODIFIED="1636973027227" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment7_uq_run.coverage" NAME="experiment7_uq_run Coverage Results" MODIFIED="1635839597813" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment7" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_linear_constraint_test_linear_constraint.coverage" NAME="pytest for test_linear_constraint.test_linear_constraint Coverage Results" MODIFIED="1636556332538" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_linear_model_py.coverage" NAME="pytest in test_linear_model.py Coverage Results" MODIFIED="1636962443718" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_linear_model" />
     <SUITE FILE_PATH="coverage/uq4pk$run78.coverage" NAME="run78 Coverage Results" MODIFIED="1636636186102" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment7_run.coverage" NAME="experiment7_run Coverage Results" MODIFIED="1635839590036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment7" />
-    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_filter_functional_test_x_works.coverage" NAME="pytest for test_filter_functional.test_x_works Coverage Results" MODIFIED="1636718317375" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_lci_test_lci.coverage" NAME="pytest for test_lci.test_lci Coverage Results" MODIFIED="1636969808562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_lci" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_fci_test_fci.coverage" NAME="pytest for test_fci.test_fci Coverage Results" MODIFIED="1636970109620" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_filter_functional_test_x_works.coverage" NAME="pytest for test_filter_functional.test_x_works Coverage Results" MODIFIED="1636982188313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_translator_test_translator_test_translator.coverage" NAME="pytest for test_translator.test_translator.test_translator Coverage Results" MODIFIED="1636557396732" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_problem_py.coverage" NAME="pytest in test_problem.py Coverage Results" MODIFIED="1636611727054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment4_run.coverage" NAME="experiment4_run Coverage Results" MODIFIED="1636035857976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment4" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$experiment8_run.coverage" NAME="experiment8_run Coverage Results" MODIFIED="1636985166579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_cnls_solution_test_cnls_solution.coverage" NAME="pytest for test_cnls_solution.test_cnls_solution Coverage Results" MODIFIED="1636624463145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_cnls_solve" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment3_run.coverage" NAME="experiment3_run Coverage Results" MODIFIED="1636635075908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment3" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_bounded_osborne_test_bounded_osborne.coverage" NAME="pytest for test_bounded_osborne.test_bounded_osborne Coverage Results" MODIFIED="1636624339851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/benchmarks" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_optimization_test_slsqp_test_translate.coverage" NAME="pytest for test_optimization.test_slsqp.test_translate Coverage Results" MODIFIED="1636964888556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment6_run.coverage" NAME="experiment6_run Coverage Results" MODIFIED="1636701388833" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment6" />
     <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_filter_functional_test_the_filter_parameters_are_copied_correctly.coverage" NAME="pytest for test_filter_functional.test_the_filter_parameters_are_copied_correctly Coverage Results" MODIFIED="1636718323299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
     <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_affine_evaluation_map_test_affine_evaluation_functionals_must_have_same_dim.coverage" NAME="pytest for test_affine_evaluation_map.test_affine_evaluation_functionals_must_have_same_dim Coverage Results" MODIFIED="1636716733938" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_evaluation" />
@@ -328,23 +420,36 @@
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_unit_test_translator_test_translator_test_translate.coverage" NAME="pytest for unit.test_translator.test_translator.test_translate Coverage Results" MODIFIED="1636613489897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_one_dimensional_py.coverage" NAME="pytest in test_one_dimensional.py Coverage Results" MODIFIED="1636624226418" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/benchmarks" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_linear_constraint_test_linear_constraint2.coverage" NAME="pytest for test_linear_constraint.test_linear_constraint2 Coverage Results" MODIFIED="1636556318564" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$experiment6_run.coverage" NAME="experiment6_run Coverage Results" MODIFIED="1636981401508" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_unit.coverage" NAME="pytest in unit Coverage Results" MODIFIED="1636624515320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_problem_test_problem.coverage" NAME="pytest for test_problem.test_problem Coverage Results" MODIFIED="1636548087850" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_cgn_test_cgn.coverage" NAME="pytest for test_cgn.test_cgn Coverage Results" MODIFIED="1636553307824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit" />
     <SUITE FILE_PATH="coverage/uq4pk$problems_with_lcis.coverage" NAME="problems_with_lcis Coverage Results" MODIFIED="1636033189629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/examples/problems_with_lcis" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_unit_test_translator_test_multiparameter_test_multi_parameter.coverage" NAME="pytest for unit.test_translator.test_multiparameter.test_multi_parameter Coverage Results" MODIFIED="1636616221765" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_evaluation.coverage" NAME="pytest in test_evaluation Coverage Results" MODIFIED="1636961298067" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_evaluation" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_filter_functional_py.coverage" NAME="pytest in test_filter_functional.py Coverage Results" MODIFIED="1636962483353" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_ecos_test_make_cp_problem.coverage" NAME="pytest for test_ecos.test_make_cp_problem Coverage Results" MODIFIED="1636966273249" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_optimization" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_cnls_solve_test_cnls_solve.coverage" NAME="pytest for test_cnls_solve.test_cnls_solve Coverage Results" MODIFIED="1636617170200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_cnls_solve" />
     <SUITE FILE_PATH="coverage/uq4pk$run_6_7_8.coverage" NAME="run_6_7_8 Coverage Results" MODIFIED="1636701429215" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_distance_filter_test_dist.coverage" NAME="pytest for test_distance_filter.test_dist Coverage Results" MODIFIED="1636967139891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_filter" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_get_sub_matrix_test_get_sub_matrix2.coverage" NAME="pytest for test_get_sub_matrix.test_get_sub_matrix2 Coverage Results" MODIFIED="1636551077515" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_filter_to_evaluation_map_py.coverage" NAME="pytest in test_filter_to_evaluation_map.py Coverage Results" MODIFIED="1636962486811" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_socp_solve_py.coverage" NAME="pytest in test_socp_solve.py Coverage Results" MODIFIED="1636965847802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_optimization" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_problem_test_no_duplicate_names_allowed.coverage" NAME="pytest for test_problem.test_no_duplicate_names_allowed Coverage Results" MODIFIED="1636623440774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_benchmarks.coverage" NAME="pytest in benchmarks Coverage Results" MODIFIED="1636624346641" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/benchmarks" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_fci_py.coverage" NAME="pytest in test_fci.py Coverage Results" MODIFIED="1636031988996" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_socp_solve_test_socp_solve.coverage" NAME="pytest for test_socp_solve.test_socp_solve Coverage Results" MODIFIED="1636966548556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_optimization" />
     <SUITE FILE_PATH="coverage/uq4pk$experiment2_run.coverage" NAME="experiment2_run Coverage Results" MODIFIED="1636466239392" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments/experiment2" />
     <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_filter_functional_test_phi_returns_phidim.coverage" NAME="pytest for test_filter_functional.test_phi_returns_phidim Coverage Results" MODIFIED="1636718319652" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_in_test_nonlinear_constrained_py.coverage" NAME="pytest in test_nonlinear_constrained.py Coverage Results" MODIFIED="1636624304864" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/benchmarks" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_uq_mode.coverage" NAME="pytest in test_uq_mode Coverage Results" MODIFIED="1636980853280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_parameter_test_parameter.coverage" NAME="pytest for test_parameter.test_parameter Coverage Results" MODIFIED="1636469114342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn/unit/test_problem" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_in_test_fci.coverage" NAME="pytest in test_fci Coverage Results" MODIFIED="1636961304178" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
     <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_filter_functional_test_z0_is_mapped_to_map.coverage" NAME="pytest for test_filter_functional.test_z0_is_mapped_to_map Coverage Results" MODIFIED="1636718328302" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_unit_test_translator_test_translator_test_modify_function.coverage" NAME="pytest for unit.test_translator.test_translator.test_modify_function Coverage Results" MODIFIED="1636617039273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_cgn" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$run_6_7_8.coverage" NAME="run_6_7_8 Coverage Results" MODIFIED="1636985200374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/experiments" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_filter_function_to_evaluation_map_test_filter_to_evaluation_map.coverage" NAME="pytest for test_filter_function_to_evaluation_map.test_filter_to_evaluation_map Coverage Results" MODIFIED="1636962963949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_fci" />
+    <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_rml_sampler_test_rml_sampler.coverage" NAME="pytest for test_rml_sampler.test_rml_sampler Coverage Results" MODIFIED="1636972952614" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_uq_mc" />
     <SUITE FILE_PATH="coverage/uq_mode_refactor$pytest_for_test_affine_evaluation_map_test_affine_evaluation_map.coverage" NAME="pytest for test_affine_evaluation_map.test_affine_evaluation_map Coverage Results" MODIFIED="1636716728434" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_evaluation" />
     <SUITE FILE_PATH="coverage/uq4pk$pytest_for_test_lci_test_lci.coverage" NAME="pytest for test_lci.test_lci Coverage Results" MODIFIED="1635867718250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/uq4pk_fit/tests/test_uq_mode/test_lci" />
   </component>

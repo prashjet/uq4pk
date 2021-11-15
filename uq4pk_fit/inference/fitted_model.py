@@ -66,7 +66,7 @@ class FittedModel:
         """
         return self._theta_map.copy()
 
-    def uq(self, method: str="fci", options: dict=None) -> UQResult:
+    def uq(self, method: str = "fci", options: dict = None) -> UQResult:
         """
         Performs uncertainty quantification using the method of choice.
         :param str="fci" method:
@@ -104,14 +104,14 @@ class FittedModel:
         x_bar = cnls.m
         lb = cnls.lb
         # Form the LinearizedModel object
-        model = uq_mode.LinearModel(h = j_map,
-                                    y = - f_map + j_map @ self._x_map_vec,
-                                    q = q,
-                                    a = a,
-                                    b = b,
-                                    m = x_bar,
-                                    r = r,
-                                    lb = lb)
+        model = uq_mode.LinearModel(h=j_map,
+                                    y=-f_map + j_map @ self._x_map_vec,
+                                    q=q,
+                                    a=a,
+                                    b=b,
+                                    m=x_bar,
+                                    r=r,
+                                    lb=lb)
         return model
 
     def _uq_fci(self, options: dict):
@@ -158,16 +158,13 @@ class FittedModel:
         :return: UQResult
         """
         alpha = 0.05  # 95%-credibility
-        reduction = 42  # reduction factor
-        nsamples = options.setdefault("nsamples", 100)
-        options["tol"] = options.setdefault("tol", 1e-3)
-        options["maxiter"] = options.setdefault("maxiter", 100)
         # As remarked in Cappellari and Emsellem, one want to use smaller values for the regularization parameters
         # when performing RML than when performing MAP estimation.
         # Setup the uq_mode.fci.FilterFunction object
+        options["reduction"] = options.setdefault("reduction", 42)
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
-        ci_x = uq_mode.rml_ci(alpha=alpha, problem=self._problem, starting_values=self._starting_values,
-                              ffunction=filter_function, nsamples=nsamples, reduction=reduction, solver_options=options)
+        ci_x = uq_mode.fci_rml(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
+                               ffunction=filter_function, options=options)
         # Make UQResult object.
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
         uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta)
@@ -185,10 +182,11 @@ class FittedModel:
 
     def _get_filter_function(self, options):
         if self._parameter_map.theta_fixed:
-            filter_function, filter_f, filter_vartheta, filter_theta = make_filter_function(m_f=self._m_f, n_f=self._n_f,
-                                                                           options=options)
+            filter_function, filter_f, filter_vartheta, filter_theta = make_filter_function(m_f=self._m_f,
+                                                                                            n_f=self._n_f,
+                                                                                            options=options)
         else:
-            filter_function, filter_f, filter_vartheta, filter_theta = make_filter_function(m_f=self._m_f, n_f=self._n_f,
-                                                                           dim_theta_v=self._parameter_map.dims[1],
-                                                                           options=options)
+            filter_function, filter_f, filter_vartheta, filter_theta = \
+                make_filter_function(m_f=self._m_f, n_f=self._n_f, dim_theta_v=self._parameter_map.dims[1],
+                                     options=options)
         return filter_function, filter_f, filter_theta

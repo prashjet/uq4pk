@@ -1,43 +1,36 @@
-"""
-Contains class "RMLSampler".
-"""
-
-from copy import deepcopy
-from typing import List
-from numpy.typing import ArrayLike
-
-from ..external_packages import cgn
 import numpy as np
+
+import uq4pk_fit.cgn as cgn
+from ..linear_model import LinearModel
 
 
 class RMLSampler:
-    def __init__(self, problem: cgn.Problem, starting_values: List[ArrayLike], solver_options: dict, reduction: float):
+    """
+    Manages the generation of samples from the perturbed statistical model.
+    """
+    def __init__(self, model: LinearModel, x_map: np.ndarray, options: dict):
         """
         """
-        # Change the regularization in the problem
-        self._problem = deepcopy(problem)
-        for param in self._problem._parameter_list:
-            param.beta = param.beta / reduction
-        self._starting_values = starting_values
-        # Initialize solver
+        self._model = model
+        self._x_map = x_map
+        # Get reduction factor
+        self._reduction = options.setdefault("reduction", 10.)
+        # Initialize CGN solver
         self._solver = cgn.CGN()
-        # Change solver options
-        self._solver.options.tol = solver_options.setdefault("tol", self._solver.options.tol)
-        self._solver.options.maxiter = solver_options.setdefault("maxiter", self._solver.options.maxiter)
-        self._solver.options.set_verbosity(2)
+        self._solver.options.tol = options.setdefault("tol", self._solver.options.tol)
+        self._solver.options.maxiter = options.setdefault("maxiter", self._solver.options.maxiter)
+        self._solver.options.set_verbosity(0)
         # Also need the root-covariance for creating the noise:
-        self._qinv = np.linalg.inv(self._problem.q.mat)
+        self._qinv = np.linalg.inv(model.q.mat)
 
-    def sample(self, n):
+    def sample(self, n: int):
         """
         Creates "approximate" samples form the posterior distribution using the randomized maximum likelihood-method.
-        :param n: int
-            The desired number of samples.
-        :return: array_like, shape (K,n)
-            Returns the samples as an array of shape (K,n), where K is the dimension of the parameter space, and each
+        :param n: The desired number of samples.
+        :returns: The samples as an array of shape (K,n), where K is the dimension of the parameter space, and each
             column corresponds to a sample.
         """
-        m = self._problem.m
+        ydim = self._model.ydim
         # Initialize the list where the samples will be stored.
         sample_list = []
         print(" ")
@@ -54,27 +47,40 @@ class RMLSampler:
             #     x_i = x_bar + noise
             #     x_i_list.append(x_i)
             # Create noise that has the right covariance.
-            std_noise = np.random.randn(m)
+            std_noise = np.random.randn(ydim)
             noise = self._qinv @ std_noise
             # Add the noise to the "true" measurement to obtain a perturbed measurement y_i.
-            x_list = self._fit_model(noise)
-            # Concatenate x_map_list to a numpy vector.
-            x = np.concatenate(x_list)
+            x = self._fit_model(noise)
             # Append to the list of samples.
             sample_list.append(x)
         # Turn the list of samples into a numpy array of the desired shape.
         sample_arr = np.column_stack(sample_list)
         return sample_arr
 
-    def _fit_model(self, noise):
+    def _fit_model(self, noise: np.ndarray) -> np.ndarray:
+        """
+        Computes the MAP estimate of the perturbed statistical model.
+        :param noise: The perturbation noise.
+        :return:
+        """
+        # Make problem object from model
+        x = cgn.Parameter(dim=self._model.n, name="x")
+        x.lb = self._model.lb
+        print(f"Using reduction {self._reduction}")
+        x.beta = 1 / self._reduction
         # Change misfit to account for added noise.
-        old_fun = deepcopy(self._problem.fun)
-        def new_func(*args):
-            f = old_fun(*args)
+        def perturbed_misfit(x):
+            f = self._model.h @ x - self._model.y
             return f + noise
-        self._problem.fun = new_func
+        def jac(x):
+            return self._model.h
+        perturbed_problem = cgn.Problem(parameters=[x], fun=perturbed_misfit,
+                                        jac=jac, q=self._model.q, scale=self._model.ydim)
+        if self._model.a is not None:
+            eqcon = cgn.LinearConstraint(parameters=[x], a=self._model.a, b=self._model.b, ctype="eq")
+            perturbed_problem.constraints.append(eqcon)
         # Solve perturbed optimization problem with CGN
-        optsol = self._solver.solve(problem=self._problem, starting_values=self._starting_values)
-        x_map_list = optsol.minimizer_tuple
+        optsol = self._solver.solve(problem=perturbed_problem, starting_values=[self._x_map])
+        x = optsol.minimizer("x")
         # Return the solution
-        return x_map_list
+        return x

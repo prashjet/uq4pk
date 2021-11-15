@@ -26,7 +26,7 @@ class FilterFunctional(AffineEvaluationFunctional):
         zeta[self.indices, :] = id_l[:, :]
         # x(z)_I = z, x(z)_{~I} = x_map_{~I} ==> U = Zeta, v_I = 0, v_{~I} = x_map_{~I}.
         self.u = zeta
-        self.v = x_map
+        self.v = x_map.copy()
         self.v[self.indices] = 0.
         self.z0 = x_map[self.indices]
         self.phidim = 1
@@ -35,7 +35,7 @@ class FilterFunctional(AffineEvaluationFunctional):
         """
         For a filter, phi(z) = w @ z.
         """
-        return self.w @ z
+        return np.array(self.w @ z).reshape((1, ))
 
     def lb_z(self, lb: np.ndarray) -> np.ndarray:
         """

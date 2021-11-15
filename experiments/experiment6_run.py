@@ -24,9 +24,6 @@ def experiment6_run():
                                   supertest = Supertest6(),
                                   name_list=snr_list,
                                   data_list_list=data_list_list)
-    experiment6.run()
-    experiment6.evaluate()
-    experiment6.plot(extra_scale=0.015)
-    experiment6.clean()
+    experiment6.do_all()
 
     logger.deactivate()

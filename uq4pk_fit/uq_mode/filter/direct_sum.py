@@ -1,18 +1,17 @@
-"""
-Contains function "direct_sum".
-"""
+
+from typing import List
 
 from .filter_function import FilterFunction
 from ..partition.partition import Partition
 
 
-def direct_sum(ffunction_list: list):
+def direct_sum(ffunction_list: List[FilterFunction]):
     """
     Build the direct sum of a list of filter functions.
-    :param ffunction_list: list
+
+    :param ffunction_list:
         A list of LocalizationFunction objects.
-    :return: LocalizationFunction
-        The new localization function has dimension equal to the sum of the dimensions of the localization functions
+    :return: The new localization function has dimension equal to the sum of the dimensions of the localization functions
         in lfunction_list, and size equal to the sum of the sizes. The underlying partition is the join
          of all partitions.
     """
