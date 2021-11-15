@@ -22,7 +22,7 @@ class Test8(Test):
 
     def _quantify_uncertainty(self, fitted_model: FittedModel):
         method = self.method
-        uq = fitted_model.uq(method=method, options={"nsamples": 100})
+        uq = fitted_model.uq(method=method, options={"nsamples": 10})
         return uq
 
 
@@ -32,7 +32,8 @@ class Supertest8(SuperTest):
 
     def _setup_tests(self):
         setup_list = []
-        uq_type_list = ["mc", "fci"]
+        #uq_type_list = ["mc", "fci"]
+        uq_type_list = ["mc"]
         for uq_type in uq_type_list:
             setup = {"method": uq_type}
             setup_list.append(setup)

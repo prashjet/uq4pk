@@ -33,7 +33,7 @@ class ECOS(Optimizer):
         constraints = [cp.SOC(np.sqrt(socp.e) / self._scale, (socp.c @ x - socp.d) / self._scale)]
         # add equality constraint
         if socp.equality_constrained:
-            constraints += [socp.a @ x - socp.d]
+            constraints += [socp.a @ x == socp.b]
         if socp.bound_constrained:
             constraints += [x >= socp.lb]
         if socp.minmax == 0:

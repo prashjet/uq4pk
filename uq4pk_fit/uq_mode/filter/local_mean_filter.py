@@ -4,20 +4,18 @@ Contains class "LocalMeanFilter".
 
 import numpy as np
 
-from ..filter import Filter
+from ..filter import LinearFilter
 
 
-class LocalMeanFilter(Filter):
+class LocalMeanFilter(LinearFilter):
     """
     Defines the local mean filter that computes the local mean on a prescribed set of indices,
     with another set of indices as "localization window".
     """
-    def __init__(self, indices, window):
+    def __init__(self, indices: np.ndarray, window: np.ndarray):
         """
-        :param indices: numpy array of ints
-            Defines the indices over which the local mean is computed.
-        :param window: numpy array of ints
-            Defines the localization window. Note that it is required that "window" contains "indices".
+        :param indices: Defines the indices over which the local mean is computed.
+        :param window: Defines the localization window. Note that it is required that "window" contains "indices".
         """
         # Assert that the entries of "indices" are a subset of the entries of "window".
         assert set(indices).issubset(set(window))
@@ -27,4 +25,4 @@ class LocalMeanFilter(Filter):
         # The other indices in "window" are not weighted at all.
         weights = np.zeros(window.size)
         weights[relative_indices] = 1 / relative_indices.size
-        Filter.__init__(self, indices=window, weights=weights)
+        LinearFilter.__init__(self, indices=window, weights=weights)

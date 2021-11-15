@@ -1,5 +1,5 @@
 """
-Filter function associated to "DistanceFilter".
+LinearFilter function associated to "DistanceFilter".
 """
 
 import numpy as np
@@ -14,22 +14,17 @@ from ..partition import TrivialImagePartition
 class DistanceFilterFunction(ImageFilterFunction):
     """
     Special case of ImageFilterFunction that associates to each pixel a correspondingly positioned distance filter.
-    See also uq_mode.fci.DistanceFunction.
+    See also :py:class:`DistanceFilter`.
     """
-    def __init__(self, m, n, a, b, c, d, h):
+    def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float):
         """
-        :param m: int
-            Number of rows of the image.
-        :param n: int
-            Number of columns of the image.
-        :param a: int
-            Number of rows of each superpixel (for downsampling).
-        :param b: int
-            Number of columns of each superpixel (for downsampling also).
-        :param c: int
-            Vertical width of the window (in superpixels!)
-        :param d: int
-            Horizontal width of the window (in superpixels!)
+        :param m: Number of rows of the image.
+        :param n: Number of columns of the image.
+        :param a: Number of rows of each superpixel (for downsampling).
+        :param b: Number of columns of each superpixel (for downsampling also).
+        :param c: Vertical width of the window (in superpixels!)
+        :param d: Horizontal width of the window (in superpixels!)
+        :param h: Scaling factor. The distance will by divided by h before it is forwarded to the weighting functino.
         """
         # Make a filter for the downsampled image
         m_down = np.floor(m / a).astype(int)
@@ -56,6 +51,8 @@ class DistanceFilterFunction(ImageFilterFunction):
 
     def _weighting(self, d):
         """
-        Weighting function for the filter. See fci.DistanceFilter.
+        Weighting function for the filter. To each pixel, a weight is associated equal to weighting(d), where d is the
+        distance to the center pixel.
+        See also :py:class:`DistanceFilter`.
         """
         raise NotImplementedError

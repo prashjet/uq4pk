@@ -4,3 +4,5 @@ __pycache__/
 uq4pk_src/__pycache__/
 experiments/__pycache__/
 experiments/out/
+.idea/workspace.xml
+.idea/tasks.xml

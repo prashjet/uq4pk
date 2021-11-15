@@ -1,8 +1,6 @@
-"""
-Contains the abstract base class "DistanceFilter"
-"""
 
 import numpy as np
+from typing import Union
 
 from .matrix_filter import MatrixFilter
 
@@ -12,18 +10,15 @@ class DistanceFilter(MatrixFilter):
     A distance filter is a filter that is determined by the distance function. The distance function is then
     translated into a weight via a weighting function.
     """
-    def __init__(self, m, n, a, b, position, weighting, scaling: np.ndarray):
+    def __init__(self, m: int, n: int, a: int, b: int, position: np.ndarray, weighting: callable,
+                 scaling: Union[float, np.ndarray]):
         """
-        :param m: int
-            Number of rows of the image.
-        :param n: int
-            Number of columns of the image.
-        :param a: int
-            Vertical width of the localization window.
-        :param b: int
-            Horizontal width of the localization window.
-        :param weighting: callable
-            The weighting function.
+        :param m: Number of rows of the image.
+        :param n: Number of columns of the image.
+        :param a: Vertical width of the localization window.
+        :param b: Horizontal width of the localization window.
+        :param position: Position of the filter center.
+        :param weighting: The weighting function.
         :param scaling: A factor with which the distance is multiplied. This is used in downsampling, so that
             the distance function still refers to the distances in the original image.
         """

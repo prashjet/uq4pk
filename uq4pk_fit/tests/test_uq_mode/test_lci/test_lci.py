@@ -16,9 +16,6 @@ def test_lci():
     # make partition consisting of one element
     partition = uq_mode.partition.Partition(dim=2, elements=[np.array([0, 1])])
     # compute localized credible intervals
-    lci = uq_mode.lci(alpha=alpha, model=prob.model, x_map=prob.x_map, partition=partition)
+    lci = uq_mode.lci(alpha=alpha, model=prob.model, x_map=prob.x_map, partition=partition, options={"use_ray": False})
     # Assert that lower bound is less than upper bound
     assert np.all((lci[:, 0] <= lci[:, 1]))
-
-
-test_lci()

@@ -1,29 +1,34 @@
 
 from math import sqrt, log
 import numpy as np
-import time
 import ray
+import time
+from typing import Literal
 
-from ..filter import FilterFunction
-from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
-from .filtered_value import FilterValue
 from ..linear_model import LinearModel
+from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
+from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
 FTOL = 1e-5
 
 
-class FCIComputer:
+class CIComputer:
     """
-    Superclass for computation of quantity of interests.
+    Manages the computation of credible intervals from evaluation maps.
+
+    Given a linear model and an evaluation map, the CI computer solves for each evaluation object (loss, x, phi)
+    the optimization problems
+    min_z / max_z w^\top z s.t. AU z = b - A v, ||C z - d||_2^2 <= e.
+    and returns the credible interval [phi(z_min), phi(z_max)].
     """
-    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict):
+    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, aemap: AffineEvaluationMap, options: dict):
         # precompute:
         self._alpha = alpha
         self._x_map = x_map.copy()
         self._dim = x_map.size
-        self._ffunction = ffunction
+        self._aemap = aemap
         self._model = model
         self._costf = model.cost
         self._costg = model.cost_grad
@@ -39,18 +44,19 @@ class FCIComputer:
         solver_name = options.setdefault("solver", "slsqp")
         if solver_name == "slsqp":
             self._optimizer = SLSQP(ftol=FTOL)
+            print("Using SLSQP solver.")
         elif solver_name == "ecos":
             self._optimizer = ECOS(scale=self._cost_map)
-            print("Using the ECOS solver to solve the SOC problems. WARNING: THIS CAN BE EXTREMELY SLOW.")
+            print("Using ECOS solver.")
         else:
             raise KeyError(f"Unknown solver '{solver_name}'.")
 
-    def compute(self):
+    def compute_all(self) -> np.ndarray:
         """
-        Computes the kernel-local credible intervals.
-        :return: (n, 2) array
+        Computes all credible intervals.
+        :return: Of shape (n, 2)
             The j-th row of the array corresponds to the lower and upper bound for the credible interval that is
-            associated to the j-th coordinate by LMCIComputer.window_function.
+            associated to the j-th coordinate.
         """
         x_lower_list = []
         x_upper_list = []
@@ -61,16 +67,16 @@ class FCIComputer:
             ray.init(num_cpus=self._num_cpus)
         t_list = []
         t_avg = "undefined"
-        for i in range(self._ffunction.size):
+        counter = 0
+        for aefun in self._aemap.aef_list:
+            counter += 1
             print("\r", end="")
-            print(f"Computing filtered credible interval {i + 1}/{self._ffunction.size} (avg {t_avg} s)",
+            print(f"Computing credible interval {counter}/{self._aemap.size} (avg {t_avg} s)",
                   end=" ")
             # Compute the lower bound for the local credible interval with respect to the i-th localization functional.
             t0 = time.time()
-            filter = self._ffunction.filter(i)
-            fvalue = FilterValue(x_map=self._x_map, filter=filter)
-            x_lower = self._minimize(fvalue)
-            x_upper = self._maximize(fvalue)
+            x_lower = self._minimize(aefun)
+            x_upper = self._maximize(aefun)
             x_lower_list.append(x_lower)
             x_upper_list.append(x_upper)
             t = time.time() - t0
@@ -87,74 +93,76 @@ class FCIComputer:
         print(" done.")
         # The Ray results are now converted to an array. The j-th row of the array corresponds to the credible interval
         # associated to the j-th window-frame pair.
-        x_lower = np.array(x_lower_list_result)
-        x_upper = np.array(x_upper_list_result)
+        x_lower = np.concatenate(x_lower_list_result)
+        x_upper = np.concatenate(x_upper_list_result)
         assert np.all(x_lower <= x_upper + 1e-8)
-        # The vectors are enlarged so that they are of the same dimension as the estimate:
-        x_lower_enlarged = self._ffunction.enlarge(x_lower)
-        x_upper_enlarged = self._ffunction.enlarge(x_upper)
-        lci_arr = np.column_stack((x_lower_enlarged, x_upper_enlarged))
-        # The enlarged array is then returned to the calling function (and then, to the user).
-        return lci_arr
+        return np.column_stack([x_lower, x_upper])
 
-    def _minimize(self, fvalue: FilterValue):
+    def _minimize(self, aefun: AffineEvaluationFunctional):
         """
         Computes the minimal value of the quantity of interest, with respect to the loss function and the constraints.
-        :return: float
         """
-        minimum = self._compute(fvalue, 0)
+        minimum = self._compute(aefun, 0)
         return minimum
 
-    def _maximize(self, fvalue: FilterValue):
+    def _maximize(self, aefun: AffineEvaluationFunctional):
         """
         Computes the maximal value of the quantity of interest, with respect to the loss function and the constraints.
-        :return: float
         """
-        maximum = self._compute(fvalue, 1)
+        maximum = self._compute(aefun, 1)
         return maximum
 
     # PROTECTED
 
-    def _compute(self, fvalue: FilterValue, minmax):
+    def _compute(self, aefun: AffineEvaluationFunctional, minmax: Literal[0, 1]):
         """
-        Computes the quantity of interest.
+        Depending on the value of minmax, computes the minimum or maximum inside the credible region of the quantity
+        of interest defined by an affine evaluation functional.
+
+        :param aefun:
+        :param minmax: If 0, then the minimum is returned. If 1, then the maximum is returned.
         """
         # Create SOCP problem
-        socp = self._create_socp(fvalue=fvalue, minmax=minmax)
+        socp = self._create_socp(aefun=aefun, minmax=minmax)
         # Compute minimizer/maximizer
-        z0 = fvalue.initial_value
+        z0 = aefun.z0
         if self._use_ray:
-            phi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
+            qoi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
+                                           qoi=aefun.phi)
         else:
-            phi = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
-        return phi
+            z_opt = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
+            qoi = aefun.phi(z_opt)
+        return qoi
 
-    def _create_socp(self, fvalue: FilterValue, minmax: int):
+    def _create_socp(self, aefun: AffineEvaluationFunctional, minmax: int) -> SOCP:
         """
-        Creates the SOCP for the computation of the filtered credible interval.
+        Creates the SOCP for the computation of the generalized credible interval.
+        The constraints
+        ||Hx - y||_2^2 + ||R(x - m)||_2^2 <= e
+        A x = b
+        x >= lb
 
-        The SOCP is
-        min / max_z w @ z
-        s.t. A_new z = b_new, ||C z - d||_2^2 <= e, z >= lb_z,
+        are reformulated in terms of z, where x = U z + v:
+        ||C z - d||_2^2 <= e,
+        A_new z = b_new,
+        z >= lb_z,
         where
-            A_new = A dx_dz
-            b_new = b - A (x_map - dx_dz z_map)
+            A_new = A M
+            b_new = b - A v
             C = [C1; C2], d = [d1; d2]
-            C1 = Q H dx_dz
-            C2 = R dx_dz
-            d1 = Q (y - H (x_map - dx_dz z_map))
-            d2 = R (m - (x_map - dx_dz z_map))
+            C1 = Q H U
+            C2 = R U
+            d1 = Q (y - H v)
+            d2 = R (m - v)
             e = 2 * (cost_map + k_alpha)
-            l_z = lb[fvalue.indices]
+            lb_z = [depends on affine evaluation functional]
         """
-        w = fvalue.weights
+        w = aefun.w
+        u = aefun.u
+        v = aefun.v
         a = self._model.a
         b = self._model.b
-        dx_dz = fvalue.dx_dz
-        x_map = self._x_map
-        z_map = fvalue.z_map
-        # z_map must satisfy x(z_map) = x_map
-        assert np.isclose(fvalue.x(z_map), x_map).all()
+        x0 = aefun.x(aefun.z0)
         h = self._model.h
         y = self._model.y
         q = self._model.q
@@ -164,12 +172,12 @@ class FCIComputer:
         cost_map = self._cost_map
         k_alpha = self._k_alpha
         # check that x_map satisfies credibility constraint
-        credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x_map - y))) \
-                      - 0.5 * np.sum(np.square(r.fwd(x_map - m)))
+        credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x0 - y))) \
+                      - 0.5 * np.sum(np.square(r.fwd(x0 - m)))
         assert credibility >= - self._ctol
         if a is not None:
-            a_new = a @ dx_dz
-            b_new = b - a @ (x_map - dx_dz @ z_map)
+            a_new = a @ u
+            b_new = b - a @ v
             # If equality constraint does not satisfy constraint qualification, it is removed.
             satisfies_cq = (np.linalg.matrix_rank(a_new) >= a_new.shape[0])
             if not satisfies_cq:
@@ -178,38 +186,56 @@ class FCIComputer:
         else:
             a_new = None
             b_new = None
-        c1 = q.fwd(h @ dx_dz)
-        c2 = r.fwd(dx_dz)
+        c1 = q.fwd(h @ u)
+        c2 = r.fwd(u)
         c = np.concatenate([c1, c2], axis=0)
-        d1 = q.fwd(y - h @ (x_map - dx_dz @ z_map))
-        d2 = r.fwd(m - (x_map - dx_dz @ z_map))
+        d1 = q.fwd(y - h @ v)
+        d2 = r.fwd(m - v)
         d = np.concatenate([d1, d2], axis=0)
         e = 2 * (cost_map + k_alpha)
-        lb_z = fvalue.lower_bound(lb)
+        lb_z = aefun.lb_z(lb)
         # Create SOCP instance
         socp = SOCP(w=w, a=a_new, b=b_new, c=c, d=d, e=e, lb=lb_z, minmax=minmax)
-        self._check_socp(fvalue, socp)
+        self._check_socp(aefun, socp)
         return socp
 
-    def _cost_constraint(self, x):
+    def _cost_constraint(self, x: np.ndarray) -> float:
+        """
+        The cost constraint is
+        c(x) >= 0, where c(x) = J(x_map) + k_\alpha - J(x),
+        where J is the MAP cost functional, and k_\alpha = N * (\tau_\alpha + 1).
+        """
         c = self._cost_map + self._k_alpha - self._costf(x)
         return c
 
-    def _cost_constraint_grad(self, x):
+    def _cost_constraint_grad(self, x: np.ndarray) -> np.ndarray:
+        """
+        Returns the gradient of the cost constraint function. That is
+
+        :math:`\\nabla c(x) = - \\nabla J(x).
+        """
         return - self._costg(x)
 
     @staticmethod
-    def _negative(v):
+    def _negative(v: np.ndarray):
+        """
+        Returns the negative part of a vector v.
+
+        For example, the vector :math:`v = [-1, 0, 3]` has negative part :math:`v^- = [1, 0, 0]`.
+        """
         vminus = -v
         vneg = vminus.clip(min=0.)
         return vneg
 
-    def _check_socp(self, fvalue: FilterValue, socp: SOCP):
+    def _check_socp(self, aefun: AffineEvaluationFunctional, socp: SOCP):
+        """
+        Rough check that the SOCP was initialized correctly.
+        """
         m = 5
         n_z = socp.w.size
         for i in range(m):
             z_test = np.random.randn(n_z)
-            x_test = fvalue.x(z_test)
+            x_test = aefun.x(z_test)
             cost_x = self._model.cost(x_test)
             cost_z = 0.5 * np.sum(np.square(socp.c @ z_test - socp.d))
             assert np.isclose(cost_x, cost_z)

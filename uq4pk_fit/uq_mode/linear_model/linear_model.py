@@ -19,15 +19,19 @@ class LinearModel:
         # Check input for consistency
         # Copy input in instance attributes
         self.h = deepcopy(h)
+        self.ydim = int(y.size)
         self.y = deepcopy(y)
         self.q = deepcopy(q)
         self.m = deepcopy(m)
         self.r = deepcopy(r)
         self.a = deepcopy(a)
         self.b = deepcopy(b)
-        self.lb = deepcopy(lb)
+        if lb is None:
+            self.lb = - np.inf * np.ones((m.size, ))
+        else:
+            self.lb = deepcopy(lb)
         # store further information to save computation time
-        self.n = m.size
+        self.n = int(m.size)
         self.qh = self.q.fwd(self.h)
 
     def cost(self, x: np.ndarray) -> float:
@@ -47,6 +51,6 @@ class LinearModel:
         :param x:
         :return:
         """
-        misfit_grad = self.qh.T @ (self.h @ x - self.y)
+        misfit_grad = self.qh.T @ self.q.fwd(self.h @ x - self.y)
         regularization_grad = self.r.adj(self.r.fwd(x - self.m))
         return misfit_grad + regularization_grad

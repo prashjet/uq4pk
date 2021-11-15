@@ -20,7 +20,7 @@ def test_squared_exponential_filter_function():
         # get the right filter
         filter = filter_function.filter(i)
         array_flat[filter.indices] = filter.weights
-        print(f"Filter sum = {np.sum(filter.weights)}")
+        print(f"LinearFilter sum = {np.sum(filter.weights)}")
         array = np.reshape(array_flat, (m, n))
         ax = plt.gca()
         ax.set_yticks(np.arange(-0.5, m, 1))
@@ -41,7 +41,7 @@ def test_downsampling():
     for filter in filter_function.get_filter_list():
         array_flat = np.zeros(m * n)
         array_flat[filter.indices] = filter.weights
-        print(f"Filter sum = {np.sum(filter.weights)}")
+        print(f"LinearFilter sum = {np.sum(filter.weights)}")
         array = np.reshape(array_flat, (m, n))
         ax = plt.gca()
         ax.set_yticks(np.arange(-0.5, m, 1))

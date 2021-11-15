@@ -32,7 +32,7 @@ def forward_jac(x):
 # Setup model
 model = uq_mode.rml.Model(mean_list=[xbar], regop_list=[regop], forward=forward, forward_jac=forward_jac,
               regop_noise=noise_regop)
-rmlci = uq_mode.rml.rml_ci(alpha=alpha, ffunction=filter_function, model=model, y=prob.y, nsamples=500)
+rmlci = uq_mode.rml.fci_rml(alpha=alpha, model=model, x_map=, ffunction=filter_function)
 # visualize flaws
 x_ci = get_points(rmlci, prob.xmap)
 xmap = prob.xmap

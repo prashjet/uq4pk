@@ -1,6 +1,6 @@
 from .direct_sum import direct_sum
 from .exponential_filter_function import ExponentialFilterFunction
-from .filter import Filter
+from .linearfilter import LinearFilter
 from .filter_function import FilterFunction
 from .identity_filter_function import IdentityFilterFunction
 from .image_filter_function import ImageFilterFunction
@@ -10,4 +10,3 @@ from .matrix_filter import MatrixFilter
 from .pixel_with_rectangle import PixelWithRectangle
 from .simple_filter_function import SimpleFilterFunction
 from .squared_exponential_filter_function import SquaredExponentialFilterFunction
-from .geometric_filter_function import GeometricFilterFunction
