@@ -63,7 +63,7 @@ class StatModel:
         h = np.array([4, 2])
         self.P1 = OrnsteinUhlenbeck(m=self.m_f, n=self.n_f, h=h)
         # set regularization parameters for theta_v
-        self.beta2 = 10.        # slight overregularization works better
+        self.beta2 = 1.
         self.theta_bar = np.array([20, 90, 0., 0., 0., 0., 0.])
         self._theta_sd = np.array([10., 10., 1., 1., 1., 1., 1.])
         self.P2 = DiagonalOperator(dim=self.dim_theta, s=np.divide(1, self._theta_sd))
