@@ -8,7 +8,7 @@ def experiment7_uq_run():
     logger = Logger(f"experiment7_uq.log")
     logger.activate()
 
-    list_of_f = get_f("data5")
+    list_of_f = get_f("data5", numbers=[2])
     snr_list = [2000, 100]
     # create data list
     data_list_list = []
@@ -23,6 +23,6 @@ def experiment7_uq_run():
                                     supertest = Supertest7Uq(),
                                     name_list=snr_list,
                                     data_list_list=data_list_list)
-    experiment7uq.do_all()
+    experiment7uq.plot()
 
     logger.deactivate()

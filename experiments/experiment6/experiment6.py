@@ -34,7 +34,7 @@ class Supertest6(SuperTest):
 
     def _setup_tests(self):
         setup_list = []
-        on_off = [True, False]
+        on_off = [False]
         for normalize in on_off:
             setup = {"normalize": normalize}
             setup_list.append(setup)

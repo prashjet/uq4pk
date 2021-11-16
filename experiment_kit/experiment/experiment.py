@@ -30,13 +30,12 @@ class Experiment:
 
     def do_all(self):
         """
-        Summary command. Executes ``run``, ``evaluate``, ``plot``, and ``make_summary``.
+        Summary command. Executes ``run``, ``evaluate``, ``plot``, and ``make_summary``. But does not clean.
         """
         self.run()
         self.evaluate()
         self.plot()
         self.make_summary()
-        self.clean()
 
     def run(self):
         """

@@ -9,8 +9,8 @@ def experiment6_run():
     logger = Logger(f"experiment6.log")
     logger.activate()
 
-    list_of_f = get_f("data5", numbers=[1, 2])
-    snr_list = [2000, 100]
+    list_of_f = get_f("data5", numbers=[1])
+    snr_list = [2000]
     # create data list
     data_list_list = []
     for snr in snr_list:

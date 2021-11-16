@@ -25,8 +25,7 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
     scale1 = f_all.max() # original scale
     scales = [scale1]
     if ci_f is not None:
-        ci_upper = ci_f[:, 1]
-        scale2 = ci_upper.max() # uq scale
+        scale2 =  2 * tr.phi_true.max() # uq scale
         scales.append(scale2)
     scale_postfixes = ["", "_scaled"]
     if extra_scale is not None:
@@ -104,3 +103,8 @@ def plot_theta_v(savedir: str, tr: TestResult):
                     values2=theta_map[2:], values3=theta_true[2:], name1="Guess",
                     name2="MAP estimate", name3="Ground truth",
                     errorbars=errorbars2)
+    savename3 = f"{savedir}/h_3_4"
+    plot_triple_bar(safename=savename3, name_list=["h_3", "h_4"], values1=theta_ref[-2:],
+                    values2=theta_map[-2:], values3=theta_true[-2:], name1="Guess",
+                    name2="MAP estimate", name3="Ground truth",
+                    errorbars=errorbars2[:, -2:])

@@ -66,7 +66,6 @@ class RMLSampler:
         # Make problem object from model
         x = cgn.Parameter(dim=self._model.n, name="x")
         x.lb = self._model.lb
-        print(f"Using reduction {self._reduction}")
         x.beta = 1 / self._reduction
         # Change misfit to account for added noise.
         def perturbed_misfit(x):

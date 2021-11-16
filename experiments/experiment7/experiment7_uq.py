@@ -17,14 +17,10 @@ class Test7Uq(Test):
     def _change_model(self):
         self.model.normalize()
         fixation = self.fixation
-        if fixation == "fixed":
-            # fix theta_v to the ground truth
-            fixed_indices = np.arange(7)
-            self.model.fix_theta_v(fixed_indices, self.theta_guess)
-        elif fixation == "partially fixed":
+        if fixation == "partially fixed":
             # set only h_0, h_1, h_2 (corresponding to theta_v[2:4]) equal to the true values
             fixed_indices = np.array([2, 3, 4])
-            fixed_values = self.theta_guess[fixed_indices]
+            fixed_values = self.theta_true[fixed_indices]
             self.model.fix_theta_v(fixed_indices, fixed_values)
             # if theta_v is not fixed, then one has to regularized f more
         elif fixation == "not fixed":
@@ -44,7 +40,7 @@ class Supertest7Uq(SuperTest):
 
     def _setup_tests(self):
         setup_list = []
-        fixation_list = ["fixed", "partially fixed", "not fixed"]
+        fixation_list = ["partially fixed", "not fixed"]
         for fixation in fixation_list:
             setup = {"fixation": fixation}
             setup_list.append(setup)

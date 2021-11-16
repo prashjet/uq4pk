@@ -6,6 +6,6 @@ from experiments.experiment8_run import experiment8_run
 
 
 experiment6_run()
-experiment7_run()
-experiment7_uq_run()
-experiment8_run()
+#experiment7_run()
+#experiment7_uq_run()
+#experiment8_run()
