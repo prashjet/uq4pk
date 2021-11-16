@@ -8,6 +8,7 @@ from typing import Literal
 from ..linear_model import LinearModel
 from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
 from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
+from .progress_bar import ProgressBar, ProgressBarActor
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
@@ -50,6 +51,16 @@ class CIComputer:
             print("Using ECOS solver.")
         else:
             raise KeyError(f"Unknown solver '{solver_name}'.")
+        #
+        self._cino = len(self._aemap.aef_list)  # number of credible intervals
+        self._optno = 2 * self._cino            # number of optimization problems to solve
+        # Setting up progress bar
+        if self._use_ray:
+            if self._use_ray:
+                ray.shutdown()
+                ray.init(num_cpus=self._num_cpus)
+            self._pb = ProgressBar(self._optno)
+            self._actor = self._pb.actor
 
     def compute_all(self) -> np.ndarray:
         """
@@ -62,35 +73,28 @@ class CIComputer:
         x_upper_list = []
         # For every coordinate, compute the value of the lower and upper bounds of the kernel localization functional
         # over the credible region.
-        print(" ")
-        if self._use_ray:
-            ray.init(num_cpus=self._num_cpus)
-        t_list = []
-        t_avg = "undefined"
-        counter = 0
+        optcounter = 0      # counts number of prepared optimization problems
+        cicounter = 0       # counts number of computed credible intervals
         for aefun in self._aemap.aef_list:
-            counter += 1
-            print("\r", end="")
-            print(f"Computing credible interval {counter}/{self._aemap.size} (avg {t_avg} s)",
-                  end=" ")
-            # Compute the lower bound for the local credible interval with respect to the i-th localization functional.
-            t0 = time.time()
+            cicounter += 1
+            optcounter += 1
+            self._print_status(optcounter=optcounter, cicounter=cicounter)
+            # Compute the lower bound for the local credible interval with respect to the i-th evaluation functional.
             x_lower = self._minimize(aefun)
+            optcounter += 1
+            self._print_status(optcounter=optcounter, cicounter=cicounter)
             x_upper = self._maximize(aefun)
             x_lower_list.append(x_lower)
             x_upper_list.append(x_upper)
-            t = time.time() - t0
-            t_list.append(t)
-            t_avg = np.mean(np.array(t_list))
-        print("Collecting ...", end="")
         if self._use_ray:
+            print("\n" + "Starting computation...")
+            self._pb.print_until_done()
             x_lower_list_result = ray.get(x_lower_list)
             x_upper_list_result = ray.get(x_upper_list)
         else:
             x_lower_list_result = x_lower_list
             x_upper_list_result = x_upper_list
         ray.shutdown()
-        print(" done.")
         # The Ray results are now converted to an array. The j-th row of the array corresponds to the credible interval
         # associated to the j-th window-frame pair.
         x_lower = np.concatenate(x_lower_list_result)
@@ -128,7 +132,7 @@ class CIComputer:
         z0 = aefun.z0
         if self._use_ray:
             qoi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
-                                           qoi=aefun.phi)
+                                           qoi=aefun.phi, actor=self._actor)
         else:
             z_opt = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
             qoi = aefun.phi(z_opt)
@@ -239,3 +243,20 @@ class CIComputer:
             cost_x = self._model.cost(x_test)
             cost_z = 0.5 * np.sum(np.square(socp.c @ z_test - socp.d))
             assert np.isclose(cost_x, cost_z)
+
+    def _print_status(self, optcounter: int, cicounter: int):
+        """
+        Displays the current status of the computation.
+
+        :param optcounter: Number of current optimization problem.
+        :param cicounter: Number of current credible interval.
+        """
+        if self._use_ray:
+            print("\r", end="")
+            print(f"Preparing optimization problem {optcounter}/{self._optno}.",
+                  end=" ")
+        else:
+            print("\r", end="")
+            print(f"Computing credible interval {cicounter}/{self._cino}.",
+                  end=" ")
+
