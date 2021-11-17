@@ -61,7 +61,7 @@ def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str)
         plot_with_colorbar(image=phi_true_im, vmax=vmax, savename=f"{savedir}/filtered_truth{postfix}")
         plot_with_colorbar(image=phi_map_im, vmax=vmax, savename=f"{savedir}/filtered_map{postfix}")
         # plot treshold map (1 = lower, 2 = upper)
-        eps = vmax * 0.05
+        eps = vmax * 0.1
         lower_on = (ci_lower_im > eps).astype(int)
         upper_on = (ci_upper_im > eps).astype(int)
         treshold_image = lower_on + upper_on
