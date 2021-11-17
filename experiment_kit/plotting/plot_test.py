@@ -21,13 +21,13 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
     f_ref_image = tr.image(tr.data.f_ref)
     f_all = np.concatenate((f_map_image.flatten(), f_ref_image.flatten(), f_true_image.flatten()))
     ci_f = tr.ci_f
-
+    scale0 = None
     scale1 = f_all.max() # original scale
-    scales = [scale1]
+    scales = [scale0, scale1]
     if ci_f is not None:
         scale2 =  2 * tr.phi_true.max() # uq scale
         scales.append(scale2)
-    scale_postfixes = ["", "_scaled"]
+    scale_postfixes = ["", "_scale1", "_scale2"]
     if extra_scale is not None:
         scales.append(extra_scale)
         scale_postfixes.append("_rescaled")
@@ -60,12 +60,6 @@ def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str)
         plot_with_colorbar(image=ci_sizes_im, savename=f"{savedir}/size{postfix}", vmax=vmax, vmin=vmin)
         plot_with_colorbar(image=phi_true_im, vmax=vmax, savename=f"{savedir}/filtered_truth{postfix}")
         plot_with_colorbar(image=phi_map_im, vmax=vmax, savename=f"{savedir}/filtered_map{postfix}")
-        # plot treshold map (1 = lower, 2 = upper)
-        eps = vmax * 0.05
-        lower_on = (ci_lower_im > eps).astype(int)
-        upper_on = (ci_upper_im > eps).astype(int)
-        treshold_image = lower_on + upper_on
-        plot_with_colorbar(image=treshold_image, savename=f"{savedir}/treshold")
 
 
 def plot_theta_v(savedir: str, tr: TestResult):
@@ -104,7 +98,11 @@ def plot_theta_v(savedir: str, tr: TestResult):
                     name2="MAP estimate", name3="Ground truth",
                     errorbars=errorbars2)
     savename3 = f"{savedir}/h_3_4"
+    if errorbars2 is None:
+        reduced_errorbars = None
+    else:
+        reduced_errorbars = errorbars2[:, -2:]
     plot_triple_bar(safename=savename3, name_list=["h_3", "h_4"], values1=theta_ref[-2:],
                     values2=theta_map[-2:], values3=theta_true[-2:], name1="Guess",
                     name2="MAP estimate", name3="Ground truth",
-                    errorbars=errorbars2[:, -2:])
+                    errorbars=reduced_errorbars)

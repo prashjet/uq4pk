@@ -29,8 +29,6 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
         ffunction_f = uq_mode.ImageLocalMeans(m=m_f, n=n_f, a=a, b=b, c=c, d=d)
     elif kernel == "pixel":
         ffunction_f = uq_mode.PixelWithRectangle(m=m_f, n=n_f, a=a, b=b)
-    elif kernel == "geometric":
-        ffunction_f = uq_mode.GeometricFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d)
     else:
         raise KeyError("Unknown kernel.")
     if dim_theta_v is None:

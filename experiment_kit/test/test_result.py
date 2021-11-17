@@ -24,13 +24,16 @@ class TestResult:
         self.ci_theta = uq.ci_theta
         filter_f = uq.filter_f
         if filter_f is not None:
-            self.phi_map = filter_f.evaluate(self.f_map)
-            self.phi_true = filter_f.evaluate(self.data.f_true)
-            self.phi_ref = filter_f.evaluate(self.data.f_ref)
+            self.phi_map = filter_f.enlarge(filter_f.evaluate(self.f_map))
+            self.phi_true = filter_f.enlarge(filter_f.evaluate(self.data.f_true))
+            self.phi_ref = filter_f.enlarge(filter_f.evaluate(self.data.f_ref))
         else:
             self.phi_map = self.f_map
             self.phi_true = self.data.f_true
             self.phi_ref = self.data.f_ref
+        assert self.phi_map.size == self.f_map.size
+        assert self.phi_true.size == self.f_map.size
+        assert self.phi_ref.size == self.f_map.size
         self.regop_theta = statmodel.P2.mat
         self.m_f = statmodel.m_f
         self.n_f = statmodel.n_f

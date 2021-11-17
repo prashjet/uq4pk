@@ -35,6 +35,8 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     xi_upp = xi[:, 1]
     x_low = ffunction.enlarge(xi_low)
     x_upp = ffunction.enlarge(xi_upp)
+    assert x_low.size == x_map.size
+    assert x_upp.size == x_map.size
     credible_intervals = np.column_stack([x_low, x_upp])
     return credible_intervals
 
