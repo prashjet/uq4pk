@@ -23,6 +23,7 @@ class TestResult:
         self.ci_f = uq.ci_f
         self.ci_theta = uq.ci_theta
         filter_f = uq.filter_f
+        self.uq_scale = uq.scale
         if filter_f is not None:
             self.phi_map = filter_f.enlarge(filter_f.evaluate(self.f_map))
             self.phi_true = filter_f.enlarge(filter_f.evaluate(self.data.f_true))

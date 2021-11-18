@@ -2,6 +2,7 @@
 import numpy as np
 from ..test import TestResult
 
+from ..autodetect import autodetect
 from .plot_triple_bar import plot_triple_bar
 from .plot_with_colorbar import plot_with_colorbar
 
@@ -34,6 +35,9 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
     # do plotting for all scales
     for scale, postfix in zip(scales, scale_postfixes):
         _create_plots_for_f(savedir, tr, scale, postfix)
+    # finally, also make feature plot
+    if ci_f is not None:
+        autodetect(image=ci_f[:, 0], scale=tr.uq_scale, savename=f"{savedir}/autodetect.png")
 
 
 def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str):

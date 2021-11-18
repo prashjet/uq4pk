@@ -126,7 +126,8 @@ class FittedModel:
         ci_x = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model, ffunction=filter_function,
                            options=options)
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
-        uq_result = UQResult(ci_f=ci_f, filter_f=filter_f, ci_theta=ci_theta, filter_theta=filter_theta)
+        uq_scale = options["h"]
+        uq_result = UQResult(ci_f=ci_f, filter_f=filter_f, ci_theta=ci_theta, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
 
     def _uq_lci(self, options: dict):
@@ -148,7 +149,7 @@ class FittedModel:
         lci_f = uq_mode.lci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec, partition=partition,
                             options=options)
         filter_f = uq_mode.IdentityFilterFunction(dim=self._dim_f)
-        uq_result = UQResult(ci_f=lci_f, filter_f=filter_f, ci_theta=None, filter_theta=None)
+        uq_result = UQResult(ci_f=lci_f, filter_f=filter_f, ci_theta=None, filter_theta=None, scale=1)
         return uq_result
 
     def _uq_mc(self, options: dict):
@@ -162,12 +163,13 @@ class FittedModel:
         # when performing RML than when performing MAP estimation.
         # Setup the uq_mode.fci.FilterFunction object
         options["reduction"] = options.setdefault("reduction", 42)
+        uq_scale = options.setdefault("h", 3)
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         ci_x = uq_mode.fci_rml(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
                                ffunction=filter_function, options=options)
         # Make UQResult object.
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
-        uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta)
+        uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
 
     def _uq_dummy(self, options: dict):
@@ -177,7 +179,7 @@ class FittedModel:
         ci_f = np.column_stack((self.f_map - 1, self.f_map + 1))
         ci_theta = np.column_stack((self.theta_map - 1, self.theta_map + 1))
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
-        uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta)
+        uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta, scale=1)
         return uq_result
 
     def _get_filter_function(self, options):
