@@ -19,7 +19,7 @@ class DiscreteLaplacian(RegularizationOperator):
         self._n = n
         self._dim = m * n
         self._rdim = self.dim
-        self._kernel = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
+        self._kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
         mat = self._compute_mat()
         RegularizationOperator.__init__(self, mat)
 
@@ -55,16 +55,16 @@ class DiscreteLaplacian(RegularizationOperator):
         l_list = []
         for column in basis.T:
             im = np.reshape(column, (self.m, self.n))
-            l = self._evaluate_laplacian(im)
+            l = self._filter_image(im).flatten()
             l_list.append(l)
         l_mat = np.row_stack(l_list)
         return l_mat
 
-    def _evaluate_laplacian(self, im):
+    def _filter_image(self, im: np.ndarray):
         """
         Computes discrete gradient of image
-        :param im:
-        :return:
+        :param im: Of shape (m, n).
+        :return: Of shape (m, n). The filtered image.
         """
         # zero pad the image
         padded_image = cv2.copyMakeBorder(src=im, top=1, bottom=1, left=1, right=1, borderType=cv2.BORDER_CONSTANT,
@@ -72,4 +72,4 @@ class DiscreteLaplacian(RegularizationOperator):
         l = cv2.filter2D(padded_image, -1, self._kernel)
         # remove borders
         l = l[1:-1, 1:-1]
-        return l.flatten()
+        return l

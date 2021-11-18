@@ -37,7 +37,7 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
         _create_plots_for_f(savedir, tr, scale, postfix)
     # finally, also make feature plot
     if ci_f is not None:
-        autodetect(image=ci_f[:, 0], scale=tr.uq_scale, savename=f"{savedir}/autodetect.png")
+        autodetect(image=tr.image(ci_f[:, 0]), scale=tr.uq_scale, savename=f"{savedir}/autodetect.png")
 
 
 def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str):
@@ -64,12 +64,13 @@ def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str)
         plot_with_colorbar(image=ci_sizes_im, savename=f"{savedir}/size{postfix}", vmax=vmax, vmin=vmin)
         plot_with_colorbar(image=phi_true_im, vmax=vmax, savename=f"{savedir}/filtered_truth{postfix}")
         plot_with_colorbar(image=phi_map_im, vmax=vmax, savename=f"{savedir}/filtered_map{postfix}")
-        # plot treshold map (1 = lower, 2 = upper)
-        eps = vmax * 0.1
-        lower_on = (ci_lower_im > eps).astype(int)
-        upper_on = (ci_upper_im > eps).astype(int)
-        treshold_image = lower_on + upper_on
-        plot_with_colorbar(image=treshold_image, savename=f"{savedir}/treshold")
+        if vmax is not None:
+            # plot treshold map (1 = lower, 2 = upper)
+            eps = vmax * 0.05
+            lower_on = (ci_lower_im > eps).astype(int)
+            upper_on = (ci_upper_im > eps).astype(int)
+            treshold_image = lower_on + upper_on
+            plot_with_colorbar(image=treshold_image, savename=f"{savedir}/treshold")
 
 
 def plot_theta_v(savedir: str, tr: TestResult):
