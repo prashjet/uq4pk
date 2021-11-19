@@ -41,6 +41,9 @@ class TestResult:
         self.rdm_map = self._rdm(self.f_map, self.theta_map, fitted_model, statmodel)
         self.rdm_true = self._rdm(self.data.f_true, self.data.theta_true, fitted_model, statmodel)
         self.rdm_ref = self._rdm(self.data.f_ref, self.data.theta_guess, fitted_model, statmodel)
+        # Ticks needed for correct plotting
+        ssps = data.forward_operator.modgrid
+        self.ticks = [ssps.t_ticks, ssps.z_ticks, ssps.img_t_ticks, ssps.img_z_ticks]
 
     def image(self, f):
         m_f = self.m_f

@@ -37,17 +37,23 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
         _create_plots_for_f(savedir, tr, scale, postfix)
     # finally, also make feature plot
     if ci_f is not None:
-        autodetect(image=tr.image(ci_f[:, 0]), scale=tr.uq_scale, savename=f"{savedir}/autodetect.png")
+        autodetect(image=tr.image(ci_f[:, 0]), scale=tr.uq_scale, vmax=scale2,
+                   savename=f"{savedir}/lower_autodetect.png", ticks=tr.ticks)
+        autodetect(image=tr.image(ci_f[:, 1]), scale=tr.uq_scale, vmax = scale2,
+                   savename=f"{savedir}/upper_autodetect.png", ticks=tr.ticks)
 
 
 def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str):
+    def plot_f(image: np.ndarray, savename: str, vmax: float = None, vmin: float = None):
+        return plot_with_colorbar(image=image, savename=savename, vmax=vmax, vmin=vmin,
+                                  ticks=tr.ticks)
     f_true_im = tr.image(tr.data.f_true)
     f_map_im = tr.image(tr.f_map)
     f_ref_im = tr.image(tr.data.f_ref)
     vmin = 0.   # assume that all images are nonnegative
-    plot_with_colorbar(image=f_true_im, savename=f"{savedir}/truth{postfix}", vmax=vmax, vmin=vmin)
-    plot_with_colorbar(image=f_map_im, savename=f"{savedir}/map{postfix}", vmax=vmax, vmin=vmin)
-    plot_with_colorbar(image=f_ref_im, savename=f"{savedir}/ref{postfix}", vmax=vmax, vmin=vmin)
+    plot_f(image=f_true_im, savename=f"{savedir}/truth{postfix}", vmax=vmax, vmin=vmin)
+    plot_f(image=f_map_im, savename=f"{savedir}/map{postfix}", vmax=vmax, vmin=vmin)
+    plot_f(image=f_ref_im, savename=f"{savedir}/ref{postfix}", vmax=vmax, vmin=vmin)
 
     ci_f = tr.ci_f
     if ci_f is not None:
@@ -59,18 +65,18 @@ def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str)
         ci_sizes_im = tr.image(ci_sizes)
         phi_map_im = tr.image(tr.phi_map)
         phi_true_im = tr.image(tr.phi_true)
-        plot_with_colorbar(image=ci_lower_im, savename=f"{savedir}/lower{postfix}", vmax=vmax, vmin=vmin)
-        plot_with_colorbar(image=ci_upper_im, savename=f"{savedir}/upper{postfix}", vmax=vmax, vmin=vmin)
-        plot_with_colorbar(image=ci_sizes_im, savename=f"{savedir}/size{postfix}", vmax=vmax, vmin=vmin)
-        plot_with_colorbar(image=phi_true_im, vmax=vmax, savename=f"{savedir}/filtered_truth{postfix}")
-        plot_with_colorbar(image=phi_map_im, vmax=vmax, savename=f"{savedir}/filtered_map{postfix}")
+        plot_f(image=ci_lower_im, savename=f"{savedir}/lower{postfix}", vmax=vmax, vmin=vmin)
+        plot_f(image=ci_upper_im, savename=f"{savedir}/upper{postfix}", vmax=vmax, vmin=vmin)
+        plot_f(image=ci_sizes_im, savename=f"{savedir}/size{postfix}", vmax=vmax, vmin=vmin)
+        plot_f(image=phi_true_im, vmax=vmax, vmin=vmin, savename=f"{savedir}/filtered_truth{postfix}")
+        plot_f(image=phi_map_im, vmax=vmax, vmin=vmin, savename=f"{savedir}/filtered_map{postfix}")
         if vmax is not None:
             # plot treshold map (1 = lower, 2 = upper)
             eps = vmax * 0.05
             lower_on = (ci_lower_im > eps).astype(int)
             upper_on = (ci_upper_im > eps).astype(int)
             treshold_image = lower_on + upper_on
-            plot_with_colorbar(image=treshold_image, savename=f"{savedir}/treshold")
+            plot_f(image=treshold_image, savename=f"{savedir}/treshold")
 
 
 def plot_theta_v(savedir: str, tr: TestResult):
