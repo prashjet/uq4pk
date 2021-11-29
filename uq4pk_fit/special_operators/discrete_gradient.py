@@ -1,34 +1,26 @@
-"""
-Contains class 'DiscreteGradient'.
-"""
 
-import cv2
 import numpy as np
+from typing import List
 
 from ..cgn import RegularizationOperator
+from .gradient import mygradient
 
 
 class DiscreteGradient(RegularizationOperator):
     """
     Implements the discrete gradient operator for an image of shape n1, n2
     """
-    def __init__(self, m, n):
+    def __init__(self, shape: List[int]):
         self.name = "DiscreteGradient"
-        self._m = m
-        self._n = n
-        self._dim = m * n
-        self._rdim = 2 * self.dim
-        self._xkernel, self._ykernel = self._compute_kernels()
+        self._shape = shape
+        self._dim = np.prod(np.array(shape))
+        self._rdim = len(shape) * self._dim
         mat = self._compute_mat()
         RegularizationOperator.__init__(self, mat)
 
     @property
-    def m(self):
-        return self._m
-
-    @property
-    def n(self):
-        return self._n
+    def shape(self):
+        return self._shape
 
     def adj(self, w: np.ndarray) -> np.ndarray:
         return self._mat.T @ w
@@ -39,38 +31,25 @@ class DiscreteGradient(RegularizationOperator):
 
     # PRIVATE
 
-    @staticmethod
-    def _compute_kernels():
-        xkernel = np.zeros((3, 3))
-        xkernel[1, 1] = -1
-        xkernel[2, 1] = 1
-        ykernel = np.zeros((3, 3))
-        ykernel[1, 1] = -1
-        ykernel[1, 2] = 1
-        return xkernel, ykernel
-
     def _compute_mat(self):
         basis = np.identity(self.dim)
         d_list = []
         for column in basis.T:
-            im = np.reshape(column, (self.m, self.n))
-            d = self._evaluate_gradient(im)
+            arr = np.reshape(column, self._shape)
+            d = self._evaluate_gradient(arr)
             d_list.append(d)
-        d_mat = np.row_stack(d_list)
+        d_mat = np.column_stack(d_list)
         return d_mat
 
-    def _evaluate_gradient(self, im):
+    def _evaluate_gradient(self, arr: np.ndarray) -> np.ndarray:
         """
-        Computes discrete gradient of image
-        :param im:
-        :return:
+        Computes discrete gradient of an N-dimensional array.
+
+        :param arr: The array.
+        :return: A vector of size np.prod(np.array(arr.shape)). For example, if ``arr`` has shape (m, n, l), then
+            the returned gradient is a vector of size m * n * l.
         """
-        # zero pad the image
-        padded_image = cv2.copyMakeBorder(src=im, top=1, bottom=1, left=1, right=1, borderType=cv2.BORDER_CONSTANT,
-                                          value=0.)
-        dx = cv2.filter2D(padded_image, -1, self._xkernel)
-        dy = cv2.filter2D(padded_image, -1, self._ykernel)
-        # remove borders
-        dx = dx[1:-1, 1:-1]
-        dy = dy[1:-1, 1:-1]
-        return np.row_stack((dx.flatten(), dy.flatten()))
+        gradients = mygradient(arr)
+        flattened_gradient = [grad.flatten() for grad in gradients]
+        gradient = np.concatenate(flattened_gradient)
+        return gradient

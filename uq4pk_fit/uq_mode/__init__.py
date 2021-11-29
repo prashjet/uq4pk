@@ -1,4 +1,5 @@
 
+from .detection import significant_features
 from .fci import fci
 from .lci import lci
 from .linear_model import LinearModel

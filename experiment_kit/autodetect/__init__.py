@@ -1,2 +1,2 @@
 
-from .autodetect import autodetect
+from .autodetect import detect

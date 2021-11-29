@@ -2,7 +2,7 @@
 Contains class "SquaredExponentialFilterFunction".
 """
 
-from math import exp
+from math import exp, sqrt
 from .distance_filter_function import DistanceFilterFunction
 
 
@@ -13,7 +13,7 @@ class SquaredExponentialFilterFunction(DistanceFilterFunction):
     """
     def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float = 1.):
         self._h = h
-        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h)
+        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h=sqrt(2) * h)
 
     def _weighting(self, d: float) -> float:
         """

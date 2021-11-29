@@ -42,7 +42,7 @@ class Test1(Test):
             self.model.P1 = OrnsteinUhlenbeck(m=self.model.m_f, n=self.model.n_f, h=h)
             self.model.beta1 = snr * 1e3
         elif regop == "DiscreteGradient":
-            self.model.P1 = DiscreteGradient(m=self.model.m_f, n=self.model.n_f)
+            self.model.P1 = DiscreteGradient()
             self.model.beta1 = snr * 1e3
         elif regop == "DiscreteLaplacian":
             self.model.P1 = DiscreteLaplacian(m=self.model.m_f, n=self.model.n_f)

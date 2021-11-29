@@ -23,7 +23,7 @@ class ExponentialFilterFunction(DistanceFilterFunction):
         :param h: Scaling parameter.
         """
         self._h = h
-        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h)
+        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, 2 * h)
 
 
     def _weighting(self, d: float) -> float:

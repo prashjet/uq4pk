@@ -7,7 +7,7 @@ matplotlib.use('tkagg')
 from matplotlib import pyplot as plt
 import numpy as np
 
-from uq_mode import SquaredExponentialFilterFunction
+from uq4pk_fit.uq_mode import SquaredExponentialFilterFunction
 
 
 def test_squared_exponential_filter_function():

@@ -8,6 +8,39 @@ import cv2
 from ..cgn import RegularizationOperator
 
 
+class SecondDerivative(RegularizationOperator):
+
+    def __init__(self, n: int):
+        self._dim = n
+        self._rdim = n
+        mat = self._compute_mat()
+        RegularizationOperator.__init__(self, mat)
+
+    def adj(self, w: np.ndarray) -> np.ndarray:
+        return self._mat.T @ w
+
+    def fwd(self, v: np.ndarray) -> np.ndarray:
+        w = self._mat @ v
+        return w
+
+    def _compute_mat(self):
+        basis = np.identity(self.dim)
+        d_list = []
+        for column in basis.T:
+            d = self._evaluate_second_derivative(column)
+            d_list.append(d)
+        d_mat = np.column_stack(d_list)
+        return d_mat
+
+    def _evaluate_second_derivative(self, vec):
+        vec_ext = np.append(vec, vec[-1])
+        vec_ext = np.insert(vec_ext, 0, vec[0])
+        vec_plus = np.roll(vec_ext, -1)[1:-1]
+        vec_minus = np.roll(vec_ext, 1)[1:-1]
+        gradient = vec_plus - 2 * vec + vec_minus
+        return gradient
+
+
 class DiscreteLaplacian(RegularizationOperator):
     """
     Implements the discrete gradient operator for an image of shape n_x, n_y

@@ -5,7 +5,7 @@ import numpy as np
 from uq4pk_src.observation_operator import ObservationOperator
 
 
-def plot_with_colorbar(image, ticks, savename=None, vmax=None, vmin=None, show=False):
+def plot_with_colorbar(image, ticks=None, savename=None, vmax=None, vmin=None, show=False):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.
@@ -13,7 +13,6 @@ def plot_with_colorbar(image, ticks, savename=None, vmax=None, vmin=None, show=F
     :param savename: string
     :param vmax: float
     """
-    t_ticks, z_ticks, img_t_ticks, img_z_ticks = ticks
     cmap = plt.get_cmap("gnuplot")
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
@@ -23,10 +22,12 @@ def plot_with_colorbar(image, ticks, savename=None, vmax=None, vmin=None, show=F
     cbar.set_label("density")
     ax.set_xlabel("Age [Gyr]")
     ax.set_ylabel("Metallicity [Z/H]")
-    ax.set_xticks(img_t_ticks)
-    ax.set_xticklabels(t_ticks)
-    ax.set_yticks(img_z_ticks)
-    ax.set_yticklabels(z_ticks)
+    if ticks is not None:
+        t_ticks, z_ticks, img_t_ticks, img_z_ticks = ticks
+        ax.set_xticks(img_t_ticks)
+        ax.set_xticklabels(t_ticks)
+        ax.set_yticks(img_z_ticks)
+        ax.set_yticklabels(z_ticks)
     if show: plt.show()
     # if savename is provided, save .csv and image
     if savename is not None:

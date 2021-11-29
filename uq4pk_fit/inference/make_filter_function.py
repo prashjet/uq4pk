@@ -17,7 +17,7 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     a = options.setdefault("a", 1)
     b = options.setdefault("b", 1)
     c = options.setdefault("c", 3)
-    d = options.setdefault("d", 9)
+    d = options.setdefault("d", 6)
     h = options.setdefault("h", 3)
     serious = options.setdefault("serious", False)
     # Create filter function for f

@@ -5,7 +5,8 @@ Contains class "FittedModel"
 from copy import deepcopy
 import numpy as np
 from numpy.typing import ArrayLike
-from typing import List
+from skimage.feature import peak_local_max
+from typing import List, Union
 
 import uq4pk_fit.cgn as cgn
 from uq4pk_fit.cgn.translator.translator import Translator
@@ -13,6 +14,7 @@ import uq4pk_fit.uq_mode as uq_mode
 from .make_filter_function import make_filter_function
 from .parameter_map import ParameterMap
 from .uq_result import UQResult
+from .uq_autodetect import autodetect
 
 
 class FittedModel:
@@ -128,6 +130,28 @@ class FittedModel:
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
         uq_scale = options["h"]
         uq_result = UQResult(ci_f=ci_f, filter_f=filter_f, ci_theta=ci_theta, filter_theta=filter_theta, scale=uq_scale)
+        return uq_result
+
+    def uq_dog(self) -> List:
+        """
+        Performs automatic feature detection with uncertainty-aware difference of Gaussians.
+
+        :returns: The list of features. Each list entry is of the form (s, i, j), where s denotes the scale at which
+                the feature was identified, while (i, j) denote the y- and x-coordinate.
+        """
+        features = uq_mode.significant_features(alpha=0.05, m=self._m_f, n=self._n_f, model=self._linearized_model,
+                                                x_map=self._x_map_vec, minscale=1, maxscale=10)
+        return features
+
+    def uq_autodetect(self, options: dict = None):
+        if options is None:
+            options = {}
+        if not self._parameter_map.theta_fixed:
+            raise NotImplementedError("Autodetect is currently only implemented for the linear model.")
+        lower, upper, h, filter = autodetect(m=self._m_f, n=self._n_f, x_map=self._x_map_vec, model=self._linearized_model,
+                                     options=options)
+        ci_f = np.column_stack([lower, upper])
+        uq_result = UQResult(ci_f=ci_f, filter_f=filter, ci_theta=None, filter_theta=None, scale=h)
         return uq_result
 
     def _uq_lci(self, options: dict):
