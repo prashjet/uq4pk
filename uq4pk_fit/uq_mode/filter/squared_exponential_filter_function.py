@@ -11,9 +11,9 @@ class SquaredExponentialFilterFunction(DistanceFilterFunction):
     Special case of ImageFilterFunction that associates to each pixel a correspondingly positioned exponential filter.
     See also uq_mode.fci.ExponentialFilter.
     """
-    def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float = 1.):
+    def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float = 1., boundary: str = "reflect"):
         self._h = h
-        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h=sqrt(4 * h))
+        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h=sqrt(4 * h), boundary=boundary)
 
     def _weighting(self, d: float) -> float:
         """

@@ -22,7 +22,8 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     serious = options.setdefault("serious", False)
     # Create filter function for f
     if kernel == "gauss":
-        ffunction_f = uq_mode.SquaredExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h)
+        boundary = options.setdefault("boundary", "reflect")
+        ffunction_f = uq_mode.SquaredExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h, boundary=boundary)
     elif kernel == "laplace":
         ffunction_f = uq_mode.ExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h)
     elif kernel == "mean":

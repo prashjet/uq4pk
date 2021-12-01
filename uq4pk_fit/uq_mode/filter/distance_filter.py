@@ -1,6 +1,6 @@
 
 import numpy as np
-from typing import Union
+from typing import Literal, Union
 
 from .matrix_filter import MatrixFilter
 
@@ -11,7 +11,7 @@ class DistanceFilter(MatrixFilter):
     translated into a weight via a weighting function.
     """
     def __init__(self, m: int, n: int, a: int, b: int, position: np.ndarray, weighting: callable,
-                 scaling: Union[float, np.ndarray]):
+                 scaling: Union[float, np.ndarray], boundary: Literal["reflect", "zero"] = "reflect"):
         """
         :param m: Number of rows of the image.
         :param n: Number of columns of the image.
@@ -21,6 +21,9 @@ class DistanceFilter(MatrixFilter):
         :param weighting: The weighting function.
         :param scaling: A factor with which the distance is multiplied. This is used in downsampling, so that
             the distance function still refers to the distances in the original image.
+        :param boundary: Mode that determines how the image is padded at the boundary.
+            - "reflect": The image is reflected according to the scheme abcdcb|abcd|cbabcdcba
+            - "zero": The image is extended through zero padding: 0000|abcd|0000
         """
         self._weighting = weighting
         self.a = a
@@ -37,7 +40,7 @@ class DistanceFilter(MatrixFilter):
                 pos_ij = np.array([i, j])
                 d_ij = self._dist(pos_ij, center)
                 k[i, j] = self._weighting(d_ij)
-        MatrixFilter.__init__(self, m=m, n=n, position=position, mat=k, center=center, normalized=True)
+        MatrixFilter.__init__(self, m=m, n=n, position=position, mat=k, center=center, boundary=boundary)
 
     # PROTECTED
 

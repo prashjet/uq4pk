@@ -1,5 +1,6 @@
 
 import numpy as np
+from typing import Literal
 
 from ..filter.geometry2d import rectangle_indices
 from .linearfilter import LinearFilter
@@ -10,7 +11,7 @@ class MatrixFilter(LinearFilter):
     Base class for two-dimensional filter that can be represented by a matrix kernel.
     """
     def __init__(self, m: int, n: int, position: np.ndarray, mat: np.ndarray, center: np.ndarray,
-                 normalized: bool = False):
+                 boundary: Literal["reflect", "zero"] = "reflect"):
         """
         :param m: Number of rows of the image.
         :param n: Number of columns of the image.
@@ -32,6 +33,13 @@ class MatrixFilter(LinearFilter):
                                                       return_relative=True)
         mat_inside = mat.flatten()[relative_indices]
         # Create the filter from the rectangle indices and the weights.
-        if normalized:
+        # The way in which the filter is normalized depends on the boundary reflection.
+        if boundary == "reflect":
+            # Reflection can be realized by normalizing the weights such that they sum to one.
             mat_inside = mat_inside / np.sum(mat_inside)
+        elif boundary == "zero":
+            # Zero padding is equivalent to dividing by the sum of the full matrix.
+            mat_inside = mat_inside / np.sum(mat)
+        else:
+            raise NotImplementedError
         LinearFilter.__init__(self, indices=indices, weights=mat_inside)

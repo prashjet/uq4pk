@@ -20,7 +20,9 @@ def test_matrix_filter1():
     matrix_filter = MatrixFilter(m=m, n=n, position=position, mat=mat, center=center)
 
     # assert that the weights and the indices are correct:
-    assert np.all(matrix_filter.weights == np.array([3, 1, 3, 1, 2, 1]))
+    weights_should_be = np.array([3, 1, 3, 1, 2, 1])
+    weights_should_be = weights_should_be / np.sum(weights_should_be)
+    assert np.all(matrix_filter.weights == weights_should_be)
 
 
 def test_matrix_filter2():
@@ -33,7 +35,9 @@ def test_matrix_filter2():
     center = np.array([1, 1])
     position = np.array([16, 18])
     matrix_filter = MatrixFilter(m, n, position, mat, center)
-    assert np.all(matrix_filter.weights == np.array([[1, 2, 1, 3]]))
+    weights_should_be = np.array([[1, 2, 1, 3]])
+    weights_should_be = weights_should_be / np.sum(weights_should_be)
+    assert np.all(matrix_filter.weights == weights_should_be)
 
 #test_matrix_filter1()
 test_matrix_filter2()

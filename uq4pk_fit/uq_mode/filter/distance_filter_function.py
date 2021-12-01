@@ -16,7 +16,7 @@ class DistanceFilterFunction(ImageFilterFunction):
     Special case of ImageFilterFunction that associates to each pixel a correspondingly positioned distance filter.
     See also :py:class:`DistanceFilter`.
     """
-    def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float):
+    def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float, boundary: str = "reflect"):
         """
         :param m: Number of rows of the image.
         :param n: Number of columns of the image.
@@ -38,7 +38,7 @@ class DistanceFilterFunction(ImageFilterFunction):
             # Get x-y-coordinates of "index" in the (m,n)-image.
             position = indices_to_coords(m_down, n_down, index).flatten()
             filter = DistanceFilter(m=m_down, n=n_down, a=c_down, b=d_down, position=position, weighting=self._weighting,
-                                    scaling = h / np.array([a, b]))
+                                    scaling = h / np.array([a, b]), boundary=boundary)
             filter_list.append(filter)
         downsampled_ffunction = ImageFilterFunction(image_partition=trivial_partition, filter_list=filter_list)
         # translate the filter function for the superpixel-image to a filter function for the original image
