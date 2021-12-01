@@ -40,6 +40,7 @@ class WaechterBiegler:
         self._c = cnls.c
         self._d = cnls.d
         self._lb = cnls.lb
+        self._ub = cnls.ub
         self._history = []
 
     def _theta(self, state: CGNState):
@@ -55,6 +56,7 @@ class WaechterBiegler:
             penalty += self._negative_norm(self._c @ state.x - self._d)
         if self._bound_constrained:
             penalty += self._negative_norm(state.x - self._lb)
+            penalty += self._negative_norm(self._ub - state.x)
         # ignore penalty if less than tolerance:
         if penalty < self.p.ctol:
             penalty = 0

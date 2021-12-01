@@ -25,6 +25,7 @@ def test_cnls_solve():
         return h
 
     lb = np.zeros(n)
+    ub = np.inf * np.ones(n)
     a = np.ones((1, n))
     b = np.sum(x) * np.ones((1,))
     c = a.copy()
@@ -32,7 +33,7 @@ def test_cnls_solve():
     # make CNLS
     eqcon = ConcreteConstraint(dim=n, a=a, b=b)
     incon = ConcreteConstraint(dim=n, a=c, b=d)
-    cnls = CNLS(func=fun, jac=jac, q=IdentityOperator(dim=n), m=mean, r=regop, eqcon=eqcon, incon=incon, lb=lb,
+    cnls = CNLS(func=fun, jac=jac, q=IdentityOperator(dim=n), m=mean, r=regop, eqcon=eqcon, incon=incon, lb=lb, ub=ub,
                 scale=1.)
     # solve
     options = Solveroptions()

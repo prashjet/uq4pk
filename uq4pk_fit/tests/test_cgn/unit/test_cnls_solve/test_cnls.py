@@ -23,7 +23,8 @@ def test_cnls():
     # make CNLS
     eqcon = ConcreteConstraint(dim=n, a=a, b=b)
     incon = ConcreteConstraint(dim=n, a=c, b=d)
-    cnls = CNLS(func=fun, jac=jac, q=IdentityOperator(dim=n), m=mean, r=regop, eqcon=eqcon, incon=incon, lb=lb,
+    ub = np.inf * np.ones((n, ))
+    cnls = CNLS(func=fun, jac=jac, q=IdentityOperator(dim=n), m=mean, r=regop, eqcon=eqcon, incon=incon, lb=lb, ub=ub,
                 scale=1.)
     # first, check that x indeed satisfies the constraints.
     assert cnls.satisfies_constraints(x)

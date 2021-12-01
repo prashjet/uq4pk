@@ -132,27 +132,19 @@ class FittedModel:
         uq_result = UQResult(ci_f=ci_f, filter_f=filter_f, ci_theta=ci_theta, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
 
-    def uq_dog(self) -> List:
+    def uq_autodetect(self, min_scale: float, max_scale: float, min_res: float = None, max_res: float = None,
+                      nsteps: int = None) -> np.ndarray:
         """
         Performs automatic feature detection with uncertainty-aware difference of Gaussians.
 
-        :returns: The list of features. Each list entry is of the form (s, i, j), where s denotes the scale at which
-                the feature was identified, while (i, j) denote the y- and x-coordinate.
+        :returns: Array of shape (k, 4), where each row corresponds to a significant feature and is of the form
+            (i, j, s, r), where (i, j) is the index at which the feature is centered, s is the scale of the feature,
+            and r is the resolution at which the feature was detected.
         """
         features = uq_mode.significant_features(alpha=0.05, m=self._m_f, n=self._n_f, model=self._linearized_model,
-                                                x_map=self._x_map_vec, minscale=1, maxscale=10)
+                                                x_map=self._x_map_vec, minscale=min_scale, maxscale=max_scale,
+                                                minres=min_res, maxres=max_res, nsteps=nsteps)
         return features
-
-    def uq_autodetect(self, options: dict = None):
-        if options is None:
-            options = {}
-        if not self._parameter_map.theta_fixed:
-            raise NotImplementedError("Autodetect is currently only implemented for the linear model.")
-        lower, upper, h, filter = autodetect(m=self._m_f, n=self._n_f, x_map=self._x_map_vec, model=self._linearized_model,
-                                     options=options)
-        ci_f = np.column_stack([lower, upper])
-        uq_result = UQResult(ci_f=ci_f, filter_f=filter, ci_theta=None, filter_theta=None, scale=h)
-        return uq_result
 
     def _uq_lci(self, options: dict):
         """

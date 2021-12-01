@@ -37,8 +37,8 @@ class SecondDerivative(RegularizationOperator):
         vec_ext = np.insert(vec_ext, 0, vec[0])
         vec_plus = np.roll(vec_ext, -1)[1:-1]
         vec_minus = np.roll(vec_ext, 1)[1:-1]
-        gradient = vec_plus - 2 * vec + vec_minus
-        return gradient
+        second_derivative = vec_plus - 2 * vec + vec_minus
+        return second_derivative
 
 
 class DiscreteLaplacian(RegularizationOperator):
@@ -52,7 +52,7 @@ class DiscreteLaplacian(RegularizationOperator):
         self._n = n
         self._dim = m * n
         self._rdim = self.dim
-        self._kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
+        self._kernel = np.array([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
         mat = self._compute_mat()
         RegularizationOperator.__init__(self, mat)
 
@@ -88,12 +88,12 @@ class DiscreteLaplacian(RegularizationOperator):
         l_list = []
         for column in basis.T:
             im = np.reshape(column, (self.m, self.n))
-            l = self._filter_image(im).flatten()
+            l = self._laplacian(im).flatten()
             l_list.append(l)
         l_mat = np.row_stack(l_list)
         return l_mat
 
-    def _filter_image(self, im: np.ndarray):
+    def _filter_image_old(self, im: np.ndarray):
         """
         Computes discrete gradient of image
         :param im: Of shape (m, n).
@@ -106,3 +106,13 @@ class DiscreteLaplacian(RegularizationOperator):
         # remove borders
         l = l[1:-1, 1:-1]
         return l
+
+    def _laplacian(self, im: np.ndarray) -> np.ndarray:
+        """
+        Applies the Laplacian to a 2-dimensional image.
+
+        :param im: A 2-dimensional image.
+        :return: A 2-dimensional image of the same shape as ``im``-
+        """
+        lap = cv2.Laplacian(src=im, ddepth=-1, borderType=cv2.BORDER_REFLECT)
+        return lap

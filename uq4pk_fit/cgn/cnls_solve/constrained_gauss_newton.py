@@ -167,8 +167,10 @@ class ConstrainedGaussNewton:
             d = None
         if self._cnls.bound_constrained:
             lb = self._cnls.lb - state.x
+            ub = self._cnls.ub - state.x
         else:
             lb = None
+            ub = None
         if self._cnls.r is NullOperator:
             h = j
             y = - f
@@ -176,7 +178,7 @@ class ConstrainedGaussNewton:
             p = self._cnls.r.mat
             h = np.concatenate((j, p), axis=0)
             y = - np.hstack((f, state.w))
-        linear_subproblem = CLS(h=h, y=y, a=a, b=b, c=c, d=d, l=lb, scale=self._cnls.scale)
+        linear_subproblem = CLS(h=h, y=y, a=a, b=b, c=c, d=d, l=lb, u=ub, scale=self._cnls.scale)
         return linear_subproblem
 
     def _check_time(self, t):

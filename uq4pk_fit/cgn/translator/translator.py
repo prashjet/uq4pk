@@ -34,8 +34,9 @@ class Translator:
         mean = self._multi_parameter.mean
         r = self._multi_parameter.regop
         lb = self._multi_parameter.lb
+        ub = self._multi_parameter.ub
         scale = self._problem.scale
-        cnls = CNLS(func=fun, jac=jac, q=q, r=r, m=mean, eqcon=eqcon, incon=incon, lb=lb, scale=scale)
+        cnls = CNLS(func=fun, jac=jac, q=q, r=r, m=mean, eqcon=eqcon, incon=incon, lb=lb, ub=ub, scale=scale)
         return cnls
 
     def _modify_function(self, func: callable):

@@ -13,12 +13,12 @@ class SquaredExponentialFilterFunction(DistanceFilterFunction):
     """
     def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float = 1.):
         self._h = h
-        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h=sqrt(2) * h)
+        DistanceFilterFunction.__init__(self, m, n, a, b, c, d, h=sqrt(4 * h))
 
     def _weighting(self, d: float) -> float:
         """
         Exponential weighting function:
-        w(d) = 2^(- h * d ** 2).
+        w(d) = 2^(- d ** 2).
         :param d: The distance of a given pixel to the center.
         :return: The weight w(d).
         """

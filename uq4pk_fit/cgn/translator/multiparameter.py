@@ -21,6 +21,7 @@ class MultiParameter(UserList):
         self._rdim = 0    # overall r of all parameters combined
         mean_list = []
         lb_list = []
+        ub_list = []
         for param in parameter_list:
             dim = param.dim
             rdim = param.rdim
@@ -29,9 +30,11 @@ class MultiParameter(UserList):
             self._rdim = rdim
             mean_list.append(param.mean)
             lb_list.append(param.lb)
+            ub_list.append(param.ub)
         self._combined_mean = np.concatenate(mean_list)
         self._comined_regop = self._combine_regops()
         self._combined_lb = np.concatenate(lb_list)
+        self._combined_ub = np.concatenate(ub_list)
 
     @property
     def dim(self) -> int:
@@ -60,6 +63,13 @@ class MultiParameter(UserList):
         The combined lower bound.
         """
         return self._combined_lb
+
+    @property
+    def ub(self) -> np.ndarray:
+        """
+        The combined upper bound.
+        """
+        return self._combined_ub
 
     @property
     def nparams(self) -> int:

@@ -26,7 +26,7 @@ class Parameter:
     def __init__(self, dim: int, name: str):
         self.name = name
         self._dim = dim
-        self._beta, self._mean, self._regop, self._lb = self._default_values()
+        self._beta, self._mean, self._regop, self._lb, self._ub = self._default_values()
         self._rdim = self._regop.rdim
 
     # variable properties
@@ -71,6 +71,17 @@ class Parameter:
             self._lb = value
 
     @property
+    def ub(self) -> np.ndarray:
+        return self._ub
+
+    @ub.setter
+    def ub(self, value: np.ndarray):
+        if value.shape != (self._dim, ):
+            raise Exception(f"Upper bound must be an array of shape ({self._dim},)")
+        else:
+            self._ub = value
+
+    @property
     def regop(self) -> RegularizationOperator:
         """
         The regularization operator for the parameter.
@@ -113,7 +124,8 @@ class Parameter:
         default_regop = IdentityOperator(dim=self._dim)
         default_beta = 0.
         default_lb = - np.inf * np.ones(self._dim)
-        return default_beta, default_mean, default_regop, default_lb
+        default_ub = np.inf * np.ones(self._dim)
+        return default_beta, default_mean, default_regop, default_lb, default_ub
 
 
 

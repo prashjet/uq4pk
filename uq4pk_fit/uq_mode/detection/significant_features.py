@@ -1,24 +1,79 @@
 
-from math import acos, log, pi, sqrt
+from math import acos, pi, sqrt
 import numpy as np
 from typing import List, Union
 
 from ..fci import fci
 from ..filter import SquaredExponentialFilterFunction
 from ..linear_model import LinearModel
-from .feature_detection import blob_dog
+from .feature_detection import detect_features
 from .span_blanket import span_blanket
 
-from .blob_plot import plot_blob
 
-
-K = 1.6         # the scale ratio. See https://en.wikipedia.org/wiki/Difference_of_Gaussians.
 RTOL = 0.05     # Relative tolerance for matching condition.
 OTHRESH = 0.5   # Relative overlap-threshold for feature mapping. Features are mapped if overlap is larger than this.
 
 
+# Create significance_table data type
+class SignificanceTable:
+
+    def __init__(self, features: np.ndarray):
+        # Check input.
+        assert features.shape[1] == 3
+        self._features = [feature for feature in features]  # Convert to list.
+        self._size = len(features)
+        # Initialize significance list
+        self._significant_features = [None] * self._size
+
+    def get_feature(self, i: int) -> np.ndarray:
+        return self._features[i]
+
+    def get_output(self) -> Union[List[np.ndarray], None]:
+        """
+        Returns all significant features as array of shape (k, 3) or None, if no significant features exist.
+        """
+        # If no significant features exist, return None.
+        if self.n_significant == 0:
+            return None
+        else:
+            # Create the return objects of shape (3, 2).
+            output = []
+            for map_feature, significant_feature in zip(self._features, self._significant_features):
+                if significant_feature is not None:
+                    feature_arr = np.vstack([map_feature, significant_feature])
+                    output.append(feature_arr)
+            return output
+
+    def update(self, i: int, feature: np.ndarray):
+        # Check that input has right format.
+        assert feature is None or feature.shape == (3, )
+        significant_feature_i = self._significant_features[i]
+        if significant_feature_i is not None and feature is not None:
+            # Finally, if significance is not None, then check which one has the smaller s_b - r and choose that one.
+            if significant_feature_i[2] > feature[2]:
+                self._significant_features[i] = feature
+        else:
+            self._significant_features[i] = feature
+
+    @property
+    def size(self) -> int:
+        return self._size
+
+    @property
+    def n_significant(self) -> int:
+        """
+        The number of significant features.
+        """
+        n = 0
+        for i in range(self._size):
+            if self._significant_features[i] is not None:
+                n += 1
+        return n
+
+
 def significant_features(alpha: float, m: int, n: int, model: LinearModel, x_map: np.ndarray, minscale: float,
-                         maxscale: float) -> np.ndarray:
+                         maxscale: float, minres: float = None, maxres: float = None, nsteps: int = 10) \
+        -> Union[List[np.ndarray], None]:
     """
     Performs uncertainty-aware blob detection with automatic scale selection.
 
@@ -30,25 +85,20 @@ def significant_features(alpha: float, m: int, n: int, model: LinearModel, x_map
 
     This is implemented by iterating over all blankets, starting at the highest resolution (note that high resolution
     corresponds to low 'r').
-    In the first step, we map the features in the current blanket to the features in ``ansatz``.
-    Then, all features that do not match any feature in ``ansatz`` are dropped.
-    Next, for each mapped feature we check a matching condition. The matching condition is
-                                    s_a <= s <= max(s_a, r),
-    where `s` is the size at which the feature is detected in the current blanket, `s_a` is the size of the
-    corresponding feature in ``ansatz``, and `r` is the resolution of the current blanket.
-    This matching condition is determined from the following rules.
-    -   Since ``ansatz`` dictates the scale of all identifyable features, the detected scale of the feature in
-        ``features``must be equal to the scale of the corresponding feature in ``ansatz``, with an exception when the
-        resolution is larger than the scale of the feature in ``ansatz`` and the scale of the feature in ``feature``
-        is less than the resolution. For example, this might happen when there is a very small feature in ``ansatz``
-        that is only identifiable at a resolution larger than its size.
-    If the matching condition is satisfied, then the feature is "significant" at the current resolution, and it is
-    removed from the stack of features-to-be-identified.
-    Afterwards, we proceed to the next mapped feature in the blanket. After we have checked all mapped features in the
-    blanket, we check if all features in ``ansatz`` are significant. If yes, we are done. If not, we proceed with the
-    blanket at the next-higher resolution.
-    This iteration is continued until all features in ``ansatz`` are determined to be significant, or we arrive at
-    the maximum scale.
+    1. Perform feature detection on the current blanket. Only features at scales greater or equal
+        r will be detected.
+    2. Map the detected features in the current blanket to the features in ``ansatz``. Then, all features that do not
+        match any feature in ``ansatz`` are dropped.
+    3. For each mapped feature pair, we compare the scales. Let 's_b' be the scale at which the feature was detected in
+        the current blanket, and 's_a' be the scale at which it was detected in the MAP estimate. We then store the
+        blanket feature (i_b, j_b, s_b - r)
+        Theoretically, there always should hold:
+                    s_b - r >= s_a.
+        The reason for this is that if we filter the MAP estimate with a Gaussian of scale r, the feature of scale s_a
+        will become a feature of scale s_a + r. However, if that feature is also present in the r-blanket, it must be
+        at a scale s_b >= r + s_a, since the r-blanket is by definition feature-minimizing.
+    After iterating over all blankets, we pick for each significant feature the blanket value (i_b, j_b, s_b - r)
+    that minimizes s_b - r.
 
     :param alpha: The credibility parameter.
     :param m: Number of image rows.
@@ -57,35 +107,43 @@ def significant_features(alpha: float, m: int, n: int, model: LinearModel, x_map
     :param x_map: The MAP estimate.
     :param minscale: The minimal scale at which features should be detected.
     :param maxscale: The maximal scale at which features should be detected.
-    :return: The detected features are returned as an array of shape (k, 4), where each row corresponds to a feature
-        and is of the form (i, j, s, r), where (i, j) is the index in ``image`` at which the feature was identified,
-        s is the detected scale of the feature, and ``r`` is the resolution at which the feature is detectable.
-         If no features are detected, then None is returned.
+    :param minres: Minimal resolution at which features should be detected.
+    :param maxres: Maximal resolution at which features should be detected.
+    :param nsteps: Number of resolution steps. For example, if ``minscale = 1``, ``maxscale = 10`` and ``nsteps = 4``,
+        the resolutions 1, 2.5, 5, 7.5 and 10 are checked.
+    :returns: A list of significant features is returned. Each element is an array of shape (2, 3), where the first
+        row corresponds to the MAP feature, and the second row corresponds to the significant feature.
     """
     # Check input for consistency.
     _check_input_significant_features(alpha, m, n, model, x_map, minscale, maxscale)
+    # If minres and maxres are not given, they default to minscale and maxscale
+    if minres is None:
+        minres = minscale / 1.6
+    if maxres is None:
+        maxres = maxscale * 1.6
     # Identify features in MAP estimate
     map_im = np.reshape(x_map, (m, n))
-    map_features = blob_dog(map_im, minscale, maxscale)
-    # Select scales between minscale and maxscale, with a scale ratio of K.
-    #  nscales is the largest n such that minscale * K ** n <= maxscale.
-    nscales = np.floor((log(maxscale) - log(minscale)) / log(K)).astype(int)
-    scales = [minscale * K ** i for i in range(nscales + 1)]
-    # For each scale, compute the blanket and store in list
-    blanket_list = _compute_blankets(alpha, m, n, model, x_map, scales)
-    # On each blanket, run feature detection.
-    features_list = []
-    for blanket in blanket_list:
-        features_of_blanket = blob_dog(blanket, minscale, maxscale)
-        features_list.append(features_of_blanket)
-    # Remove entries with no features.
-    for i in range(len(scales)):
-        if features_list[i] is None:
-            features_list.pop(i)
-            scales.pop(i)
-    # Identify significant features by matching map_features with features_of_blankets
-    features = _determine_resolution(map_features, features_list, scales)
-    return features
+    map_features = detect_features(map_im, minscale, maxscale, overlap=OTHRESH)
+    # Select resolutions between minres and maxres.
+    resolutions = _get_resolutions(minres, maxres, nsteps)
+    # Initialize significance table.
+    significance_table = SignificanceTable(map_features)
+    # Iterate over all scales.
+    for resolution in resolutions:
+        print(f"RESOLUTION {resolution}")
+        # Compute blanket at given scale.
+        blanket = _compute_blanket(alpha, m, n, model, x_map, resolution)
+        # Compute features of blanket (features cannot be detected at scale < resolution).
+        blanket_features = detect_features(blanket, resolution, maxscale + resolution)
+        # Subtract r from the last entries, so that each feature is of the form (i_b, j_b, s_b - r).
+        blanket_features[:, 2] -= resolution
+        # Determine significant features at current resolution and remove matched features from ``map_features``.
+        significance_table = _determine_significant(blanket_features, significance_table)
+        # The significance table is now a list of tuples of the form (map_feature, blanket_feature),
+        # where 'blanket_feature' is None if no corresponding blanket_feature was found, else it is the entry
+        # (i_b, j_b, s_b - r).
+    # Return the significance features.
+    return significance_table.get_output()
 
 
 def _check_input_significant_features(alpha: float, m: int, n: int, model: LinearModel, x_map: np.ndarray,
@@ -101,127 +159,105 @@ def _check_input_significant_features(alpha: float, m: int, n: int, model: Linea
                         f"{maxscale}).")
 
 
-def _compute_blankets(alpha: float, m: int, n: int, model: LinearModel, x_map: np.ndarray, scales: List[float])\
-        -> List[np.ndarray]:
+def _get_resolutions(min_scale: float, max_scale: float, nsteps: int) -> List[float]:
     """
-    Compute blankets at different scales for the given model.
+    Returns list of resolutions of a constant ratio, such that the range [min_scale, max_scale] is covered.
+
+    :param min_scale: Minimum resolution.
+    :param max_scale: Maximum resolution.
+    :return: The list of resolutions.
+    """
+    # Check the input for sensibleness.
+    assert min_scale <= max_scale
+    assert nsteps >= 1
+    step_size = (max_scale - min_scale) / nsteps
+    resolutions = [min_scale + n * step_size for n in range(nsteps + 1)]
+    return resolutions
+
+
+def _compute_blanket(alpha: float, m: int, n: int, model: LinearModel, x_map: np.ndarray, scale: float)\
+        -> np.ndarray:
+    """
+    Compute blankets at given resolution for the given model.
 
     :param alpha:
     :param m:
     :param n:
     :param model:
     :param x_map:
-    :param scales: The scales at which the blankets should be computed.
-    :returns: A list of blankets as 2-dimensional numpy arrays.
+    :param scale: The scale at which the blanket should be computed.
+    :returns: Of shape (m, n). The computed blanket
     """
-    blanket_list = []
-    for scale in scales:
-        print(f"At scale {scale}")
-        # Setup Gaussian filter function.
-        scale_int = np.ceil(scale).astype(int)
-        filter_function = SquaredExponentialFilterFunction(m=m, n=n, a=1, b=1, c=2 * scale_int, d=2 * scale_int,
-                                                           h=scale)
-        ci = fci(alpha=alpha, model=model, x_map=x_map, ffunction=filter_function)
-        # Compute minimally bumpy element using taut_string
-        lower = np.reshape(ci[:, 0], (m, n))
-        upper = np.reshape(ci[:, 1], (m, n))
-        blanket = span_blanket(lb=lower, ub=upper)
-        blanket_list.append(blanket)
-    assert len(blanket_list) == len(scales)
-    return blanket_list
+    # Setup Gaussian filter function.
+    scale_int = max(np.ceil(scale).astype(int), 3)
+    filter_function = SquaredExponentialFilterFunction(m=m, n=n, a=1, b=1, c=2 * scale_int, d=2 * scale_int,
+                                                       h=scale)
+    # Compute filtered credible interval.
+    ci = fci(alpha=alpha, model=model, x_map=x_map, ffunction=filter_function)
+    # Compute minimally bumpy element using taut_string
+    lower = np.reshape(ci[:, 0], (m, n))
+    upper = np.reshape(ci[:, 1], (m, n))
+    blanket = span_blanket(lb=lower, ub=upper)
+    # Assert that blanket has the right format before returning it.
+    assert blanket.shape == (m, n)
+    return blanket
 
 
-def _determine_resolution(ansatz_features: np.ndarray, list_of_blanket_features: List[np.ndarray],
-                          resolution_list: List[float]) -> Union[np.ndarray, None]:
+def _determine_significant(blanket_features: np.ndarray, significance_table: SignificanceTable) \
+        -> SignificanceTable:
     """
+    For a given blanket-feature array, determines whether any features "match" the features in ``map_features``
+    at the given resolution.
 
-    :param ansatz_features: Of shape (k, 3).
-    :param list_of_blanket_features: List with numpy arrays each of shape (k_j, 3), corresponding to the k_j features
-        of the j-th blanket.
-    :param resolution_list: List of same length as ``list_of_blanket_features``, giving for each blanket the corresponding
-            resolutions.
-
-    :return: The significant features are returned as array of shape (m, 4), where each row corresponds to a
-        significant feature and is of the form (i, j, s, r), where (i, j) is the index of the feature, s is the scale,
-        and r is the resolution. ``None`` is returned if no significant features are found.
+    :param blanket_features: Of shape (k, 3).
+    :param significance_table:
+    :returns: The updated significance table.
     """
-    # Check input consistency.
-    assert ansatz_features.shape[1] == 3
-    # Obtain local copy from ansatz_features so that we can change it.
-    ansatz_features_loc = ansatz_features.copy()
-    for blanket_features in list_of_blanket_features:
-        assert blanket_features.shape[1] == 3
-    assert len(list_of_blanket_features) == len(resolution_list)
-    # Convert to arrays for convenience.
-    arr_of_blanket_features = np.array(list_of_blanket_features)    # This is now a 3d-array.
-    resolutions = np.array(resolution_list)
-    # First, we sort blankets in order of decreasing resolution (increasing r).
-    decreasing_resolution = np.argsort(resolutions)
-    resolutions_sorted = resolutions[decreasing_resolution]
-    arr_of_blanket_features = arr_of_blanket_features[decreasing_resolution]
-    # Initialize output list
-    output_list = []
-    # Then, we iterate over blankets.
-    for blanket_features, resolution in zip(arr_of_blanket_features, resolutions_sorted):
-        # First, map blanket features to ansatz features, obtaining a list of feature pairs.
-        mapped_pairs = _map_features(blanket_features, ansatz_features_loc)
-        # For each feature-pair, check the matching condition.
-        for blanket_feature, ansatz_feature in mapped_pairs:
-            features_match = _matching_condition(blanket_feature, ansatz_feature, resolution)
-            # If the matching condition is satisfied, remove the corresponding feature from ``ansatz``...
-            if features_match:
-                ansatz_features_loc = _remove_feature(ansatz_features_loc, ansatz_feature)
-                # ... and add the significant feature to the output list, with the current resolution as 4-th entry.
-                significant = np.append(ansatz_feature, resolution)
-                output_list.append(significant)
-        # If there are no features left in ``ansatz``, we are done.
-        if ansatz_features.size == 0:
-            break
-    # Form an array of the right format from the output list.
-    if len(output_list) == 0:
-        output = None
-    else:
-        output = np.array(output_list)
-        # Perform a sanity check on the output array.
-        m = output.shape[0]
-        assert output.shape == (m, 4)
-    # Return that array.
-    return output
+    # Iterate over the significance_table.
+    for i in range(significance_table.size):
+        map_feature_i = significance_table.get_feature(i)
+        # Find the feature matching the map_feature
+        blanket_feature = _find_feature(map_feature_i, blanket_features, othresh=OTHRESH)
+        # If a match was found, remove the matched feature from blanket_features.
+        if blanket_feature is not None:
+            blanket_features = _remove_feature(blanket_features, blanket_feature)
+        # Update significance table.
+        significance_table.update(i, blanket_feature)
+    return significance_table
 
 
-def _map_features(features_of_blanket: np.ndarray, ansatz_features: np.ndarray) -> List:
+def _find_feature(feature: np.ndarray, features: np.ndarray, othresh: float = 0.5) -> Union[np.ndarray, None]:
     """
-    Maps blanket features to Ansatz features.
+    Find a feature in a given collection of features.
     A feature is mapped if the overlap to another feature is more than a given threshold.
+    If there is more than one matching feature, the one with the largest relative overlap is selected.
+    If the relative overlap is 1 for more than one feature in ``features``, the first matching feature is selected.
 
-    :param features_of_blanket: Of shape (k, 3).
-    :param ansatz_features: Of shape (n, 3)
-    :return: The mapped features as list of tuples of the form (blanket_feature, ansatz_feature), where both
-        blanket_feature and ansatz_feature have the form (i, j, s), with (i, j) the index and s the scale.
-        Returns an empty list if no features have been mapped.
+    :param feature: Of shape (3, ). The feature to be found.
+    :param features: Of shape (n, 3). The array of features in which ``feature`` is searched.
+    :return: The mapped feature. If no fitting feature is found, None is returned.
     """
     # Check that input has right format.
-    assert features_of_blanket.shape[1] == 3
-    assert ansatz_features.shape[1] == 3
-    # Copy ansatz_features since we will remove entries.
-    ansatz_features_cp = ansatz_features.copy()
-    # Initialize output list.
-    output_list = []
-    # Iterate over features in blanket.
-    for blanket_feature in features_of_blanket:
-        # Compute overlap with each feature in ansatz. If overlap is larger than threshold, the feature is mapped.
-        for i in range(ansatz_features_cp.shape[0]):
-            ansatz_feature = ansatz_features_cp[i]
-            overlap = _compute_overlap(blanket_feature, ansatz_feature)
-            if overlap >= OTHRESH:
-                # Remove feature from ansatz_features ...
-                ansatz_features_cp = np.delete(ansatz_features_cp, i, axis=0)
-                # ... and add mapped pair to output list.
-                pair = (blanket_feature, ansatz_feature)
-                output_list.append(pair)
-                break
-    # Return output list.
-    return output_list
+    assert feature.shape == (3, )
+    assert features.shape[1] == 3
+    # Iterate over features.
+    matching_features = []
+    for candidate in features:
+        overlap = _compute_overlap(feature, candidate)
+        if overlap >= othresh:
+            candidate_with_overlap = np.append(candidate, overlap)
+            matching_features.append(candidate_with_overlap)
+    # If no matching feature was found, return None
+    if len(matching_features) == 0:
+        found = None
+    else:
+        matching_features = np.array(matching_features)
+        # Otherwise, choose the feature with maximal overlap.
+        maximizing_index = np.argmax(matching_features[:, -1])
+        found = matching_features[maximizing_index, :-1]
+    # Check that output has right format
+    assert found is None or found.shape == (3, )
+    return found
 
 
 def _compute_overlap(feature1: np.ndarray, feature2: np.ndarray):
@@ -302,6 +338,3 @@ def _remove_feature(features: np.ndarray, feature: np.ndarray) -> np.ndarray:
             indiced_to_keep.append(i)
     reduced_features = features[indiced_to_keep]
     return reduced_features
-
-
-

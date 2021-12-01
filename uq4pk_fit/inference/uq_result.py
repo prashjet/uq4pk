@@ -3,13 +3,16 @@ Container for uq_result.
 """
 
 from typing import Union
+
+import numpy as np
+
 from ..uq_mode import FilterFunction
 
 
 class UQResult:
 
     def __init__(self, ci_f, filter_f: Union[FilterFunction, None], ci_theta,
-                 filter_theta: Union[FilterFunction, None], scale: float):
+                 filter_theta: Union[FilterFunction, None], scale: float, features: np.ndarray = None):
         """
         :param ci_f: None or array_like, shape (N,2)
             The credible intervals for f.
@@ -27,6 +30,7 @@ class UQResult:
         self.ci_theta = ci_theta
         self.filter_theta = filter_theta
         self.scale = scale
+        self.features = features
 
     @staticmethod
     def _check_input(ci_f, filter_f):

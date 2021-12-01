@@ -19,7 +19,7 @@ class Problem:
     .. math::
         \\min_{x_1,...,x_p} \\quad & ||Q F(x_1,...,x_p)||_2^2 + \\beta_1 * ||R_1(x_1 - m_1)||_2^2 + \ldots +
         \\beta_2 * ||R_p(x_p - m_p)||_2^2 \\\\
-          s.t. \\quad & Ax = b, \\quad Cx \geq d, \quad x \geq l.
+          s.t. \\quad & Ax = b, \\quad Cx \geq d, \quad l \leq x \leq u
 
     :ivar m: The dimension of the codomain of the function :math:``F``.
     :ivar n: The dimension of the concatenated parameter vector :math:``x = (x_1, x_2, ..., x_p)``.
