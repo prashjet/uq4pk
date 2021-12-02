@@ -29,13 +29,30 @@ def test_modify_function(three_parameter_problem):
     assert y.size == m
 
 
-def test_translate_constraints(three_parameter_problem):
+def test_translate_equality_constraints(three_parameter_problem):
     translator = Translator(three_parameter_problem)
     translated_eqcon = translator._combine_constraints("eq")
-    assert np.isclose(translated_eqcon.a[:, :-1], three_parameter_problem.constraints[0].a).all()
+    # Get the Jacobian of the translated eqcon
+    x = np.zeros(translated_eqcon.dim)
+    jac1 = translated_eqcon.jac(x)[:, :-1]
+    # Get the Jacobian of the original constraint
+    x1 = np.zeros(three_parameter_problem.shape[0])
+    x2 = np.zeros(three_parameter_problem.shape[1])
+    jac0 = three_parameter_problem.constraints[0].jac(x1, x2)
+    assert np.isclose(jac1, jac0).all()
+
+
+def test_translate_inequality_constraint(three_parameter_problem):
+    translator = Translator(three_parameter_problem)
     translated_incon = translator._combine_constraints("ineq")
     n1 = three_parameter_problem.shape[0]
-    assert np.isclose(translated_incon.a[:, n1:-1], three_parameter_problem.constraints[1].a).all()
+    # Get Jacobian of the original inequality constraint
+    y = np.zeros(three_parameter_problem.constraints[1].dim)
+    jac0 = three_parameter_problem.constraints[1].jac(y)
+    # Get corresponding part of the Jacobian of the translated inequality constraint.
+    x = np.zeros(translated_incon.dim)
+    jac1 = translated_incon.jac(x)
+    assert np.isclose(jac1[:, n1:-1], jac0).all()
 
 
 def test_translate_unconstrained(unconstrained_problem):

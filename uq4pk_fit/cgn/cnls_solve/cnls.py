@@ -14,8 +14,10 @@ class CNLS:
     """
     Contained class that manages the user-provided description of the
     constrained nonlinear least-squares problem:
-    min_x (1/scale) * ( 0.5*||Q func(x) ||^2 + 0.5*||R(x-m)||^2 )
-    s.t. Ax = b, Cx >= d, lb <= x <= ub
+
+    .. math::
+        min_x (1/scale) * ( 0.5*||Q F(x) ||^2 + 0.5*||R(x-m)||^2 )
+        s.t. G(x) = 0, H(x) \\geq 0, l \\leq x \\leq u.
     The regularization term is optional.
     """
     def __init__(self, func: callable, jac: callable, q: RegularizationOperator, m: ArrayLike, r: RegularizationOperator,
@@ -28,10 +30,10 @@ class CNLS:
         self.r = deepcopy(r)
         self.scale = scale
         self.dim = m.size
-        self.a = deepcopy(eqcon.a)
-        self.b = deepcopy(eqcon.b)
-        self.c = deepcopy(incon.a)
-        self.d = deepcopy(incon.b)
+        self.g = eqcon.fun
+        self.g_jac = eqcon.jac
+        self.h = incon.fun
+        self.h_jac = incon.jac
         self.lb = deepcopy(lb)
         self.ub = deepcopy(ub)
         self.equality_constrained = not isinstance(eqcon, NullConstraint)
@@ -45,9 +47,9 @@ class CNLS:
         """
         constraint_error = 0.
         if self.equality_constrained:
-            constraint_error += np.linalg.norm(self.a @ x - self.b)
+            constraint_error += np.linalg.norm(self.g(x))
         if self.inequality_constrained:
-            constraint_error += np.linalg.norm((self.c @ x - self.d).clip(max=0.))
+            constraint_error += np.linalg.norm((self.h(x)).clip(max=0.))
         if self.bound_constrained:
             constraint_error += np.linalg.norm((self.lb - x).clip(min=0.))
             constraint_error += np.linalg.norm((x - self.ub).clip(min=0.))

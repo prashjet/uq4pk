@@ -21,8 +21,16 @@ def test_cnls():
     c = a.copy()
     d = b - 1
     # make CNLS
-    eqcon = ConcreteConstraint(dim=n, a=a, b=b)
-    incon = ConcreteConstraint(dim=n, a=c, b=d)
+    def eqfun(x):
+        return a @ x - b
+    def eqjac(x):
+        return a
+    def infun(x):
+        return c @ x - d
+    def injac(x):
+        return c
+    eqcon = ConcreteConstraint(dim=n, fun=eqfun, jac=injac)
+    incon = ConcreteConstraint(dim=n, fun=infun, jac=injac)
     ub = np.inf * np.ones((n, ))
     cnls = CNLS(func=fun, jac=jac, q=IdentityOperator(dim=n), m=mean, r=regop, eqcon=eqcon, incon=incon, lb=lb, ub=ub,
                 scale=1.)

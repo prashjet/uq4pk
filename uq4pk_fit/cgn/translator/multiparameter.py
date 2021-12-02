@@ -1,7 +1,7 @@
 
 from collections import UserList
 from copy import deepcopy
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 
@@ -13,16 +13,16 @@ class MultiParameter(UserList):
     """
     Manages a list of parameters. Individual parameters can be accessed via []
     """
-    def __init__(self, parameter_list: List[Parameter]):
-        UserList.__init__(self, initlist=parameter_list)
-        self._nparams = len(parameter_list)
+    def __init__(self, parameters: Tuple[Parameter]):
+        UserList.__init__(self, initlist=parameters)
+        self._nparams = len(parameters)
         self._positions = []
         self._dim = 0    # overall dimension of all parameters combined
         self._rdim = 0    # overall r of all parameters combined
         mean_list = []
         lb_list = []
         ub_list = []
-        for param in parameter_list:
+        for param in parameters:
             dim = param.dim
             rdim = param.rdim
             self._positions.append(self._dim)
@@ -35,6 +35,11 @@ class MultiParameter(UserList):
         self._comined_regop = self._combine_regops()
         self._combined_lb = np.concatenate(lb_list)
         self._combined_ub = np.concatenate(ub_list)
+        # Create index dict, where each parameter name is mapped to its corresponding index.
+        self._index_dict = {}
+        for i in range(len(parameters)):
+            param_i = parameters[i]
+            self._index_dict[param_i.name] = i
 
     @property
     def dim(self) -> int:
@@ -82,7 +87,7 @@ class MultiParameter(UserList):
     def rdim(self) -> int:
         return deepcopy(self._rdim)
 
-    def extract_x(self, x: np.ndarray) -> List[np.ndarray]:
+    def split(self, x: np.ndarray) -> List[np.ndarray]:
         """
         Given a vector of size ``self.dim``, return a tuple of length ``self.nparams`` of vectors.
         """
@@ -95,6 +100,18 @@ class MultiParameter(UserList):
             pvalues.append(x[d0:d0+dpa])
             d0 += dpa
         return pvalues
+
+    def get_indices(self, parameters: List[Parameter]) -> List[int]:
+        """
+        Returns the indices of the given list of parameters in the multi parameter.
+
+        :param parameters:
+        :return:
+        """
+        indices = []
+        for param in parameters:
+            indices.append(self._index_dict[param.name])
+        return indices
 
     def position(self, i) -> int:
         """

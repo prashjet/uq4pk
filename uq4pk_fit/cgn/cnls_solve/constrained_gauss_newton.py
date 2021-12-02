@@ -136,8 +136,8 @@ class ConstrainedGaussNewton:
     def _solve_subproblem(self, state: CGNState):
         """
         Solves the linearized subproblem
-        min_deltax 0.5*||func(x) + jac(x) @ delta_x||^2 + 0.5*||A(delta_x + x) - b||^2
-        s. t. C @ x >= d
+        min_deltax 0.5*||func(x) + jac(x) @ delta_x||^2 + 0.5*||P(x + p - m)||^2
+        s. t. g + Gp = 0, h + H p >= 0.
         :return array_like
             the direction for the next step
         """
@@ -148,20 +148,27 @@ class ConstrainedGaussNewton:
     def _linearize(self, state: CGNState) -> CLS:
         """
         Linearize the CNLS problem around the current state to obtain a linear subproblem.
+        This linearized problem is simply
+
+        .. math::
+            min_p 0.5 ||F(x) + F'(x)p||^2 + 0.5 ||P(x + p - m)|^2
+            s. t. G'(x)p = - G(x), H'(x) p \\geq - H(x).
+
         :param state:
         :return: LSIB
         """
         f = state.h
         j = state.jac
+        x = state.x
         if self._cnls.equality_constrained:
-            a = self._cnls.a
-            b = self._cnls.b - a @ state.x
+            a = self._cnls.g_jac(x)
+            b = - self._cnls.g(x)
         else:
             a = None
             b = None
         if self._cnls.inequality_constrained:
-            c = self._cnls.c
-            d = self._cnls.d - c @ state.x
+            c = self._cnls.h_jac(x)
+            d = - self._cnls.h(x)
         else:
             c = None
             d = None

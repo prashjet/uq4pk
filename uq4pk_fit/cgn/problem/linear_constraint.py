@@ -1,15 +1,15 @@
 
-from copy import deepcopy
 import numpy as np
-from typing import List, Literal, Union
+from typing import List, Literal
 
+from uq4pk_fit.cgn.problem.constraint import Constraint
 from uq4pk_fit.cgn.problem.parameter import Parameter
 
 
-class LinearConstraint:
+class LinearConstraint(Constraint):
     """
     Represents a linear constraint. Either an equality constraint :math:`Ax = b`, or an inequality constraint
-    :math:`Ax \geq b`, where :math:`A \in \mathbb{R}^{c \times n}.
+    :math:`Ax \\geq b`, where :math:`A \\in \\mathbb{R}^{c \\times n}.
     """
     def __init__(self, parameters: List[Parameter], a: np.ndarray, b: np.ndarray, ctype: Literal["eq", "ineq"]):
         """
@@ -23,18 +23,19 @@ class LinearConstraint:
         :param b: The right hand side of the constraint. Must have shape (c,).
         :param ctype: The type of the constraint.
         """
-        self._check_input(parameters, a, b, ctype)
-        # Read parameter dimension
-        dim = 0
-        for param in parameters:
-            dim += param.dim
-        self._dim = dim
-        # Read constraint dimension
+        self._check_input_linear(parameters, a, b, ctype)
         self._cdim = a.shape[0]
         self._a = a
         self._b = b
-        self._ctype = ctype
-        self._parameters = parameters
+
+        def linfun(*args):
+            xvec = np.concatenate(args)
+            y = self._a @ xvec - b
+            return y
+
+        def linjac(*args):
+            return self._a
+        Constraint.__init__(self, parameters=parameters, fun=linfun, jac=linjac, ctype=ctype)
 
     @property
     def a(self) -> np.ndarray:
@@ -51,36 +52,14 @@ class LinearConstraint:
         return self._b
 
     @property
-    def ctype(self) -> str:
-        """
-        The type of the constraint:
-            - "eq": equality constraint
-            - "ineq": inequality constraint
-        """
-        return self._ctype
-
-    @property
-    def dim(self) -> int:
-        """
-        The parameter dimension :math:`n`.
-        """
-        return self._dim
-
-    @property
     def cdim(self) -> int:
         """
         The constraint dimension :math:`c`.
         """
         return self._cdim
 
-    @property
-    def parameters(self) -> List[Parameter]:
-        """
-        The parameters with respect to which the constraint is defined.
-        """
-        return self._parameters
-
-    def _check_input(self, parameters: List[Parameter], a: np.ndarray, b: np.ndarray, ctype: Literal["eq", "ineq"]):
+    def _check_input_linear(self, parameters: List[Parameter], a: np.ndarray, b: np.ndarray,
+                            ctype: Literal["eq", "ineq"]):
         if ctype not in ["eq", "ineq"]:
             raise Exception("'ctype' must either be 'eq' or 'ineq'.")
         n = 0

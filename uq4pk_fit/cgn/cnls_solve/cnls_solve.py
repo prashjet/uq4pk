@@ -19,6 +19,6 @@ def cnls_solve(cnls: CNLS, start: np.ndarray, options: Solveroptions, linesearch
         raise ValueError("Dimensions of 'start' and 'cnls' do not match.")
     # initialize ConstrainedGaussNewton object
     constrained_gauss_newton = ConstrainedGaussNewton(cnls, options, linesearch_options)
-    # Solve the NLSI problem using the Constrained Gauss-Newton Method.
+    # Solve the CNLS problem using the Constrained Gauss-Newton Method.
     cnls_solution = constrained_gauss_newton.solve(start=start)
     return cnls_solution

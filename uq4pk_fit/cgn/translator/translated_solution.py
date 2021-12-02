@@ -1,14 +1,14 @@
 
 import numpy as np
-from typing import List
+from typing import Sequence
 
 from ..problem import Parameter, ProblemSolution
 
 
 class TranslatedSolution(ProblemSolution):
 
-    def __init__(self, parameters: List[Parameter], minimizers: List[np.ndarray], precision: np.ndarray, cost: float,
-                 success: bool, niter: int):
+    def __init__(self, parameters: Sequence[Parameter], minimizers: Sequence[np.ndarray], precision: np.ndarray,
+                 cost: float, success: bool, niter: int):
         self._check_input(parameters, minimizers, precision, cost, success)
         self._parameters = parameters
         self._minimizer_tuple = minimizers
@@ -30,7 +30,7 @@ class TranslatedSolution(ProblemSolution):
         pmin = self._minimizer_tuple[pnumber]
         return pmin
 
-    def _check_input(self, parameters: List[Parameter], minimizers: List[np.ndarray], precision: np.ndarray,
+    def _check_input(self, parameters: Sequence[Parameter], minimizers: Sequence[np.ndarray], precision: np.ndarray,
                      cost: float, success: bool):
         assert len(parameters) == len(minimizers)
         for minimizer, parameter in zip(minimizers, parameters):

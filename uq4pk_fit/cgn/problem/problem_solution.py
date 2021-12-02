@@ -1,13 +1,13 @@
 
 import numpy as np
-from typing import List
+from typing import Sequence
 
 
 class ProblemSolution:
     """
     Container for the solution of an optimization problem defined as instance of :py:class:`cgn.Problem`.
     """
-    _minimizer_tuple: List[np.ndarray]
+    _minimizer_tuple: Sequence[np.ndarray]
     _precision: np.ndarray
     _cost: float
     _success: bool
@@ -20,7 +20,7 @@ class ProblemSolution:
         raise NotImplementedError
 
     @property
-    def minimizer_tuple(self) -> List[np.ndarray]:
+    def minimizer_tuple(self) -> Sequence[np.ndarray]:
         """
         The tuple of minimizers.
         """

@@ -19,9 +19,9 @@ def test_get_sub_matrix():
     b = np.random.randn(c)
     a = np.concatenate([a1, a2, a3], axis=1)
     constraint = LinearConstraint(parameters=[x1, x2, x3], a=a, b=b, ctype="ineq")
-    a1t = get_sub_matrix(constraint, 0)
-    a2t = get_sub_matrix(constraint, 1)
-    a3t = get_sub_matrix(constraint, 2)
+    a1t = get_sub_matrix(a, constraint, 0)
+    a2t = get_sub_matrix(a, constraint, 1)
+    a3t = get_sub_matrix(a, constraint, 2)
     for a, at in zip([a1, a2, a3], [a1t, a2t, a3t]):
         assert np.isclose(a, at).all()
 
@@ -33,5 +33,5 @@ def test_get_sub_matrix2():
     a = np.random.randn(c, n)
     b = np.random.randn(c)
     constraint = LinearConstraint(parameters=[x], a=a, b=b, ctype="eq")
-    at = get_sub_matrix(constraint, 0)
+    at = get_sub_matrix(a, constraint, 0)
     assert np.isclose(a, at).all()
