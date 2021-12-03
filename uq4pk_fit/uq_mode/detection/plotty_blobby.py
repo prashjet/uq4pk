@@ -15,8 +15,8 @@ def plotty_blobby(image: np.ndarray, blobs: List[np.ndarray], scales: List[float
     for blob in blobs:
         if blob.shape == (3, ):
             iscale, y, x = blob
-            scale = scales[iscale]
-            ax.add_patch(plt.Circle((x, y), np.sqrt(2) * scale, color=scalecol, fill=False))
+            sigma = np.sqrt(2 * scales[iscale])
+            ax.add_patch(plt.Circle((x, y), np.sqrt(2) * sigma, color=scalecol, fill=False))
         else:
             y1, x1, s1 = blob[0]
             ax.add_patch(plt.Circle((x1, y1), np.sqrt(2) * s1, color=scalecol, fill=False))

@@ -41,4 +41,4 @@ class UQResult:
 class NullUQResult(UQResult):
 
     def __init__(self):
-        UQResult.__init__(self, ci_f=None, ci_theta=None, filter_f=None, filter_theta=None)
+        UQResult.__init__(self, ci_f=None, ci_theta=None, filter_f=None, filter_theta=None, scale=0.)

@@ -11,6 +11,7 @@ from typing import List, Union
 import uq4pk_fit.cgn as cgn
 from uq4pk_fit.cgn.translator.translator import Translator
 import uq4pk_fit.uq_mode as uq_mode
+from uq4pk_fit.uq_mode.detection.bump_minimization2 import bump_minimization2, bump_minimization_ipopt
 from .make_filter_function import make_filter_function
 from .parameter_map import ParameterMap
 from .uq_result import UQResult
@@ -101,8 +102,12 @@ class FittedModel:
         j_map = cnls.jac(self._x_map_vec)
         q = cnls.q
         r = cnls.r
-        a = cnls.a
-        b = cnls.b
+        if cnls.equality_constrained:
+            a = cnls.g_jac(self._x_map_vec)
+            b = a @ self._x_map_vec - cnls.g(self._x_map_vec)
+        else:
+            a = None
+            b = None
         x_bar = cnls.m
         lb = cnls.lb
         # Form the LinearizedModel object
@@ -187,6 +192,12 @@ class FittedModel:
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
         uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
+
+    def minimize_bumps(self, min_scale: float, max_scale: float):
+        alpha = 0.05
+        f_mini = bump_minimization_ipopt(alpha=alpha, m=self._m_f, n=self._n_f, x_map=self._x_map_vec,
+                                    model=self._linearized_model, min_scale=min_scale, max_scale=max_scale)
+        return f_mini
 
     def _uq_dummy(self, options: dict):
         """

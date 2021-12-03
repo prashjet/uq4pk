@@ -40,10 +40,12 @@ class CNLS:
         self.inequality_constrained = not isinstance(incon, NullConstraint)
         self.bound_constrained = np.isfinite(self.lb).any() or np.isfinite(self.ub).any()
 
-    def satisfies_constraints(self, x, tol=1e-5):
+    def constraint_violation(self, x: np.ndarray) -> float:
         """
-        Assert that given vector satisfies constraints up to a given tolerance.
-        The error norm is the l^1-norm
+        Computes the constraint violation
+            cv = ||(ub - x)^-||_1 + ||(x - lb)^-||_1 + ||g(x)||_1 + ||h(x)^-||_1.
+        :param x:
+        :return:
         """
         constraint_error = 0.
         if self.equality_constrained:
@@ -53,9 +55,18 @@ class CNLS:
         if self.bound_constrained:
             constraint_error += np.linalg.norm((self.lb - x).clip(min=0.))
             constraint_error += np.linalg.norm((x - self.ub).clip(min=0.))
+        return constraint_error
+
+    def satisfies_constraints(self, x, tol=1e-5):
+        """
+        Assert that given vector satisfies constraints up to a given tolerance.
+        The error norm is the l^1-norm
+        """
+        constraint_error = self.constraint_violation(x)
         if constraint_error <= tol:
             return True
         else:
+            print(f"Constraint error to high ({constraint_error} / {tol}).")
             return False
 
     @staticmethod

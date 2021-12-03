@@ -10,6 +10,7 @@ from ..cnls_solve.cnls_solution import CNLSSolution, OptimizationStatus
 
 COLUMN_NAMES = ["Iteration",
                 "Cost                   ",
+                "Constraint violation   ",
                 "Stepsize (||p||)       ",
                 "Steplength (h)         ",
                 "Computation time [s]   "]
@@ -46,9 +47,9 @@ class Logger:
     def print_column_names(self):
         self._logger.info(self._table)
 
-    def print_iteration_info(self, k, cost, p, steplength, time):
+    def print_iteration_info(self, k, cost, cviol, p, steplength, time):
         stepsize = np.linalg.norm(p)
-        self._table.add_row([k, cost, stepsize, steplength, time])
+        self._table.add_row([k, cost, cviol, stepsize, steplength, time])
         self._logger.info("\n".join(self._table.get_string().splitlines()[-2:]))
 
     def print_epilogue(self, solution: CNLSSolution):

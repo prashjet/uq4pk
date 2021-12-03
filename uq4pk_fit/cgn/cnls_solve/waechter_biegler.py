@@ -75,7 +75,8 @@ class WaechterBiegler:
         """
         phiw = state.phi
         thetaw = state.theta
-        if all(ref[0] > thetaw or ref[1] > phiw for ref in self._history):
+        constraint_ok = thetaw <= self.p.maxviol
+        if all(ref[0] > thetaw or ref[1] > phiw for ref in self._history) and constraint_ok:
             return True
         else:
             return False

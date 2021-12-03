@@ -90,7 +90,7 @@ class DiscreteLaplacian(RegularizationOperator):
             im = np.reshape(column, (self.m, self.n))
             l = self._laplacian(im).flatten()
             l_list.append(l)
-        l_mat = np.row_stack(l_list)
+        l_mat = np.column_stack(l_list)
         return l_mat
 
     def _filter_image_old(self, im: np.ndarray):
@@ -115,4 +115,5 @@ class DiscreteLaplacian(RegularizationOperator):
         :return: A 2-dimensional image of the same shape as ``im``-
         """
         lap = cv2.Laplacian(src=im, ddepth=-1, borderType=cv2.BORDER_REFLECT)
+        #lap = cv2.Laplacian(src=im, ddepth=-1, borderType=cv2.BORDER_CONSTANT)
         return lap

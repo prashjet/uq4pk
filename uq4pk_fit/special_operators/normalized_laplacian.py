@@ -1,6 +1,6 @@
 
 import numpy as np
-from typing import Tuple
+from typing import Sequence
 
 from ..cgn import RegularizationOperator
 from .discrete_laplacian import DiscreteLaplacian
@@ -17,7 +17,7 @@ class NormalizedLaplacian(RegularizationOperator):
     are the two image dimensions.
     """
 
-    def __init__(self, m: int, n: int, scales: Tuple[float]):
+    def __init__(self, m: int, n: int, scales: Sequence[float]):
         """
         :param m: Height of the image.
         :param n: Width of the image.

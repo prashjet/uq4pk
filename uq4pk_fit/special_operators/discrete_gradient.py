@@ -1,6 +1,6 @@
 
 import numpy as np
-from typing import List
+from typing import Sequence
 
 from ..cgn import RegularizationOperator
 from .gradient import mygradient
@@ -10,7 +10,7 @@ class DiscreteGradient(RegularizationOperator):
     """
     Implements the discrete gradient operator for an image of shape n1, n2
     """
-    def __init__(self, shape: List[int]):
+    def __init__(self, shape: Sequence[int]):
         self.name = "DiscreteGradient"
         self._shape = shape
         self._dim = np.prod(np.array(shape))

@@ -27,6 +27,7 @@ class ConstrainedGaussNewton:
         self.maxiter = options.maxiter
         self.tol = options.tol
         self.ctol = options.ctol
+        self._constraint_satisfied = True
         self.logfile = options.logfile
         self.timeout = options.timeout
         self._residual_list = []
@@ -49,7 +50,7 @@ class ConstrainedGaussNewton:
         k = -1
         self._logger.print_preamble(current_cost)
         self._logger.print_column_names()
-        for k in range(self.maxiter):
+        for k in range(1, self.maxiter + 1):
             t0 = time()
             # obtain step direction p by solving the linearized subproblem
             p = self._solve_subproblem(state)
@@ -57,8 +58,11 @@ class ConstrainedGaussNewton:
             state, current_cost, aborted, h = self._linesearch.next_position(state, p, self._cost_gradient(state))
             self._add_residual(current_cost)
             t = time() - t0
+            constraint_violation = self._cnls.constraint_violation(state.x)
+            self._constraint_satisfied = (constraint_violation <= self.ctol)
             # Do some logging.
-            self._logger.print_iteration_info(k=k, cost=current_cost, p=p, steplength=h, time=t)
+            self._logger.print_iteration_info(k=k, cost=current_cost, cviol=constraint_violation, p=p, steplength=h,
+                                              time=t)
             if aborted:
                 status = OptimizationStatus.converged
                 break
@@ -67,7 +71,7 @@ class ConstrainedGaussNewton:
                 break
             if self._check_time(time() - t_start):
                 status = OptimizationStatus.timeout
-        if k == self.maxiter-1:
+        if k == self.maxiter:
             status = OptimizationStatus.maxout
         # check that MAP satisfies constraint
         if not self._cnls.satisfies_constraints(state.x, self.ctol):
@@ -114,7 +118,8 @@ class ConstrainedGaussNewton:
     def _check_convergence(self):
         # check if all necessary convergence criteria are satisfied
         cost_converged = self._check_cost_convergence()
-        if cost_converged:
+        constraint_satisfied = self._constraint_satisfied
+        if cost_converged and constraint_satisfied:
             converged = True
         else:
             converged = False
