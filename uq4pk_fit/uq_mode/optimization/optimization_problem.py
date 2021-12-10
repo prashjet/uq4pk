@@ -10,7 +10,7 @@ class OptimizationProblem:
     Represents general optimization problems of the form
     min_x loss(x) s.t. g(x) = 0, h(x) >= 0 and x >= lb.
     """
-    def __init__(self, loss_fun, loss_grad, eqcon: Constraint, incon: Constraint, lb: np.ndarray=None):
+    def __init__(self, loss_fun, loss_grad, eqcon: Constraint, incon: Constraint, lb: np.ndarray = None):
         """
         """
         self.loss_fun = loss_fun
@@ -73,4 +73,3 @@ class OptimizationProblem:
     @staticmethod
     def _l1norm(x):
         return np.sum(np.abs(x))
-

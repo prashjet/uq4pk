@@ -2,17 +2,16 @@
 from math import sqrt, log
 import numpy as np
 import ray
-import time
-from typing import Literal
 
 from ..linear_model import LinearModel
 from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
-from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
-from .progress_bar import ProgressBar, ProgressBarActor
+from ..optimization import ECOS, SLSQP, IPOPT, SOCP, socp_solve, socp_solve_remote
+from .progress_bar import ProgressBar
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
 FTOL = 1e-5
+DEFAULT_SOLVER = "ecos"
 
 
 class CIComputer:
@@ -42,16 +41,17 @@ class CIComputer:
             options = {}
         self._use_ray = options.setdefault("use_ray", True)
         self._num_cpus = options.setdefault("num_cpus", 8)
-        solver_name = options.setdefault("solver", "slsqp")
+        solver_name = options.setdefault("solver", DEFAULT_SOLVER)
         if solver_name == "slsqp":
             self._optimizer = SLSQP(ftol=FTOL)
-            print("Using SLSQP solver.")
+        elif solver_name == "ipopt":
+            self._optimizer = IPOPT(ftol=FTOL)
         elif solver_name == "ecos":
             self._optimizer = ECOS(scale=self._cost_map)
-            print("Using ECOS solver.")
         else:
             raise KeyError(f"Unknown solver '{solver_name}'.")
-        #
+        if solver_name != DEFAULT_SOLVER:
+            print(f"Using {solver_name} solver.")
         self._cino = len(self._aemap.aef_list)  # number of credible intervals
         self._optno = 2 * self._cino            # number of optimization problems to solve
         # Setting up progress bar
@@ -61,6 +61,9 @@ class CIComputer:
                 ray.init(num_cpus=self._num_cpus)
             self._pb = ProgressBar(self._optno)
             self._actor = self._pb.actor
+
+        # Preprocessing: Assemble the matrices for the SOCP problem and compute QR decomposition of C.
+        self._t, self._d_tilde, self._e_tilde, self._a, self._b, self._lb = self._preprocessing()
 
     def compute_all(self) -> np.ndarray:
         """
@@ -73,17 +76,12 @@ class CIComputer:
         x_upper_list = []
         # For every coordinate, compute the value of the lower and upper bounds of the kernel localization functional
         # over the credible region.
-        optcounter = 0      # counts number of prepared optimization problems
         cicounter = 0       # counts number of computed credible intervals
         for aefun in self._aemap.aef_list:
             cicounter += 1
-            optcounter += 1
-            self._print_status(optcounter=optcounter, cicounter=cicounter)
-            # Compute the lower bound for the local credible interval with respect to the i-th evaluation functional.
-            x_lower = self._minimize(aefun)
-            optcounter += 1
-            self._print_status(optcounter=optcounter, cicounter=cicounter)
-            x_upper = self._maximize(aefun)
+            # Compute the i-th filtered credible interval
+            x_lower, x_upper = self._compute_interval(aefun)
+            self._print_status(cicounter=cicounter)
             x_lower_list.append(x_lower)
             x_upper_list.append(x_upper)
         if self._use_ray:
@@ -102,86 +100,122 @@ class CIComputer:
         assert np.all(x_lower <= x_upper + 1e-8)
         return np.column_stack([x_lower, x_upper])
 
-    def _minimize(self, aefun: AffineEvaluationFunctional):
-        """
-        Computes the minimal value of the quantity of interest, with respect to the loss function and the constraints.
-        """
-        minimum = self._compute(aefun, 0)
-        return minimum
-
-    def _maximize(self, aefun: AffineEvaluationFunctional):
-        """
-        Computes the maximal value of the quantity of interest, with respect to the loss function and the constraints.
-        """
-        maximum = self._compute(aefun, 1)
-        return maximum
-
     # PROTECTED
 
-    def _compute(self, aefun: AffineEvaluationFunctional, minmax: Literal[0, 1]):
+    def _preprocessing(self):
         """
-        Depending on the value of minmax, computes the minimum or maximum inside the credible region of the quantity
-        of interest defined by an affine evaluation functional.
+        Computes all entities necessary for the formulation of the constraints
+        ||C f - d||_2^2 <= e,
+        A f = b
+        f >= lb.
+        We use a QR decomposition to reduce the cone constraint to
+        ||T f - d_tilde||_2^2 <= e_tilde,
+        where R is invertible upper triangular.
 
-        :param aefun:
-        :param minmax: If 0, then the minimum is returned. If 1, then the maximum is returned.
+        :return: t, d_tilde, e_tilde, a, b, lb.
+            - t: An invertible upper triangular matrix of shape (n, n).
+            - d_tilde: An n-vector.
+            - e_tilde: A nonnegative float.
+            - a: A matrix of shape (c, n).
+            - b: A c-vector.
+            - lb: An n-vector, representing the lower bound.
         """
-        # Create SOCP problem
-        socp = self._create_socp(aefun=aefun, minmax=minmax)
-        # Compute minimizer/maximizer
-        z0 = aefun.z0
-        if self._use_ray:
-            qoi = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
-                                           qoi=aefun.phi, actor=self._actor)
-        else:
-            z_opt = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol)
-            qoi = aefun.phi(z_opt)
-        return qoi
-
-    def _create_socp(self, aefun: AffineEvaluationFunctional, minmax: int) -> SOCP:
-        """
-        Creates the SOCP for the computation of the generalized credible interval.
-        The constraints
-        ||Hx - y||_2^2 + ||R(x - m)||_2^2 <= e
-        A x = b
-        x >= lb
-
-        are reformulated in terms of z, where x = U z + v:
-        ||C z - d||_2^2 <= e,
-        A_new z = b_new,
-        z >= lb_z,
-        where
-            A_new = A M
-            b_new = b - A v
-            C = [C1; C2], d = [d1; d2]
-            C1 = Q H U
-            C2 = R U
-            d1 = Q (y - H v)
-            d2 = R (m - v)
-            e = 2 * (cost_map + k_alpha)
-            lb_z = [depends on affine evaluation functional]
-        """
-        w = aefun.w
-        u = aefun.u
-        v = aefun.v
         a = self._model.a
         b = self._model.b
-        x0 = aefun.x(aefun.z0)
         h = self._model.h
         y = self._model.y
         q = self._model.q
         r = self._model.r
         m = self._model.m
         lb = self._model.lb
+        n = self._model.n
+
+        # Assemble the matrix C, the vector d and the RHS e.
         cost_map = self._cost_map
         k_alpha = self._k_alpha
-        # check that x_map satisfies credibility constraint
-        credibility = cost_map + k_alpha - 0.5 * np.sum(np.square(q.fwd(h @ x0 - y))) \
-                      - 0.5 * np.sum(np.square(r.fwd(x0 - m)))
-        assert credibility >= - self._ctol
-        if a is not None:
-            a_new = a @ u
-            b_new = b - a @ v
+        c1 = q.fwd(h)
+        c2 = r.mat
+        c = np.concatenate([c1, c2], axis=0)
+        d1 = q.fwd(y)
+        d2 = r.fwd(m)
+        d = np.concatenate([d1, d2], axis=0)
+        e = 2 * (cost_map + k_alpha)
+
+        # Compute the QR decomposition of C.
+        p, t0 = np.linalg.qr(c, mode="complete")
+        t = t0[:n, :]
+        p1 = p[:, :n]
+        p2 = p[:, n:]
+
+        # Compute d_tilde and e_tilde.
+        d_tilde = p1.T @ d
+        e_tilde = e - np.sum(np.square(p2.T @ d))
+
+        # Return everything in the right-order.
+        return t, d_tilde, e_tilde, a, b, lb
+
+    def _compute_interval(self, aefun: AffineEvaluationFunctional):
+        """
+        Computes the minimum and maximum inside the credible region of the quantity
+        of interest defined by an affine evaluation functional.
+
+        :param aefun:
+        """
+        # Create SOCP problem
+        socp = self._create_socp(aefun=aefun)
+        # Compute minimizer/maximizer
+        z0 = aefun.z0
+        if self._use_ray:
+            qoi_low = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
+                                               qoi=aefun.phi, actor=self._actor, mode="min")
+            qoi_up = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
+                                              qoi=aefun.phi, actor=self._actor, mode="max")
+        else:
+            qoi_low = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol, qoi=aefun.phi,
+                                 mode="min")
+            qoi_up = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol, qoi=aefun.phi,
+                                mode="max")
+        return qoi_low, qoi_up
+
+    def _create_socp(self, aefun: AffineEvaluationFunctional) -> SOCP:
+        """
+        Creates the SOCP for the computation of the generalized credible interval.
+        The constraints
+        ||T f - d_tilde||_2^2 <= e_tilde,
+        A f = b,
+        f >= lb
+
+        are reformulated in terms of z, where x = U z + v:
+        ||T_z z - d_z||_2^2 <= e_z,
+        A_z z = b_z,
+        z >= lb_z,
+        where
+            d_z = P_z1.T d_tilde.
+            e = e_z - ||P_z1.T d_tilde||_2^2
+            P_z [T_z; 0] is the QR decomposition of T U.
+            A_z = A U
+            b_z= b - A v
+            lb_z = [depends on affine evaluation functional]
+        """
+        w = aefun.w
+        u = aefun.u
+        v = aefun.v
+
+        # Reformulate the cone constraint for z.
+        c_z = self._t @ u
+        g = self._d_tilde - self._t @ v
+        p_z, t_z0 = np.linalg.qr(c_z, mode="complete")
+        k = aefun.zdim
+        t_z = t_z0[:k, :]
+        p_z1 = p_z[:, :k]
+        p_z2 = p_z[:, k:]
+        d_tilde_z = p_z1.T @ g
+        e_tilde_z = self._e_tilde - np.sum(np.square(p_z2.T @ g))
+
+        # Reformulate the equality constraint for z.
+        if self._a is not None:
+            a_new = self._a @ u
+            b_new = self._b - self._a @ v
             # If equality constraint does not satisfy constraint qualification, it is removed.
             satisfies_cq = (np.linalg.matrix_rank(a_new) >= a_new.shape[0])
             if not satisfies_cq:
@@ -190,17 +224,12 @@ class CIComputer:
         else:
             a_new = None
             b_new = None
-        c1 = q.fwd(h @ u)
-        c2 = r.fwd(u)
-        c = np.concatenate([c1, c2], axis=0)
-        d1 = q.fwd(y - h @ v)
-        d2 = r.fwd(m - v)
-        d = np.concatenate([d1, d2], axis=0)
-        e = 2 * (cost_map + k_alpha)
-        lb_z = aefun.lb_z(lb)
+
+        # Reformulate the lower-bound constraint for z.
+        lb_z = aefun.lb_z(self._lb)
+
         # Create SOCP instance
-        socp = SOCP(w=w, a=a_new, b=b_new, c=c, d=d, e=e, lb=lb_z, minmax=minmax)
-        self._check_socp(aefun, socp)
+        socp = SOCP(w=w, a=a_new, b=b_new, c=t_z, d=d_tilde_z, e=e_tilde_z, lb=lb_z)
         return socp
 
     def _cost_constraint(self, x: np.ndarray) -> float:
@@ -231,32 +260,17 @@ class CIComputer:
         vneg = vminus.clip(min=0.)
         return vneg
 
-    def _check_socp(self, aefun: AffineEvaluationFunctional, socp: SOCP):
-        """
-        Rough check that the SOCP was initialized correctly.
-        """
-        m = 5
-        n_z = socp.w.size
-        for i in range(m):
-            z_test = np.random.randn(n_z)
-            x_test = aefun.x(z_test)
-            cost_x = self._model.cost(x_test)
-            cost_z = 0.5 * np.sum(np.square(socp.c @ z_test - socp.d))
-            assert np.isclose(cost_x, cost_z)
-
-    def _print_status(self, optcounter: int, cicounter: int):
+    def _print_status(self, cicounter: int):
         """
         Displays the current status of the computation.
 
-        :param optcounter: Number of current optimization problem.
         :param cicounter: Number of current credible interval.
         """
         if self._use_ray:
             print("\r", end="")
-            print(f"Preparing optimization problem {optcounter}/{self._optno}.",
+            print(f"Preparing credible interval {cicounter}/{self._cino}.",
                   end=" ")
         else:
             print("\r", end="")
             print(f"Computing credible interval {cicounter}/{self._cino}.",
                   end=" ")
-

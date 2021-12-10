@@ -11,7 +11,6 @@ from typing import List, Union
 import uq4pk_fit.cgn as cgn
 from uq4pk_fit.cgn.translator.translator import Translator
 import uq4pk_fit.uq_mode as uq_mode
-from uq4pk_fit.uq_mode.detection.bump_minimization2 import bump_minimization2, bump_minimization_ipopt
 from .make_filter_function import make_filter_function
 from .parameter_map import ParameterMap
 from .uq_result import UQResult
@@ -137,20 +136,6 @@ class FittedModel:
         uq_result = UQResult(ci_f=ci_f, filter_f=filter_f, ci_theta=ci_theta, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
 
-    def uq_autodetect(self, min_scale: float, max_scale: float, min_res: float = None, max_res: float = None,
-                      nsteps: int = None) -> np.ndarray:
-        """
-        Performs automatic feature detection with uncertainty-aware difference of Gaussians.
-
-        :returns: Array of shape (k, 4), where each row corresponds to a significant feature and is of the form
-            (i, j, s, r), where (i, j) is the index at which the feature is centered, s is the scale of the feature,
-            and r is the resolution at which the feature was detected.
-        """
-        features = uq_mode.significant_features(alpha=0.05, m=self._m_f, n=self._n_f, model=self._linearized_model,
-                                                x_map=self._x_map_vec, minscale=min_scale, maxscale=max_scale,
-                                                minres=min_res, maxres=max_res, nsteps=nsteps)
-        return features
-
     def _uq_lci(self, options: dict):
         """
         Computes local credible intervals using the Pereyra approximation.
@@ -193,11 +178,19 @@ class FittedModel:
         uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
 
-    def minimize_bumps(self, min_scale: float, max_scale: float):
+    def scale_space_minimization(self, min_scale: float, max_scale: float):
         alpha = 0.05
-        f_mini = bump_minimization_ipopt(alpha=alpha, m=self._m_f, n=self._n_f, x_map=self._x_map_vec,
-                                    model=self._linearized_model, min_scale=min_scale, max_scale=max_scale)
+        f_mini = uq_mode.scale_space_minimization(alpha=alpha, m=self._m_f, n=self._n_f, x_map=self._x_map_vec,
+                                                  model=self._linearized_model, min_scale=min_scale, max_scale=max_scale)
         return f_mini
+
+    def significant_blobs(self, sigma_min: float = 1., sigma_max: float = 15., num_sigma: int = 8, k: int = None,
+                          ratio: float = 1.):
+        alpha = 0.05
+        blobs = uq_mode.significant_blobs(alpha=alpha, m=self._m_f, n=self._n_f, model=self._linearized_model,
+                                          x_map=self._x_map_vec, sigma_min=sigma_min, sigma_max=sigma_max,
+                                          num_sigma=num_sigma, k=k, ratio=ratio)
+        return blobs
 
     def _uq_dummy(self, options: dict):
         """

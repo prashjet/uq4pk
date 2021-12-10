@@ -15,9 +15,9 @@ prob = get_problem()
 # compute Cui's locally credible intervals
 alpha = 0.05
 part = Partition(dim=2, elements=[np.array([0, 1])])
-local_credible = lci(alpha=alpha, model=prob.model, x_map=prob.x_map, partition=part)
 ffunction = IdentityFilterFunction(dim=2)
 pixelwise_credible = fci(alpha=alpha, x_map=prob.x_map, model=prob.model, ffunction=ffunction)
+local_credible = lci(alpha=alpha, model=prob.model, x_map=prob.x_map, partition=part)
 # visualize lci-points
 x_lci = get_points(local_credible, prob.x_map)
 # visualize pci_points
@@ -27,7 +27,7 @@ x_pci = get_points(pixelwise_credible, prob.x_map)
 model = prob.model
 xi = local_credible[0, 1] - prob.x_map[0]
 x_xi = local_credible[:, 1]
-P, h, a = credible_region(alpha=alpha, H=model.h, y=model.y, Q=model.q.a, xbar=model.m, xmap=prob.x_map, x_xi=x_xi)
+P, h, a = credible_region(alpha=alpha, H=model.h, y=model.y, Q=model.q.mat, xbar=model.m, xmap=prob.x_map, x_xi=x_xi)
 circ = circle_points(r=np.sqrt(a))
 cr_boundary = prob.x_map[:, np.newaxis] + P @ circ
 

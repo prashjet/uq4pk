@@ -19,5 +19,5 @@ def socp_fixture():
     assert np.isclose(a @ x_start - b, 0).all()
     assert e - np.sum(np.square(c @ x_start - d)) >= 0
     assert np.all(x_start >= lb)
-    socp = SOCP(w=w, a=a, b=b, c=c, d=d, e=e, lb=lb, minmax=0)
+    socp = SOCP(w=w, a=a, b=b, c=c, d=d, e=e, lb=lb)
     return [socp, x_start]

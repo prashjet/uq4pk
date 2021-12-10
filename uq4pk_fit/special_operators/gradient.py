@@ -3,7 +3,7 @@ import numpy as np
 from typing import List
 
 
-def mygradient(arr: np.ndarray) -> List[np.ndarray]:
+def mygradient(arr: np.ndarray, mode: str = "reflect") -> List[np.ndarray]:
     """
     Computes the gradient of an N-dimensional array, with reflection at the edges.
 
@@ -15,7 +15,7 @@ def mygradient(arr: np.ndarray) -> List[np.ndarray]:
     N = arr.ndim
     axes = tuple(range(N))
     # Pad array by nearest value
-    padded_arr = np.pad(arr, pad_width=1, mode="reflect")
+    padded_arr = np.pad(arr, pad_width=1, mode=mode)
     # Make slice that removes all boundary values
     slc = [slice(1,-1)] * N
     gradients = []

@@ -30,7 +30,7 @@ class NormalizedLaplacian(RegularizationOperator):
         self._dim = m * n * self._nscales
         self._rdim = m * n * self._nscales
         # We also need the two-dimensional Laplacian
-        self._lap2d = DiscreteLaplacian(m=m, n=n).mat
+        self._lap2d = DiscreteLaplacian(shape=(m, n)).mat
         mat = self._compute_mat()
         RegularizationOperator.__init__(self, mat)
 

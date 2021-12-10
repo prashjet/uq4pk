@@ -1,4 +1,4 @@
-from .discrete_laplacian import DiscreteLaplacian, SecondDerivative
+from .discrete_laplacian import DiscreteLaplacian
 from .discrete_gradient import DiscreteGradient
 from .normalized_laplacian import NormalizedLaplacian
 from .ornstein_uhlenbeck import OrnsteinUhlenbeck

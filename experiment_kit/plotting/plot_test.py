@@ -6,7 +6,7 @@ from .plot_triple_bar import plot_triple_bar
 from .plot_with_colorbar import plot_with_colorbar
 from .blob_plot import blob_plot
 
-from uq4pk_fit.uq_mode.detection.feature_detection import detect_features
+from uq4pk_fit.uq_mode.blob_detection.detect_features import detect_features
 
 
 def plot_testresult(savedir: str, test_result: TestResult, extra_scale):
@@ -39,22 +39,21 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
         _create_plots_for_f(savedir, tr, scale, postfix)
     # finally, also make feature plot
     if tr.features is not None:
-        blob_plot(image=f_map_image, blobs=tr.features, savename=savedir + "/features.png", vmax=scale1)
-    # Also plot features in MAP.
-    map_blobs = detect_features(image=f_map_image, minscale=1, maxscale=18)
-    blob_plot(image=f_map_image, blobs=map_blobs, savename=savedir + "/map_features.png", vmax=scale1)
+        blob_plot(image=f_map_image, blobs=tr.features, savename=savedir + "/features.png", vmax=scale1,
+                  scaling=tr.uq_scale)
+
 
 def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str):
-    def plot_f(image: np.ndarray, savename: str, vmax: float = None, vmin: float = None):
+    def ploty_f(image: np.ndarray, savename: str, vmax: float = None, vmin: float = None):
         return plot_with_colorbar(image=image, savename=savename, vmax=vmax, vmin=vmin,
                                   ticks=tr.ticks)
     f_true_im = tr.image(tr.data.f_true)
     f_map_im = tr.image(tr.f_map)
     f_ref_im = tr.image(tr.data.f_ref)
     vmin = 0.   # assume that all images are nonnegative
-    plot_f(image=f_true_im, savename=f"{savedir}/truth{postfix}", vmax=vmax, vmin=vmin)
-    plot_f(image=f_map_im, savename=f"{savedir}/map{postfix}", vmax=vmax, vmin=vmin)
-    plot_f(image=f_ref_im, savename=f"{savedir}/ref{postfix}", vmax=vmax, vmin=vmin)
+    ploty_f(image=f_true_im, savename=f"{savedir}/truth{postfix}", vmax=vmax, vmin=vmin)
+    ploty_f(image=f_map_im, savename=f"{savedir}/map{postfix}", vmax=vmax, vmin=vmin)
+    ploty_f(image=f_ref_im, savename=f"{savedir}/ref{postfix}", vmax=vmax, vmin=vmin)
 
     ci_f = tr.ci_f
     if ci_f is not None:
@@ -66,11 +65,11 @@ def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str)
         ci_sizes_im = tr.image(ci_sizes)
         phi_map_im = tr.image(tr.phi_map)
         phi_true_im = tr.image(tr.phi_true)
-        plot_f(image=ci_lower_im, savename=f"{savedir}/lower{postfix}", vmax=vmax, vmin=vmin)
-        plot_f(image=ci_upper_im, savename=f"{savedir}/upper{postfix}", vmax=vmax, vmin=vmin)
-        plot_f(image=ci_sizes_im, savename=f"{savedir}/size{postfix}", vmax=vmax, vmin=vmin)
-        plot_f(image=phi_true_im, vmax=vmax, vmin=vmin, savename=f"{savedir}/filtered_truth{postfix}")
-        plot_f(image=phi_map_im, vmax=vmax, vmin=vmin, savename=f"{savedir}/filtered_map{postfix}")
+        ploty_f(image=ci_lower_im, savename=f"{savedir}/lower{postfix}", vmax=vmax, vmin=vmin)
+        ploty_f(image=ci_upper_im, savename=f"{savedir}/upper{postfix}", vmax=vmax, vmin=vmin)
+        ploty_f(image=ci_sizes_im, savename=f"{savedir}/size{postfix}", vmax=vmax, vmin=vmin)
+        ploty_f(image=phi_true_im, savename=f"{savedir}/filtered_truth{postfix}", vmax=vmax, vmin=vmin)
+        ploty_f(image=phi_map_im, savename=f"{savedir}/filtered_map{postfix}", vmax=vmax, vmin=vmin)
 
 
 def plot_theta_v(savedir: str, tr: TestResult):

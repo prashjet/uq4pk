@@ -76,7 +76,7 @@ class ConstrainedGaussNewton:
         # check that MAP satisfies constraint
         if not self._cnls.satisfies_constraints(state.x, self.ctol):
             status = OptimizationStatus.constraint_violated
-        cnls_solution = self._build_solution(state=state, niter=k+1, status=status)
+        cnls_solution = self._build_solution(state=state, niter=k, status=status)
         self._logger.print_epilogue(cnls_solution)
         return cnls_solution
 

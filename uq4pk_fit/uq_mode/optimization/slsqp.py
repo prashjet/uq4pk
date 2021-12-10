@@ -8,6 +8,7 @@ from .optimization_problem import OptimizationProblem
 MAXITER = 500   # if you set this too low, you provoke an "unable to satisfy constraints" error.
 counter = 1
 
+
 def slsqp(problem: OptimizationProblem, start: np.ndarray, ftol: float = 1e-6, ctol: float = 1e-6) -> np.ndarray:
     """
     Solves an optimization problem using scipy's SLSQP method and returns the minimizer.

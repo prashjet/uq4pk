@@ -13,16 +13,22 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     each window also contains the parameter theta_v.
     """
     # Read/set options.
-    kernel = options.setdefault("kernel", "laplace")
+    kernel = options.setdefault("kernel", "gauss")
+    h = options.setdefault("h", 1)
     a = options.setdefault("a", 1)
     b = options.setdefault("b", 1)
-    c = options.setdefault("c", 3)
-    d = options.setdefault("d", 6)
-    h = options.setdefault("h", 3)
+    if isinstance(h, np.ndarray):
+        c = 3 * np.sqrt(h[0])
+        d = 3 * np.sqrt(h[1])
+    else:
+        c = 3 * np.sqrt(h)
+        d = 3 * np.sqrt(h)
+    c = options.setdefault("c", c)
+    d = options.setdefault("d", d)
     serious = options.setdefault("serious", False)
     # Create filter function for f
     if kernel == "gauss":
-        boundary = options.setdefault("boundary", "reflect")
+        boundary = options.setdefault("boundary", "zero")
         ffunction_f = uq_mode.SquaredExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h, boundary=boundary)
     elif kernel == "laplace":
         ffunction_f = uq_mode.ExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h)

@@ -8,7 +8,7 @@ from uq4pk_fit.tests.test_uq_mode.test_optimization.socp_fixture import socp_fix
 def test_translate(socp_fixture):
     socp = socp_fixture[0]
     slsqp = SLSQP()
-    optprob = slsqp._translate(socp)
+    optprob = slsqp._translate(socp, mode="min")
     assert np.isclose(optprob.lb, socp.lb).all()
     x_test = np.random.randn(socp.w.size)
     assert np.isclose(socp.w @ x_test, optprob.loss_fun(x_test))

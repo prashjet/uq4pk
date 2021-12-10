@@ -3,6 +3,7 @@ LinearFilter function associated to "DistanceFilter".
 """
 
 import numpy as np
+from typing import Literal, Union
 
 from .distance_filter import DistanceFilter
 from .downsampling import upsample_ffunction
@@ -16,7 +17,8 @@ class DistanceFilterFunction(ImageFilterFunction):
     Special case of ImageFilterFunction that associates to each pixel a correspondingly positioned distance filter.
     See also :py:class:`DistanceFilter`.
     """
-    def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: float, boundary: str = "reflect"):
+    def __init__(self, m: int, n: int, a: int, b: int, c: int, d: int, h: Union[float, np.ndarray],
+                 boundary: Literal["reflect", "zero"] = "reflect"):
         """
         :param m: Number of rows of the image.
         :param n: Number of columns of the image.

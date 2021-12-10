@@ -1,6 +1,7 @@
 
 import cvxpy as cp
 import numpy as np
+from typing import Literal
 
 from .optimizer import Optimizer
 from .socp import SOCP
@@ -13,9 +14,9 @@ class ECOS(Optimizer):
     def __init__(self, scale: float = 1.):
         self._scale = scale
 
-    def optimize(self, problem: SOCP, start: np.ndarray) -> np.ndarray:
+    def optimize(self, problem: SOCP, start: np.ndarray, mode: Literal["min", "max"]) -> np.ndarray:
         # define the cvxpy program
-        cp_problem, x = self._make_cp_problem(problem)
+        cp_problem, x = self._make_cp_problem(problem, mode)
         # Set starting value
         x.value = start
         # Solve
@@ -26,20 +27,25 @@ class ECOS(Optimizer):
             raise Exception("Encountered infeasible optimization problem.")
         return x_opt
 
-    def _make_cp_problem(self, socp: SOCP) -> cp.Problem:
+    def _make_cp_problem(self, socp: SOCP, mode: Literal["min", "max"]):
         # define the optimization vector
         x = cp.Variable(socp.n)
         # add SCOP constraint (||C x - d||_2 <= sqrt(e) <=> ||C x - d||_2^2 <= e)
-        constraints = [cp.SOC(np.sqrt(socp.e) / self._scale, (socp.c @ x - socp.d) / self._scale)]
+        sqrt_e = np.sqrt(socp.e)
+        constraints = [cp.SOC(sqrt_e, (socp.c @ x - socp.d))]
         # add equality constraint
         if socp.equality_constrained:
             constraints += [socp.a @ x == socp.b]
         if socp.bound_constrained:
-            constraints += [x >= socp.lb]
-        if socp.minmax == 0:
-            w = socp.w.copy()
+            # Cvxpy cannot deal with infinite values. Hence, we have to translate the vector bound x >= lb
+            # to the element-wise bound x[i] >= lb[i] for all i where lb[i] > - infinity
+            lb = socp.lb
+            bounded_indices = np.where(lb > -np.inf)[0]
+            if bounded_indices.size > 0:
+                constraints += [x[bounded_indices] >= lb[bounded_indices]]
+        w = socp.w.copy()
+        if mode == "min":
+            problem = cp.Problem(cp.Minimize(w.T @ x), constraints)
         else:
-            w = - socp.w.copy()
-        problem = cp.Problem(cp.Minimize(w.T @ x), constraints)
+            problem = cp.Problem(cp.Maximize(w.T @ x), constraints)
         return problem, x
-

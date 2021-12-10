@@ -3,6 +3,7 @@ from copy import deepcopy
 import numpy as np
 from typing import Union
 
+
 class SOCP:
     """
     Formalizes optimization problems of the form
@@ -12,13 +13,11 @@ class SOCP:
         x >= lb
     """
     def __init__(self, w: np.ndarray, a: Union[np.ndarray, None], b: Union[np.ndarray, None],
-                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None], minmax: int):
+                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None]):
         # check input
         self._check_input(w, a, b, c, d, e, lb)
         # check that the equality constraints satisfy constraint qualification
         self._check_constraint_qualification(a, b)
-        assert minmax in [0, 1]
-        self.minmax = minmax
         self.w = deepcopy(w)
         self.n = w.size
         self.a = deepcopy(a)
@@ -47,6 +46,7 @@ class SOCP:
         Checks that the vector x satisfies all SOCP-constraints
 
         :param x:
+        :param tol:
         :returns:
             - constraints_satisfied: bool. True if all constraints are satisfied, otherwise False.
             - message: str. An error message specifying which constraints were violated.
@@ -64,7 +64,7 @@ class SOCP:
         constraints_satisfied = not (soc_violated or eqcon_violated or bound_violated)
         message = "The following constraints have been violated: \n"
         if soc_violated:
-            message += "cone condition \n"
+            message += f"cone condition \n ({soc_violation} / {tol}"
         if eqcon_violated:
             message += "equality constraint \n"
         if bound_violated:
@@ -78,7 +78,8 @@ class SOCP:
         """
         return np.sum(np.abs(x))
 
-    def _check_constraint_qualification(self, a: Union[np.ndarray, None], b: Union[np.ndarray, None]):
+    @staticmethod
+    def _check_constraint_qualification(a: Union[np.ndarray, None], b: Union[np.ndarray, None]):
         if a is not None:
             c = a.shape[0]
             if not np.linalg.matrix_rank(a) >= c:

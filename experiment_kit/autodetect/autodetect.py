@@ -14,9 +14,9 @@ RTHRESH = 0.01
 
 def detect(map: np.ndarray, lower: np.ndarray, upper: np.ndarray, scale: float, savedir: str):
     """
-    Perform some rudimentary detection.
+    Perform some rudimentary blob_detection.
     """
-    # For a first look, perform feature detection on MAP estimate.
+    # For a first look, perform feature blob_detection on MAP estimate.
     thresh = map.max() * RTHRESH
     map_features = feature.blob_dog(map, min_sigma=MINSIGMA, max_sigma=MAXSIGMA, overlap=.9, threshold=thresh)
     # Make the corresponding plot
