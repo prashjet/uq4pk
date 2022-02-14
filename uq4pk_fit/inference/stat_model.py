@@ -9,6 +9,7 @@ from typing import List
 from ..cgn import CGN, DiagonalOperator, Problem, Parameter, LinearConstraint
 from ..special_operators import OrnsteinUhlenbeck
 
+from .default_model_parameters import beta1
 from .parameter_map import ParameterMap
 from .misfit_handler import MisfitHandler
 from .forward_operator import ForwardOperator

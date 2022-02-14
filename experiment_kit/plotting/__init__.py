@@ -1,3 +1,1 @@
-
-from .plot_test import plot_testresult
-from .blob_plot import blob_plot
+from .plot_testresult import plot_testresult

@@ -4,10 +4,11 @@ import numpy as np
 from ..evaluation import AffineEvaluationMap
 from ..linear_model import LinearModel
 from .ci_computer import CIComputer
+from .credible_intervals import CredibleInterval
 
 
 def compute_credible_intervals(alpha: float, model: LinearModel, x_map: np.ndarray, aemap: AffineEvaluationMap,
-                               options: dict):
+                               options: dict) -> CredibleInterval:
     """
     Computes generalized credible intervals with respect to an :py:class:`EvaluationMap`.
 
@@ -20,5 +21,5 @@ def compute_credible_intervals(alpha: float, model: LinearModel, x_map: np.ndarr
     # Initialize CIComputer object
     ci_computer = CIComputer(alpha=alpha, model=model, x_map=x_map, aemap=aemap, options=options)
     # Compute credible intervals
-    credible_intervals = ci_computer.compute_all()
-    return credible_intervals
+    credible_interval = ci_computer.compute_all()
+    return credible_interval

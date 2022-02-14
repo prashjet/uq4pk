@@ -1,4 +1,5 @@
 
+from .jaccard_distance import mean_jaccard_distance
 from .stat_model import StatModel
 from .fitted_model import FittedModel
 from .forward_operator import ForwardOperator

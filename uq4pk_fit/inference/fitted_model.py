@@ -5,16 +5,17 @@ Contains class "FittedModel"
 from copy import deepcopy
 import numpy as np
 from numpy.typing import ArrayLike
-from skimage.feature import peak_local_max
-from typing import List, Union
+from time import time
+from typing import List, Sequence
 
 import uq4pk_fit.cgn as cgn
 from uq4pk_fit.cgn.translator.translator import Translator
 import uq4pk_fit.uq_mode as uq_mode
+import uq4pk_fit.blob_detection as blob_detection
+from .jaccard_distance import mean_jaccard_distance
 from .make_filter_function import make_filter_function
 from .parameter_map import ParameterMap
 from .uq_result import UQResult
-from .uq_autodetect import autodetect
 
 
 class FittedModel:
@@ -93,6 +94,7 @@ class FittedModel:
         else:
             raise KeyError("Unknown method.")
 
+
     def _create_linearized_model(self, problem: cgn.Problem) -> uq_mode.LinearModel:
         # Then, compute all entities necessary for building the linearized model from the CNLS problem.
         translator = Translator(problem)
@@ -129,12 +131,20 @@ class FittedModel:
         # Create appropriate filter
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # compute filtered credible intervals
-        ci_x = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model, ffunction=filter_function,
-                           options=options)
+        fci_obj = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model,
+                                                       ffunction=filter_function, options=options)
+        ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
         uq_scale = options["h"]
-        uq_result = UQResult(ci_f=ci_f, filter_f=filter_f, ci_theta=ci_theta, filter_theta=filter_theta, scale=uq_scale)
-        return uq_result
+        # Reshape
+        lower_f = self._reshape_f(ci_f[:, 0])
+        upper_f = self._reshape_f(ci_f[:, 1])
+        uq_result = UQResult(lower_f=lower_f, upper_f=upper_f, lower_theta=ci_theta[:, 0], upper_theta=ci_theta[:, 1],
+                             filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
+        if options["detailed"]:
+            return uq_result, fci_obj.minimizers, fci_obj.maximizers
+        else:
+            return uq_result
 
     def _uq_lci(self, options: dict):
         """
@@ -155,7 +165,10 @@ class FittedModel:
         lci_f = uq_mode.lci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec, partition=partition,
                             options=options)
         filter_f = uq_mode.IdentityFilterFunction(dim=self._dim_f)
-        uq_result = UQResult(ci_f=lci_f, filter_f=filter_f, ci_theta=None, filter_theta=None, scale=1)
+        lower_f = self._reshape_f(lci_f[:, 0])
+        upper_f = self._reshape_f(lci_f[:, 1])
+        uq_result = UQResult(lower_f=lower_f, upper_f=upper_f, lower_theta=None, upper_theta=None,
+                             filter_f=filter_f, filter_theta=None, scale=1)
         return uq_result
 
     def _uq_mc(self, options: dict):
@@ -175,21 +188,20 @@ class FittedModel:
                                ffunction=filter_function, options=options)
         # Make UQResult object.
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
-        uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
+        # Reshape
+        lower_f = self._reshape_f(ci_f[:, 0])
+        upper_f = self._reshape_f(ci_f[:, 1])
+        uq_result = UQResult(lower_f=lower_f, upper_f=upper_f, lower_theta=ci_theta[:, 0], upper_theta=ci_theta[:, 1],
+                             filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
-
-    def scale_space_minimization(self, min_scale: float, max_scale: float):
-        alpha = 0.05
-        f_mini = uq_mode.scale_space_minimization(alpha=alpha, m=self._m_f, n=self._n_f, x_map=self._x_map_vec,
-                                                  model=self._linearized_model, min_scale=min_scale, max_scale=max_scale)
-        return f_mini
 
     def significant_blobs(self, sigma_min: float = 1., sigma_max: float = 15., num_sigma: int = 8, k: int = None,
                           ratio: float = 1.):
         alpha = 0.05
-        blobs = uq_mode.significant_blobs(alpha=alpha, m=self._m_f, n=self._n_f, model=self._linearized_model,
-                                          x_map=self._x_map_vec, sigma_min=sigma_min, sigma_max=sigma_max,
-                                          num_sigma=num_sigma, k=k, ratio=ratio)
+        blobs = blob_detection.detect_significant_blobs(alpha=alpha, m=self._m_f, n=self._n_f,
+                                                                model=self._linearized_model, x_map=self._x_map_vec,
+                                                                sigma_min=sigma_min, sigma_max=sigma_max,
+                                                                num_sigma=num_sigma, k=k, ratio=ratio)
         return blobs
 
     def _uq_dummy(self, options: dict):
@@ -199,7 +211,11 @@ class FittedModel:
         ci_f = np.column_stack((self.f_map - 1, self.f_map + 1))
         ci_theta = np.column_stack((self.theta_map - 1, self.theta_map + 1))
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
-        uq_result = UQResult(ci_f=ci_f, ci_theta=ci_theta, filter_f=filter_f, filter_theta=filter_theta, scale=1)
+        # Reshape
+        lower_f = self._reshape_f(ci_f[:, 0])
+        upper_f = self._reshape_f(ci_f[:, 1])
+        uq_result = UQResult(lower_f=lower_f, upper_f=upper_f, lower_theta=ci_theta[:, 0], upper_theta=ci_theta[:, 1],
+                             filter_f=filter_f, filter_theta=filter_theta, scale=1)
         return uq_result
 
     def _get_filter_function(self, options):
@@ -212,3 +228,69 @@ class FittedModel:
                 make_filter_function(m_f=self._m_f, n_f=self._n_f, dim_theta_v=self._parameter_map.dims[1],
                                      options=options)
         return filter_function, filter_f, filter_theta
+
+    def _reshape_f(self, f: np.array):
+        """
+        Reshapes flattened f into image.
+        """
+        f_im = np.reshape(f, (self._m_f, self._n_f))
+        return f_im
+
+    def make_localization_plot(self, n_sample: int, c_list: Sequence[int], d_list: Sequence[int],
+                               scale: float):
+        """
+        Creates a heuristic localization plot for FCIs based on a random sample of pixels.
+        This can be used to tune the localization architecture.
+
+        :param rtol: The relative tolerance for computing credible intervals.
+        :param n_sample: Number of pixels used for the random sample.
+        :param c_list: List of values for the parameter c, i.e. the vertical radius of the localization window.
+        :param d_list: List of values for the parameter d, i.e. the horizontal radius of the localization window.
+        :param scale: The scale with respect to which the FCI should be computed.
+        :return: computation_times, errors
+            - computation_times: A list of the estimated computation time corresponding to each localization architecture.
+            - errors: A list of the approximation errors with respect to the baseline FCI (i.e. without any localization).
+                The approximation error is defined as the mean Jaccard distance.
+        """
+        alpha = 0.05
+        # Randomly sample pixels.
+        all_pixels = np.arange(self._dim_f)
+        pixel_sample = np.random.choice(a=all_pixels, size=n_sample, replace=False)
+        # For each c-d configuration, compute the FCIs with respect to pixel_sample.
+        fci_list = []
+        t_list = []
+        for c, d in zip(c_list, d_list):
+            options = {"h": scale, "c": c, "d": d, "sample": pixel_sample}
+            t0 = time()
+            # Create appropriate filter
+            filter_function, filter_f, filter_theta = self._get_filter_function(options)
+            # compute filtered credible intervals
+            fci_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
+                                  ffunction=filter_function, options=options)
+            fci = fci_obj.interval
+            t1 = time()
+            t_list.append((t1 - t0) * self._dim_f / n_sample)   # estimated computation time for all pixels.
+            fci_list.append(fci)
+
+        # ---Compute baseline error.
+        options = {"h": scale, "sample": pixel_sample}
+        filter_function, filter_f, filter_theta = self._get_filter_function(options)
+        # compute filtered credible intervals
+        t0 = time()
+        fci_base_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
+                              ffunction=filter_function, options=options)
+        t1 = time()
+        fci_base = fci_base_obj.interval
+        fci_list.append(fci_base)
+        t_list.append((t1 - t0) * self._dim_f / n_sample)
+
+        # Compute relative localization error
+        e_rloc_list = []
+        for fci in fci_list:
+            mean_jaccard = mean_jaccard_distance(fci, fci_base)
+            e_rloc_list.append(mean_jaccard)
+
+        return t_list, e_rloc_list
+
+
+

@@ -61,7 +61,7 @@ def matrix_inv_sqrt(mat):
 def plot_result(name, x_true, x_map, xi = None, boundary2=None, x_lci = None, x_pci = None, samples=None,
                 lb=None):
     """
-    Does some plotting, and also saves the figure under 'name.png'.
+    Does some visualization, and also saves the figure under 'name.png'.
     """
     # VISUALIZE
     fig = plt.figure(0)

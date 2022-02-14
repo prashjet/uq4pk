@@ -1,15 +1,15 @@
 
-from math import sqrt, log
 import numpy as np
 import ray
 
-from ..linear_model import LinearModel
+from ..linear_model import CredibleRegion, LinearModel
 from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
 from ..optimization import ECOS, SLSQP, IPOPT, SOCP, socp_solve, socp_solve_remote
+from .credible_intervals import CredibleInterval
 from .progress_bar import ProgressBar
 
 
-RTOL = 0.01     # relative tolerance for the cost-constraint
+RTOL = 0.001     # relative tolerance for the cost-constraint
 FTOL = 1e-5
 DEFAULT_SOLVER = "ecos"
 
@@ -29,16 +29,14 @@ class CIComputer:
         self._x_map = x_map.copy()
         self._dim = x_map.size
         self._aemap = aemap
-        self._model = model
-        self._costf = model.cost
-        self._costg = model.cost_grad
-        self._cost_map = model.cost(x_map)
-        self._tau = sqrt(16 * log(3 / alpha) / self._dim)
-        self._k_alpha = self._dim * (self._tau + 1)
-        self._ctol = RTOL * self._k_alpha
+        cost_map = model.cost(x_map)
+        self._ctol = RTOL * cost_map
+
+        self._cregion = CredibleRegion(alpha=alpha, model=model, x_map=x_map)
         # Read options.
         if options is None:
             options = {}
+        self._return_optimizers = options.setdefault("detailed", False)
         self._use_ray = options.setdefault("use_ray", True)
         self._num_cpus = options.setdefault("num_cpus", 8)
         solver_name = options.setdefault("solver", DEFAULT_SOLVER)
@@ -47,7 +45,7 @@ class CIComputer:
         elif solver_name == "ipopt":
             self._optimizer = IPOPT(ftol=FTOL)
         elif solver_name == "ecos":
-            self._optimizer = ECOS(scale=self._cost_map)
+            self._optimizer = ECOS()
         else:
             raise KeyError(f"Unknown solver '{solver_name}'.")
         if solver_name != DEFAULT_SOLVER:
@@ -62,16 +60,16 @@ class CIComputer:
             self._pb = ProgressBar(self._optno)
             self._actor = self._pb.actor
 
-        # Preprocessing: Assemble the matrices for the SOCP problem and compute QR decomposition of C.
-        self._t, self._d_tilde, self._e_tilde, self._a, self._b, self._lb = self._preprocessing()
-
-    def compute_all(self) -> np.ndarray:
+    def compute_all(self) -> CredibleInterval:
         """
         Computes all credible intervals.
-        :return: Of shape (n, 2)
-            The j-th row of the array corresponds to the lower and upper bound for the credible interval that is
-            associated to the j-th coordinate.
+
+        :returns: Object of type :py:class:`CredibleInterval`
         """
+        # Initialize lists for storing the FCI-values.
+        out_lower_list = []
+        out_upper_list = []
+        # Initialize list for storing the FCI-optimizers (only if self._optimize).
         x_lower_list = []
         x_upper_list = []
         # For every coordinate, compute the value of the lower and upper bounds of the kernel localization functional
@@ -80,102 +78,65 @@ class CIComputer:
         for aefun in self._aemap.aef_list:
             cicounter += 1
             # Compute the i-th filtered credible interval
-            x_lower, x_upper = self._compute_interval(aefun)
+            out_lower, out_upper = self._compute_interval(aefun)
             self._print_status(cicounter=cicounter)
-            x_lower_list.append(x_lower)
-            x_upper_list.append(x_upper)
+            out_lower_list.append(out_lower)
+            out_upper_list.append(out_upper)
         if self._use_ray:
             print("\n" + "Starting computation...")
             self._pb.print_until_done()
-            x_lower_list_result = ray.get(x_lower_list)
-            x_upper_list_result = ray.get(x_upper_list)
+            out_lower_list_result = ray.get(out_lower_list)
+            out_upper_list_result = ray.get(out_upper_list)
         else:
-            x_lower_list_result = x_lower_list
-            x_upper_list_result = x_upper_list
+            out_lower_list_result = out_lower_list
+            out_upper_list_result = out_upper_list
         ray.shutdown()
         # The Ray results are now converted to an array. The j-th row of the array corresponds to the credible interval
         # associated to the j-th window-frame pair.
-        x_lower = np.concatenate(x_lower_list_result)
-        x_upper = np.concatenate(x_upper_list_result)
-        assert np.all(x_lower <= x_upper + 1e-8)
-        return np.column_stack([x_lower, x_upper])
+        phi_lower = np.concatenate([out[0] for out in out_lower_list_result])
+        phi_upper = np.concatenate([out[0] for out in out_upper_list_result])
+        assert np.all(phi_lower <= phi_upper + 1e-8)
+        if self._return_optimizers:
+            minimizers = [out[1] for out in out_lower_list_result]
+            maximizers = [out[1] for out in out_upper_list_result]
+        else:
+            minimizers = []
+            maximizers = []
+        credible_interval = CredibleInterval(phi_lower=phi_lower, phi_upper=phi_upper, minimizers=minimizers,
+                                             maximizers=maximizers)
+
+        return credible_interval
 
     # PROTECTED
-
-    def _preprocessing(self):
-        """
-        Computes all entities necessary for the formulation of the constraints
-        ||C f - d||_2^2 <= e,
-        A f = b
-        f >= lb.
-        We use a QR decomposition to reduce the cone constraint to
-        ||T f - d_tilde||_2^2 <= e_tilde,
-        where R is invertible upper triangular.
-
-        :return: t, d_tilde, e_tilde, a, b, lb.
-            - t: An invertible upper triangular matrix of shape (n, n).
-            - d_tilde: An n-vector.
-            - e_tilde: A nonnegative float.
-            - a: A matrix of shape (c, n).
-            - b: A c-vector.
-            - lb: An n-vector, representing the lower bound.
-        """
-        a = self._model.a
-        b = self._model.b
-        h = self._model.h
-        y = self._model.y
-        q = self._model.q
-        r = self._model.r
-        m = self._model.m
-        lb = self._model.lb
-        n = self._model.n
-
-        # Assemble the matrix C, the vector d and the RHS e.
-        cost_map = self._cost_map
-        k_alpha = self._k_alpha
-        c1 = q.fwd(h)
-        c2 = r.mat
-        c = np.concatenate([c1, c2], axis=0)
-        d1 = q.fwd(y)
-        d2 = r.fwd(m)
-        d = np.concatenate([d1, d2], axis=0)
-        e = 2 * (cost_map + k_alpha)
-
-        # Compute the QR decomposition of C.
-        p, t0 = np.linalg.qr(c, mode="complete")
-        t = t0[:n, :]
-        p1 = p[:, :n]
-        p2 = p[:, n:]
-
-        # Compute d_tilde and e_tilde.
-        d_tilde = p1.T @ d
-        e_tilde = e - np.sum(np.square(p2.T @ d))
-
-        # Return everything in the right-order.
-        return t, d_tilde, e_tilde, a, b, lb
 
     def _compute_interval(self, aefun: AffineEvaluationFunctional):
         """
         Computes the minimum and maximum inside the credible region of the quantity
         of interest defined by an affine evaluation functional.
 
-        :param aefun:
+        :param aefun: The affine evaluation functional.
+
+        :returns: qoi_low, x_low, qoi_up, x_up
+            - qoi_low: The minimum of the quantity of interest, aefun.phi.
+            - x_low: The corresponding minimizer.
+            - qoi_up: The maximum of the quantity of interest.
+            - x_up: The corresponding maximizer.
         """
         # Create SOCP problem
         socp = self._create_socp(aefun=aefun)
         # Compute minimizer/maximizer
         z0 = aefun.z0
         if self._use_ray:
-            qoi_low = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
+            out_low = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
                                                qoi=aefun.phi, actor=self._actor, mode="min")
-            qoi_up = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
+            out_up = socp_solve_remote.remote(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol,
                                               qoi=aefun.phi, actor=self._actor, mode="max")
         else:
-            qoi_low = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol, qoi=aefun.phi,
+            out_low = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol, qoi=aefun.phi,
                                  mode="min")
-            qoi_up = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol, qoi=aefun.phi,
+            out_up = socp_solve(socp=socp, start=z0, optimizer=self._optimizer, ctol=self._ctol, qoi=aefun.phi,
                                 mode="max")
-        return qoi_low, qoi_up
+        return out_low, out_up
 
     def _create_socp(self, aefun: AffineEvaluationFunctional) -> SOCP:
         """
@@ -202,20 +163,20 @@ class CIComputer:
         v = aefun.v
 
         # Reformulate the cone constraint for z.
-        c_z = self._t @ u
-        g = self._d_tilde - self._t @ v
+        c_z = self._cregion.t @ u
+        g = self._cregion.d_tilde - self._cregion.t @ v
         p_z, t_z0 = np.linalg.qr(c_z, mode="complete")
         k = aefun.zdim
         t_z = t_z0[:k, :]
         p_z1 = p_z[:, :k]
         p_z2 = p_z[:, k:]
         d_tilde_z = p_z1.T @ g
-        e_tilde_z = self._e_tilde - np.sum(np.square(p_z2.T @ g))
+        e_tilde_z = self._cregion.e_tilde - np.sum(np.square(p_z2.T @ g))
 
         # Reformulate the equality constraint for z.
-        if self._a is not None:
-            a_new = self._a @ u
-            b_new = self._b - self._a @ v
+        if self._cregion.a is not None:
+            a_new = self._cregion.a @ u
+            b_new = self._cregion.b - self._cregion.a @ v
             # If equality constraint does not satisfy constraint qualification, it is removed.
             satisfies_cq = (np.linalg.matrix_rank(a_new) >= a_new.shape[0])
             if not satisfies_cq:
@@ -226,28 +187,11 @@ class CIComputer:
             b_new = None
 
         # Reformulate the lower-bound constraint for z.
-        lb_z = aefun.lb_z(self._lb)
+        lb_z = aefun.lb_z(self._cregion.lb)
 
         # Create SOCP instance
         socp = SOCP(w=w, a=a_new, b=b_new, c=t_z, d=d_tilde_z, e=e_tilde_z, lb=lb_z)
         return socp
-
-    def _cost_constraint(self, x: np.ndarray) -> float:
-        """
-        The cost constraint is
-        c(x) >= 0, where c(x) = J(x_map) + k_\alpha - J(x),
-        where J is the MAP cost functional, and k_\alpha = N * (\tau_\alpha + 1).
-        """
-        c = self._cost_map + self._k_alpha - self._costf(x)
-        return c
-
-    def _cost_constraint_grad(self, x: np.ndarray) -> np.ndarray:
-        """
-        Returns the gradient of the cost constraint function. That is
-
-        :math:`\\nabla c(x) = - \\nabla J(x).
-        """
-        return - self._costg(x)
 
     @staticmethod
     def _negative(v: np.ndarray):

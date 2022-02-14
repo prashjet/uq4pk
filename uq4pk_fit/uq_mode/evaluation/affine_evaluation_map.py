@@ -1,4 +1,5 @@
 
+import numpy as np
 from typing import List
 
 from .affine_evaluation_functional import AffineEvaluationFunctional
@@ -29,6 +30,20 @@ class AffineEvaluationMap:
         Returns the number of affine evaluation functionals in the map.
         """
         return len(self.aef_list)
+
+    def select(self, indices: np.array):
+        """
+        Kicks out all the affine evaluation functionals that do not correspond to an index in 'indices'.
+
+        :param indices: List ouf indices that should be kept.
+        """
+        new_aef_list = [self.aef_list[i] for i in indices]
+        # Have to recompute phidim.
+        new_phdim = 0
+        for aef in new_aef_list:
+            new_phdim += aef.phidim
+        self.aef_list = new_aef_list
+        self.phidim = new_phdim
 
     def _check_input(self, aef_list: List[AffineEvaluationFunctional]):
         # list must not be empty

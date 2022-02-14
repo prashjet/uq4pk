@@ -7,8 +7,8 @@ import skimage.metrics as scimet
 from uq4pk_fit.cgn import IdentityOperator, MultipliedOperator, RegularizationOperator
 from uq4pk_fit.inference import *
 from uq4pk_fit.uq_mode import FilterFunction
-from experiment_kit.plotting.plot_with_colorbar import plot_with_colorbar
-from experiment_kit.plotting.plot_triple_bar import plot_triple_bar
+from uq4pk_fit.plotting.plot_with_colorbar import plot_with_colorbar
+from uq4pk_fit.plotting import plot_triple_bar
 from .test_setup import TestSetup
 from uq4pk_fit.inference.uq_result import UQResult
 
@@ -35,10 +35,10 @@ class TestResult:
         # analysis of uncertainty quantification
         self.uqerr_f, self.uqtightness_f, self.uqsize_f, self.uqerr_theta, self.uqtightness_theta = self._uq_error_analysis()
 
-        # default plotting
+        # default visualization
         self.plot()
 
-        # additional plotting
+        # additional visualization
         self._additional_plotting()
 
         # now, the actual results are computed

@@ -1,5 +1,3 @@
-
-from .blob_detection import significant_blobs, scale_space_minimization
 from .fci import fci
 from .lci import lci
 from .linear_model import LinearModel

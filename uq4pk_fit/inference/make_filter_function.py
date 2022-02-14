@@ -17,14 +17,8 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     h = options.setdefault("h", 1)
     a = options.setdefault("a", 1)
     b = options.setdefault("b", 1)
-    if isinstance(h, np.ndarray):
-        c = 3 * np.sqrt(h[0])
-        d = 3 * np.sqrt(h[1])
-    else:
-        c = 3 * np.sqrt(h)
-        d = 3 * np.sqrt(h)
-    c = options.setdefault("c", c)
-    d = options.setdefault("d", d)
+    c = options.setdefault("c", m_f)
+    d = options.setdefault("d", n_f)
     serious = options.setdefault("serious", False)
     # Create filter function for f
     if kernel == "gauss":
@@ -35,7 +29,7 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     elif kernel == "mean":
         ffunction_f = uq_mode.ImageLocalMeans(m=m_f, n=n_f, a=a, b=b, c=c, d=d)
     elif kernel == "pixel":
-        ffunction_f = uq_mode.PixelWithRectangle(m=m_f, n=n_f, a=a, b=b)
+        ffunction_f = uq_mode.PixelWithRectangle(m=m_f, n=n_f, a=c, b=d)
     else:
         raise KeyError("Unknown kernel.")
     if dim_theta_v is None:

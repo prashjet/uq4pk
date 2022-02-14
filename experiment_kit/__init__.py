@@ -1,5 +1,4 @@
 
-from .experiment import make_experiment
+from .experiment import make_experiment, ExperimentData, load_experiment_data, save_experiment_data
 from .logging import Logger
-from .simulate import simulate, get_f, get_real_data, make_ftest
 from .test import Test, SuperTest

@@ -25,7 +25,7 @@ class Upsampler:
     """
     Manages the downsampling of an image.
     We are given an image of shape (m, n) and parameters a, b that determine the height and width of the superpixels.
-    The downsampling object then treats then handles how this image is translated to an image of shape
+    The downsampling object then handles how this image is translated to an image of shape
     (ceil(m/a), ceil(n/b)).
     """
     def __init__(self, m: int, n: int, a: int, b: int):

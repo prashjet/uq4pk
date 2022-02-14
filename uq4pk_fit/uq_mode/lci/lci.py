@@ -23,7 +23,8 @@ def lci(alpha: float,  model: LinearModel, x_map: np.ndarray, partition: Partiti
     # Generate an affine evaluation map from the partition
     affine_evaluation_map = partition_to_evaluation_map(partition, x_map)
     # Compute the local credible intervals
-    lci_arr = compute_credible_intervals(alpha=alpha, model=model, x_map=x_map, aemap=affine_evaluation_map,
+    credible_interval = compute_credible_intervals(alpha=alpha, model=model, x_map=x_map, aemap=affine_evaluation_map,
                                          options=options)
     # The array is already in x_space and can be returned without further ado.
+    lci_arr = np.column_stack([credible_interval.phi_lower, credible_interval.phi_upper])
     return lci_arr

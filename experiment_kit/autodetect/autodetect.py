@@ -4,7 +4,7 @@ import numpy as np
 from skimage import feature
 
 from uq4pk_fit.uq_mode.detection.span_blanket import span_blanket
-from ..plotting.blob_plot import blob_plot
+from uq4pk_fit.plotting import blob_plot
 
 
 MINSIGMA = 1

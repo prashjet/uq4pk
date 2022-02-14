@@ -14,7 +14,7 @@ from .params import SCALING, SNR
 
 # load the Radon operator
 A = radon.load_radon(SCALING)
-# simulate a noisy measurement of the Shepp-Logan phantom
+# simulate_data a noisy measurement of the Shepp-Logan phantom
 y_noisy, y, image, delta = radon.simulate_measurement(snr=SNR, scaling_factor=SCALING, A=A)
 # compute MAP estimate
 x_map = radon.compute_map(y_noisy, A, delta)
