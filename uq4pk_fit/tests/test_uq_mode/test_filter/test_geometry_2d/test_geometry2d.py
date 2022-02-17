@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from uq4pk_fit.uq_mode.filter.geometry2d import find_indices
+from uq4pk_fit.uq_mode.geometry2d import find_indices
 
 
 def test_find_indices():

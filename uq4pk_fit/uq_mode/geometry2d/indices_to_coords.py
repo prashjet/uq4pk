@@ -14,10 +14,13 @@ def indices_to_coords(m, n, indices):
         Number of columns of the image.
     :param indices: (j,) array of ints
         List of indices.
-    :return: (2, j) array
+    :return: (2,) or (2, j) array, if j > 1.
         The i-th column corresponds to the x- and y- coordinate of the pixel with index 'indices[j]'.
     """
     x_coord = indices // n
     y_coord = indices % n
     coords = np.row_stack((x_coord, y_coord))
+    # If j = 1, reshape to vector
+    if coords.shape[1] == 1:
+        coords = coords.reshape((2, ))
     return coords

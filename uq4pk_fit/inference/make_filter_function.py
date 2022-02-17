@@ -13,25 +13,11 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     each window also contains the parameter theta_v.
     """
     # Read/set options.
-    kernel = options.setdefault("kernel", "gauss")
-    h = options.setdefault("h", 1)
-    a = options.setdefault("a", 1)
-    b = options.setdefault("b", 1)
-    c = options.setdefault("c", m_f)
-    d = options.setdefault("d", n_f)
+    sigma1 = options.setdefault("sigma1", 1.)
+    sigma2 = options.setdefault("sigma2", 1.)
     serious = options.setdefault("serious", False)
-    # Create filter function for f
-    if kernel == "gauss":
-        boundary = options.setdefault("boundary", "zero")
-        ffunction_f = uq_mode.SquaredExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h, boundary=boundary)
-    elif kernel == "laplace":
-        ffunction_f = uq_mode.ExponentialFilterFunction(m=m_f, n=n_f, a=a, b=b, c=c, d=d, h=h)
-    elif kernel == "mean":
-        ffunction_f = uq_mode.ImageLocalMeans(m=m_f, n=n_f, a=a, b=b, c=c, d=d)
-    elif kernel == "pixel":
-        ffunction_f = uq_mode.PixelWithRectangle(m=m_f, n=n_f, a=c, b=d)
-    else:
-        raise KeyError("Unknown kernel.")
+    boundary = options.setdefault("boundary", "zero")
+    ffunction_f = uq_mode.GaussianFilterFunction2D(m=m_f, n=n_f, sigma1=sigma1, sigma2=sigma2, boundary=boundary)
     if dim_theta_v is None:
         # In the linear case, we are already done.
         ffunction_x = ffunction_f
@@ -45,13 +31,13 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
         dim_f = m_f * n_f
         theta_v_indices = np.arange(dim_f, dim_f + dim_theta_v)
         theta_v_weights = np.zeros(dim_theta_v)
-        for i in range(ffunction_f.size):
+        for i in range(ffunction_f.dim):
             ffunction_x.extend_filter(i, theta_v_indices, theta_v_weights)
         if serious:
             # And modify each theta-filter such that it includes all f-indices, but not weighted. (only in serious runs)
             f_indices = np.arange(dim_f)
             f_weights = np.zeros(dim_f)
-            for i in range(ffunction_f.size, ffunction_x.size):
+            for i in range(ffunction_f.dim, ffunction_x.size):
                 ffunction_x.extend_filter(i, f_indices, f_weights)
     ffunction_theta = uq_mode.IdentityFilterFunction(dim=7)
     return ffunction_x, ffunction_f, ffunction_vartheta, ffunction_theta

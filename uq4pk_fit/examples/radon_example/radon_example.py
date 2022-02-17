@@ -28,7 +28,7 @@ def cost_fun(x):
 def cost_grad(x):
     return radon.negative_log_posterior_gradient(x, y_noisy, A, delta)
 cost_dict = {"fun": cost_fun, "grad": cost_grad}
-# Setup partition. We use superpixels of size 2x2.
+# Setup discretization. We use superpixels of size 2x2.
 a = 2
 b = 2
 two_by_two_partition = uq_mode.partition.rectangle_partition(m=m, n=n, a=a, b=b)

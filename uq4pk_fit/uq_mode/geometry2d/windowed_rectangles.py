@@ -4,7 +4,7 @@ Contains function "windowed_rectangles".
 
 import numpy as np
 
-from ...partition import rectangle_partition
+from ..discretization import rectangle_partition
 from .indices_to_coords import indices_to_coords
 from .rectangle_indices import rectangle_indices
 
@@ -19,7 +19,7 @@ def windowed_rectangles(m, n, a, b, c, d):
     :param c: int
     :param d: int
     :return: ImagePartition, list
-        Returns the partition of rectangles together with the list of windows.
+        Returns the discretization of rectangles together with the list of windows.
     """
     rectangles = rectangle_partition(m, n, a, b)
     # for each rectangle, obtain the corresponding framing window.

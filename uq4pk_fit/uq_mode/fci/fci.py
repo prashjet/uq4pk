@@ -8,6 +8,7 @@ from typing import Sequence
 from ..ci_computer import compute_credible_intervals
 from ..filter.filter_function import FilterFunction
 from ..linear_model import LinearModel
+from ..discretization import AdaptiveDiscretization
 from .filter_function_to_evaluation_map import filter_function_to_evaluation_map
 
 
@@ -23,7 +24,8 @@ class FCI:
         self.maximizers = maximizers
 
 
-def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict = None) \
+def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction,
+        discretization: AdaptiveDiscretization, options: dict = None) \
         -> FCI:
     """
     Computes filtered credible intervals using the Pereyra approximation.
@@ -32,20 +34,19 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     :param model: Defines the (Bayesian) linear statistical model.
     :param x_map: The MAP estimate corresponding to ``model``.
     :param ffunction: A filter function that determines the filtering.
+    :param discretization: The underlying discretization
     :param options: A dictionary with additional options.
             - "use_ray": If True, then the computation is parallelized with the Ray framework. Default is True.
             - "num_cpus": Number of CPUs used by Ray.
             - "solver": The optimization solver. "slsqp" for SLSQP, "ecos" for ECOS solver.
             - "detailed": If True, then the solver also outputs all local optimizers. Default is False.
-            - "tilde": If True, then the credible intervals are computed with respect to the smaller treshold
-                :math:`\\tilde \\gamma_\\alpha = \\hat \\gamma_\\alpha - \\eta_\\alpha \\sqrt{n} + n`.
     :returns: Object of type :py:class:`FCI`.
     """
     _check_input(alpha, model, x_map, ffunction)
     # Generate an affine evaluation map from the filter function
-    affine_evaluation_map = filter_function_to_evaluation_map(ffunction, x_map)
+    affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map)
     # If subsample is not None, kick out all pixels that are not in sample.
-    sample = options["sample"]
+    sample = options.setdefault("sample", None)
     if sample is not None:
         affine_evaluation_map.select(sample)
     # Compute the credible intervals (in phi-space)
@@ -54,13 +55,7 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     # Create FCI-object
     phi_lower = credible_interval.phi_lower
     phi_upper = credible_interval.phi_upper
-    if sample is None:
-        phi_lower_enlarged = ffunction.enlarge(phi_lower)
-        phi_upper_enlarged = ffunction.enlarge(phi_upper)
-    else:
-        phi_lower_enlarged = phi_lower
-        phi_upper_enlarged = phi_upper
-    fci_obj = FCI(phi_lower_enlarged=phi_lower_enlarged, phi_upper_enlarged=phi_upper_enlarged,
+    fci_obj = FCI(phi_lower_enlarged=phi_lower, phi_upper_enlarged=phi_upper,
                   minimizers=credible_interval.minimizers, maximizers=credible_interval.maximizers)
 
     return fci_obj

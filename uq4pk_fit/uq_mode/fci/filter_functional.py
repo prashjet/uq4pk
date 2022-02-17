@@ -1,6 +1,7 @@
 
 import numpy as np
 
+from ..discretization import Discretization
 from ..evaluation import AffineEvaluationFunctional
 from ..filter import LinearFilter
 
@@ -10,35 +11,43 @@ class FilterFunctional(AffineEvaluationFunctional):
     Special case of :py:class:`AffineEvaluationFunctional` based on a linear filter.
     Given the filter with indices I and weight vector w, the corresponding affine evaluation functional is
     w = w
-    phi(z) = w @ z
-    x(z) = x_map + zeta_I z
+    phi(z) = a @ z + b
+    x(z) = U z + v
     lb(z) = (lb - x_map)_I
     """
-
-    def __init__(self, filter: LinearFilter, x_map: np.ndarray):
-        self.w = filter.weights
-        self.indices = filter.indices
+    def __init__(self, filter: LinearFilter, discretization: Discretization, x_map: np.ndarray):
         self.dim = x_map.size
-        self.zdim = filter.size
-        # Set up zeta matrix.
-        zeta = np.zeros((self.dim, self.zdim))
-        id_l = np.identity(self.zdim)
-        zeta[self.indices, :] = id_l[:, :]
-        # x(z)_I = z, x(z)_{~I} = x_map_{~I} ==> U = Zeta, v_I = 0, v_{~I} = x_map_{~I}.
-        self.u = zeta
-        self.v = x_map.copy()
-        self.v[self.indices] = 0.
-        self.z0 = x_map[self.indices]
-        self.phidim = 1
+        self.zdim = discretization.dof
+        self._a = discretization.u.T @ filter.weights
+        self.w = self._a
+        self._b = filter.weights @ discretization.v
+        self._discretization = discretization
+        self.z0 = discretization.translate_lower_bound(x_map)
 
-    def phi(self, z: np.ndarray) -> np.ndarray:
+    @property
+    def u(self) -> np.ndarray:
+        return self._discretization.u
+
+    @property
+    def v(self) -> np.ndarray:
+        return self._discretization.v
+
+    def phi(self, z: np.ndarray) -> float:
         """
-        For a filter, phi(z) = w @ z.
+        For a filter, phi(z) = w @ x(z).
         """
-        return np.array(self.w @ z).reshape((1, ))
+        return self._a @ z + self._b
+
+    def x(self, z: np.ndarray) -> np.ndarray:
+        """
+
+        :param z:
+        :return: x
+        """
+        return self._discretization.map(z)
 
     def lb_z(self, lb: np.ndarray) -> np.ndarray:
         """
-        The lower bound on z is simply lb_I.
+        Translates lower bound on x into lower bound on z.
         """
-        return lb[self.indices]
+        return self._discretization.translate_lower_bound(lb)

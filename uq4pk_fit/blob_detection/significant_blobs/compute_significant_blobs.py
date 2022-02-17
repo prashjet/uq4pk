@@ -3,7 +3,8 @@ import numpy as np
 from typing import List, Literal, Tuple, Union
 
 from uq4pk_fit.uq_mode.fci import fci
-from uq4pk_fit.uq_mode.filter import SquaredExponentialFilterFunction
+from uq4pk_fit.uq_mode.discretization import LocalizationWindows
+from uq4pk_fit.uq_mode.filter import GaussianFilterFunction2D
 from uq4pk_fit.uq_mode.linear_model import LinearModel
 from uq4pk_fit.blob_detection.detect_blobs import best_blob_first, compute_overlap, detect_blobs, stack_to_blobs
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
@@ -156,11 +157,12 @@ def _compute_blanket(alpha: float, m: int, n: int, model: LinearModel, x_map: np
     :returns: Of shape (m, n). The computed blanket
     """
     # Setup Gaussian filter function.
-    h_vec = np.array([scale, scale * (ratio ** 2)])
-    filter_function = SquaredExponentialFilterFunction(m=m, n=n, a=1, b=1, c=k, d=k,
-                                                       h=h_vec, boundary="zero")
+    sigma1 = 2 * np.sqrt(scale)
+    sigma2 = sigma1 * ratio
+    filter_function = GaussianFilterFunction2D(m=m, n=n, sigma1=sigma1, sigma2=sigma2, boundary="zero")
+    discretization = LocalizationWindows(im_ref=x_map.reshape((m, n)), w1=k, w2=k)
     # Compute filtered credible interval.
-    ci = fci(alpha=alpha, model=model, x_map=x_map, ffunction=filter_function)
+    ci = fci(alpha=alpha, model=model, x_map=x_map, ffunction=filter_function, discretization=discretization)
     # Compute minimally bumpy element using taut_string
     lower = np.reshape(ci[:, 0], (m, n))
     upper = np.reshape(ci[:, 1], (m, n))

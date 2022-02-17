@@ -2,18 +2,18 @@
 import numpy as np
 
 from ..evaluation import AffineEvaluationMap
-from ..partition import Partition
+from ..discretization import Partition
 from .lci_evaluation_functional import LCIEvaluationFunctional
 
 
 def partition_to_evaluation_map(partition: Partition, x_map: np.ndarray) -> AffineEvaluationMap:
     """
-    Given a partition (and the MAP estimate), generates the EvaluationMap object needed for computing
+    Given a discretization (and the MAP estimate), generates the EvaluationMap object needed for computing
     local credible intervals.
     """
     # Check input for consistency
     _check_input(partition, x_map)
-    # For each partition element, create the associated LCI-evaluation functional
+    # For each discretization element, create the associated LCI-evaluation functional
     aefun_list = []
     for element in partition.get_element_list():
         aefun = LCIEvaluationFunctional(element, x_map)

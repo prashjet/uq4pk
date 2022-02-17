@@ -130,12 +130,14 @@ class FittedModel:
         """
         # Create appropriate filter
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
+        discretization = self._get_discretization(options)
         # compute filtered credible intervals
         fci_obj = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model,
-                                                       ffunction=filter_function, options=options)
+                              ffunction=filter_function, discretization=discretization,
+                              options=options)
         ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
-        uq_scale = options["h"]
+        uq_scale = options["sigma1"]
         # Reshape
         lower_f = self._reshape_f(ci_f[:, 0])
         upper_f = self._reshape_f(ci_f[:, 1])
@@ -158,7 +160,7 @@ class FittedModel:
             raise Exception("Local credible intervals only implemented for the linear model.")
         # Set required parameters
         alpha = 0.05
-        # Create appropriate partition
+        # Create appropriate discretization
         a = options.setdefault("a", 2)
         b = options.setdefault("b", 2)
         partition = uq_mode.rectangle_partition(m=self._m_f, n=self._n_f, a=a, b=b)
@@ -236,17 +238,31 @@ class FittedModel:
         f_im = np.reshape(f, (self._m_f, self._n_f))
         return f_im
 
-    def make_localization_plot(self, n_sample: int, c_list: Sequence[int], d_list: Sequence[int],
-                               scale: float):
+    def _get_discretization(self, options: dict) -> uq_mode.AdaptiveImageDiscretization:
+        discretization = options.setdefault("discretization", "trivial")
+        d1 = options.setdefault("d1", 1)
+        d2 = options.setdefault("d2", 1)
+        w1 = options.setdefault("w1", 1)
+        w2 = options.setdefault("w2", 1)
+        print(f"Discretization: {discretization}")
+        if discretization == "trivial":
+            discretization = uq_mode.TrivialAdaptiveDiscretization(dim=self._dim_f)
+        elif discretization == "window":
+            discretization = uq_mode.LocalizationWindows(im_ref=self._reshape_f(self._f_map), w1=w1, w2=w2)
+        elif discretization == "twolevel":
+            discretization = uq_mode.AdaptiveTwoLevelDiscretization(im_ref=self._reshape_f(self._f_map),
+                                                                    d1=d1, d2=d2, w1=w1, w2=w2)
+        else:
+            raise KeyError("Unknown value for parameter 'discretization'.")
+        return discretization
+
+    def make_localization_plot(self, n_sample: int, w1_list: Sequence[int], w2_list: Sequence[int],
+                               sigma: float, discretization_name: str, d1: int=None, d2: int=None):
         """
         Creates a heuristic localization plot for FCIs based on a random sample of pixels.
         This can be used to tune the localization architecture.
 
-        :param rtol: The relative tolerance for computing credible intervals.
         :param n_sample: Number of pixels used for the random sample.
-        :param c_list: List of values for the parameter c, i.e. the vertical radius of the localization window.
-        :param d_list: List of values for the parameter d, i.e. the horizontal radius of the localization window.
-        :param scale: The scale with respect to which the FCI should be computed.
         :return: computation_times, errors
             - computation_times: A list of the estimated computation time corresponding to each localization architecture.
             - errors: A list of the approximation errors with respect to the baseline FCI (i.e. without any localization).
@@ -259,30 +275,31 @@ class FittedModel:
         # For each c-d configuration, compute the FCIs with respect to pixel_sample.
         fci_list = []
         t_list = []
-        for c, d in zip(c_list, d_list):
-            options = {"h": scale, "c": c, "d": d, "sample": pixel_sample}
+        for w1, w2 in zip(w1_list, w2_list):
+            options = {"sigma1": sigma, "sigma2": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "sample": pixel_sample,
+                       "discretization": discretization_name}
             t0 = time()
             # Create appropriate filter
             filter_function, filter_f, filter_theta = self._get_filter_function(options)
+            discretization = self._get_discretization(options)
             # compute filtered credible intervals
             fci_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
-                                  ffunction=filter_function, options=options)
+                                  ffunction=filter_function, discretization=discretization, options=options)
             fci = fci_obj.interval
             t1 = time()
             t_list.append((t1 - t0) * self._dim_f / n_sample)   # estimated computation time for all pixels.
             fci_list.append(fci)
 
         # ---Compute baseline error.
-        options = {"h": scale, "sample": pixel_sample}
+        options = {"sigma1": sigma, "sigma2": sigma, "sample": pixel_sample, "discretization": "trivial"}
+        discretization = self._get_discretization(options)
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # compute filtered credible intervals
         t0 = time()
         fci_base_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
-                              ffunction=filter_function, options=options)
+                              ffunction=filter_function, discretization=discretization, options=options)
         t1 = time()
         fci_base = fci_base_obj.interval
-        fci_list.append(fci_base)
-        t_list.append((t1 - t0) * self._dim_f / n_sample)
 
         # Compute relative localization error
         e_rloc_list = []
