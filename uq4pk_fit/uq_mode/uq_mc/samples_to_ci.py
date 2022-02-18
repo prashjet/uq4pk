@@ -25,8 +25,7 @@ def samples_to_ci(alpha, samples, ffunction: FilterFunction):
         # Evaluate the filter function on the j-th sample and append to phi_list.
         phi_j = ffunction.evaluate(samples[:, j])
         # Enlarge
-        phi_j_enlarged = ffunction.enlarge(phi_j)
-        phi_list.append(phi_j_enlarged)
+        phi_list.append(phi_j)
     # Turn phi_list into a numpy array.
     phi_arr = np.column_stack(phi_list)
     # sort each row

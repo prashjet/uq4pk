@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.linalg import block_diag
 
 from .discretization import Discretization
 
@@ -19,11 +20,13 @@ class CombinedDiscretization(Discretization):
     @property
     def u(self) -> np.ndarray:
         """
-        The matrix U for the combined discretization is simply [U1, U2].
+        The matrix U for the combined discretization is simply [U1, 0; 0, U2].
         """
         u1 = self._dis1.u
         u2 = self._dis2.u
-        return np.concatenate([u1, u2], axis=1)
+        u = block_diag(u1, u2)
+        assert u.shape == (self.dim, self.dof)
+        return u
 
     @property
     def v(self) -> np.ndarray:

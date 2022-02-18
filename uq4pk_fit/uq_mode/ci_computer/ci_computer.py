@@ -69,9 +69,6 @@ class CIComputer:
         # Initialize lists for storing the FCI-values.
         out_lower_list = []
         out_upper_list = []
-        # Initialize list for storing the FCI-optimizers (only if self._optimize).
-        x_lower_list = []
-        x_upper_list = []
         # For every coordinate, compute the value of the lower and upper bounds of the kernel localization functional
         # over the credible region.
         cicounter = 0       # counts number of computed credible intervals

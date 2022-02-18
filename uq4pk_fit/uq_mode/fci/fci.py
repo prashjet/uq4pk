@@ -42,7 +42,7 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
             - "detailed": If True, then the solver also outputs all local optimizers. Default is False.
     :returns: Object of type :py:class:`FCI`.
     """
-    _check_input(alpha, model, x_map, ffunction)
+    _check_input(alpha, model, x_map, ffunction, discretization)
     # Generate an affine evaluation map from the filter function
     affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map)
     # If subsample is not None, kick out all pixels that are not in sample.
@@ -61,7 +61,8 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     return fci_obj
 
 
-def _check_input(alpha, model, x_map, ffunction):
+def _check_input(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction,
+                 discretization: AdaptiveDiscretization):
     """
     Checks the input of "fci" for consistency.
     """
@@ -69,3 +70,4 @@ def _check_input(alpha, model, x_map, ffunction):
         raise ValueError("'alpha' must satisfy 0 < alpha < 1.")
     assert x_map.shape == (model.n, )
     assert ffunction.dim == model.n
+    assert discretization.dim == model.n

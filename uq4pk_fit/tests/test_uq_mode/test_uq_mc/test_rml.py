@@ -17,8 +17,8 @@ def test_rml():
     # compute filtered credible intervals
     alpha = 0.05
     # make a simple filter function
-    weights = [np.array([.8, 0.2]), np.array([.2, 0.8])]
-    filter_function = uq_mode.SimpleFilterFunction(dim=2, weights=weights)
+    weights = np.array([[.8, 0.2], [.2, 0.8]])
+    filter_function = uq_mode.SimpleFilterFunction(weights=weights)
     rmlci = uq_mode.fci_rml(alpha=alpha, model=test_problem.model, x_map=test_problem.x_map, ffunction=filter_function)
     # Assert that the kernel functionals evaluated at the MAP estimate lie inside the credible intervals.
     y_map = filter_function.evaluate(test_problem.x_map)

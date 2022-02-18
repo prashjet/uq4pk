@@ -11,9 +11,9 @@ def test_direct_sum():
     d2 = 7
     ffunction1 = GaussianFilterFunction2D(m=m, n=n, sigma1=1., sigma2=1., boundary="zero")
     ffunction2 = IdentityFilterFunction(dim=d2)
-    ffunction = direct_sum([ffunction1, ffunction2])
+    ffunction = direct_sum(ffunction1, ffunction2)
     assert ffunction.dim == d1 + d2
     # first filter from second ffunction
     s1 = ffunction1.dim
     test_filter = ffunction.filter(s1)
-    assert np.isclose(test_filter.weights, ffunction2.filter(0).weights).all()
+    assert np.isclose(test_filter.weights[d1:], ffunction2.filter(0).weights).all()

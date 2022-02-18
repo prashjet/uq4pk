@@ -214,7 +214,7 @@ def _match_to_map(significant_blobs: List[GaussianBlob], map_blobs: List[Gaussia
     return mapped_pairs
 
 
-def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float) -> Union[np.ndarray, None]:
+def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float) -> Union[GaussianBlob, None]:
     """
     Find a feature in a given collection of features.
     A feature is mapped if the overlap to another feature is more than a given threshold.

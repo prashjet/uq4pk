@@ -27,17 +27,5 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
         ffunction_vartheta = uq_mode.IdentityFilterFunction(dim_theta_v)
         # combine the filter functions
         ffunction_x = uq_mode.direct_sum([ffunction_f, ffunction_vartheta])
-        # Then, modify each f-filter such that it also includes all theta_v-indices, but not weighted.
-        dim_f = m_f * n_f
-        theta_v_indices = np.arange(dim_f, dim_f + dim_theta_v)
-        theta_v_weights = np.zeros(dim_theta_v)
-        for i in range(ffunction_f.dim):
-            ffunction_x.extend_filter(i, theta_v_indices, theta_v_weights)
-        if serious:
-            # And modify each theta-filter such that it includes all f-indices, but not weighted. (only in serious runs)
-            f_indices = np.arange(dim_f)
-            f_weights = np.zeros(dim_f)
-            for i in range(ffunction_f.dim, ffunction_x.size):
-                ffunction_x.extend_filter(i, f_indices, f_weights)
     ffunction_theta = uq_mode.IdentityFilterFunction(dim=7)
     return ffunction_x, ffunction_f, ffunction_vartheta, ffunction_theta

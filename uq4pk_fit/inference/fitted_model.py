@@ -16,6 +16,7 @@ from .jaccard_distance import mean_jaccard_distance
 from .make_filter_function import make_filter_function
 from .parameter_map import ParameterMap
 from .uq_result import UQResult
+from .hybrid_discretization import HybridDiscretization
 
 
 class FittedModel:
@@ -239,21 +240,26 @@ class FittedModel:
         return f_im
 
     def _get_discretization(self, options: dict) -> uq_mode.AdaptiveImageDiscretization:
-        discretization = options.setdefault("discretization", "trivial")
+        discretization_name = options.setdefault("discretization", "trivial")
         d1 = options.setdefault("d1", 1)
         d2 = options.setdefault("d2", 1)
         w1 = options.setdefault("w1", 1)
         w2 = options.setdefault("w2", 1)
-        print(f"Discretization: {discretization}")
-        if discretization == "trivial":
-            discretization = uq_mode.TrivialAdaptiveDiscretization(dim=self._dim_f)
-        elif discretization == "window":
-            discretization = uq_mode.LocalizationWindows(im_ref=self._reshape_f(self._f_map), w1=w1, w2=w2)
-        elif discretization == "twolevel":
-            discretization = uq_mode.AdaptiveTwoLevelDiscretization(im_ref=self._reshape_f(self._f_map),
+        if discretization_name == "trivial":
+            f_discretization = uq_mode.TrivialAdaptiveDiscretization(dim=self._dim_f)
+        elif discretization_name == "window":
+            f_discretization = uq_mode.LocalizationWindows(im_ref=self._reshape_f(self._f_map), w1=w1, w2=w2)
+        elif discretization_name == "twolevel":
+            f_discretization = uq_mode.AdaptiveTwoLevelDiscretization(im_ref=self._reshape_f(self._f_map),
                                                                     d1=d1, d2=d2, w1=w1, w2=w2)
         else:
             raise KeyError("Unknown value for parameter 'discretization'.")
+        # If theta is not fixed, we have to use a hybrid discretization.
+        if self._parameter_map.theta_fixed:
+            discretization = f_discretization
+        else:
+            discretization = HybridDiscretization(f_discretization=f_discretization,
+                                                  dim_theta=self._parameter_map.dims[1])
         return discretization
 
     def make_localization_plot(self, n_sample: int, w1_list: Sequence[int], w2_list: Sequence[int],

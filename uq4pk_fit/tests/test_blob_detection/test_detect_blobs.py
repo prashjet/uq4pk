@@ -4,10 +4,11 @@ from matplotlib import patches
 import numpy as np
 from skimage.feature import blob_log
 
-from uq4pk_fit.blob_detection import GaussianBlob
-from uq4pk_fit.blob_detection import detect_blobs
+from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
+from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
 
 
+SHOW = False    # Set True if you want to see plots.
 SIGMA_MIN = 1.
 SIGMA_MAX = 25.
 NUM_SIGMA = 10
@@ -63,7 +64,7 @@ def test_compare_with_skimage():
         y, x, sigma = feature
         ax.add_patch(plt.Circle((x, y), 2 * np.sqrt(2) * sigma, color="lime",
                                 fill=False))
-    plt.show()
+    if SHOW: plt.show()
 
 
 def test_detect_with_ratio():
@@ -84,4 +85,4 @@ def test_detect_with_ratio():
         w = blob.width
         h = blob.height
         ax.add_patch(patches.Ellipse(tuple(blob.position), width=w, height=h, color="lime", fill=False))
-    plt.show()
+    if SHOW: plt.show()

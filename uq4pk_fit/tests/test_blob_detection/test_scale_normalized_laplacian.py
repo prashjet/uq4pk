@@ -2,10 +2,11 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-from uq4pk_fit.blob_detection import scale_space_representation
-from uq4pk_fit.blob_detection import scale_normalized_laplacian
+from uq4pk_fit.blob_detection.scale_space_representation import scale_space_representation
+from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
 
 
+SHOW = False    # Set True if you want to see plots
 NSCALES = 12
 R_MIN = 1
 R_MAX = 15
@@ -33,7 +34,7 @@ def test_normalized_laplacian():
         fig = plt.figure(num=f"h = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(snl_i, cmap="gnuplot", vmin=vmin, vmax=vmax)
         i += 1
-    plt.show()
+    if SHOW: plt.show()
 
 
 def test_blankets():
@@ -58,7 +59,7 @@ def test_blankets():
         fig = plt.figure(num=f"sigma = {sigmas[i]}", figsize=(6, 2.5))
         plt.imshow(snl_i, cmap="gnuplot", vmin=vmin, vmax=vmax)
         i += 1
-    plt.show()
+    if SHOW: plt.show()
 
 
 def test_with_ratio():
@@ -84,4 +85,4 @@ def test_with_ratio():
         fig = plt.figure(num=f"sgima = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(snl_i, cmap="gnuplot", vmin=vmin, vmax=vmax)
         i += 1
-    plt.show()
+    if SHOW: plt.show()

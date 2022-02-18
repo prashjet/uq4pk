@@ -13,6 +13,9 @@ class FilterFunction:
     dim: int    # The dimension of the underlying space.
 
     def __init__(self, dim: int, filter_list: List[LinearFilter]):
+        # Check that each filter has the right dimension.
+        for filter in filter_list:
+            assert filter.dim == dim
         self.dim = dim
         self._filters = filter_list
 
@@ -29,15 +32,6 @@ class FilterFunction:
         :param filter: The new LinearFilter object to which the i-th discretization element is mapped.
         """
         self._filters[i] = filter
-
-    def extend_filter(self, i: int, weights: np.ndarray):
-        """
-        Extends the i-th filter.
-        :param i: Index of the filter to be extended.
-        :param weights: The associated weights. The length of the ``weights`` parameter must equal the length of
-        :raises: ValueError
-        """
-        self._filters[i].extend(weights)
 
     def evaluate(self, v: np.ndarray) -> np.ndarray:
         """

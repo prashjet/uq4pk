@@ -1,11 +1,10 @@
-
-from typing import List
+import numpy as np
 
 from .filter_function import FilterFunction
-from ..discretization import Partition
+from .simple_filter_function import SimpleFilterFunction
 
 
-def direct_sum(ffunction_list: List[FilterFunction]):
+def direct_sum(ffunction1: FilterFunction, ffunction2: FilterFunction):
     """
     Build the direct sum of a list of filter functions.
 
@@ -15,14 +14,25 @@ def direct_sum(ffunction_list: List[FilterFunction]):
         in lfunction_list, and size equal to the sum of the sizes. The underlying discretization is the join
          of all partitions.
     """
-    # For every localization function, collect the dimension and the lists.
-    dimension_sum = 0
-    filter_list = []
-    for ffunction in ffunction_list:
-        ffunction_filters = ffunction.get_filter_list()
-        # append the elements and filters to the merged element and filter list
-        filter_list.extend(ffunction_filters)
-        dimension_sum += ffunction.dim
+    dim1 = ffunction1.dim
+    dim2 = ffunction2.dim
+    # Initialize weights list.
+    weights_list = []
+    # Get the filters for the first ffunction
+    filters1 = ffunction1.get_filter_list()
+    # Expand each filter with zero weights.
+    zero_weights = np.zeros(dim2)
+    for filter in filters1:
+        filter.extend(zero_weights)
+        weights_list.append(filter.weights)
+    # Getthe filters of the second ffunction
+    filters2 = ffunction2.get_filter_list()
+    # Expand each filter with zero weights (before).
+    zero_weights = np.zeros(dim1)
+    for filter in filters2:
+        filter.extend(zero_weights, before=True)
+        weights_list.append(filter.weights)
+    weights = np.array(weights_list)
     # Build a merged filter function from the merged discretization and the list of all filters
-    merged_ffunction = FilterFunction(dim=dimension_sum, filter_list=filter_list)
+    merged_ffunction = SimpleFilterFunction(weights=weights)
     return merged_ffunction

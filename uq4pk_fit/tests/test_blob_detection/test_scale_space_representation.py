@@ -2,9 +2,10 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-from uq4pk_fit.blob_detection import scale_space_representation
+from uq4pk_fit.blob_detection.scale_space_representation import scale_space_representation
 
 
+SHOW = False    # Set True if you want to see plots.
 NSCALES = 16
 R_MIN = 0.5
 R_MAX = 25
@@ -32,7 +33,7 @@ def test_scale_space_representation():
         fig = plt.figure(num=f"h = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
-    plt.show()
+    if SHOW: plt.show()
 
 
 def test_reflect():
@@ -56,7 +57,7 @@ def test_reflect():
         fig = plt.figure(num=f"h = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
-    plt.show()
+    if SHOW: plt.show()
 
 
 def test_with_ratio():
@@ -81,4 +82,4 @@ def test_with_ratio():
         fig = plt.figure(num=f"h = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
-    plt.show()
+    if SHOW: plt.show()

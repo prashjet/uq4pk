@@ -16,6 +16,7 @@ class FilterFunctional(AffineEvaluationFunctional):
     lb(z) = (lb - x_map)_I
     """
     def __init__(self, filter: LinearFilter, discretization: Discretization, x_map: np.ndarray):
+        assert filter.dim == discretization.dim == x_map.size
         self.dim = x_map.size
         self.zdim = discretization.dof
         self._a = discretization.u.T @ filter.weights
