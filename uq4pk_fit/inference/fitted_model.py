@@ -6,7 +6,7 @@ from copy import deepcopy
 import numpy as np
 from numpy.typing import ArrayLike
 from time import time
-from typing import List, Sequence
+from typing import List, Sequence, Tuple, Union
 
 import uq4pk_fit.cgn as cgn
 from uq4pk_fit.cgn.translator.translator import Translator
@@ -78,6 +78,22 @@ class FittedModel:
             - "lci": Local credible intervals computed with the method described in Cui et al.
             - "fci": Filtered credible intervals.
             - "mc": Filtered credible intervals, computed with a heuristic Monte Carlo method.
+            - "kernel": Only relevant for filtered credible intervals. Determines the filter kernel.
+                - "gauss": A Gaussian kernel
+                - "pixel": A simple delta kernel.
+            - "discretization": The employed discretization for the stellar distribution function.
+                - "trivial": Just the finest discretization.
+                - "window": Discretization with localization windows.
+                - "twolevel": Two-levels of discretization.
+            - "w1": Only relevant if "discretization" is set to "window" or "twolevel". Determines the vertical
+                radius of the localization window.
+            - "w2": Same as w1, but for the horizontal radius.
+            - "d1": Determines the discretization resolution in the vertical direction.
+            - "d2": Determines the discretization resolution in the horizontal direction.
+            - "detailed": If yes, the minimizers and maximizers are also returned.
+            - "sigma1": Only relevant if "kernel"="gauss". Determines the standard deviation of the Gaussian kernel
+                in vertical direction.
+            - "sigma2": Same as sigma1, but for the horizontal direction.
         :param Optional[dict] options:
             A dict specifying further options. The possible options depend on the method used (...).
         :returns: UQResult
@@ -94,7 +110,6 @@ class FittedModel:
             return self._uq_lci(options)
         else:
             raise KeyError("Unknown method.")
-
 
     def _create_linearized_model(self, problem: cgn.Problem) -> uq_mode.LinearModel:
         # Then, compute all entities necessary for building the linearized model from the CNLS problem.
@@ -138,16 +153,13 @@ class FittedModel:
                               options=options)
         ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
-        uq_scale = options["sigma1"]
+        uq_scale = options["sigma"]
         # Reshape
         lower_f = self._reshape_f(ci_f[:, 0])
         upper_f = self._reshape_f(ci_f[:, 1])
         uq_result = UQResult(lower_f=lower_f, upper_f=upper_f, lower_theta=ci_theta[:, 0], upper_theta=ci_theta[:, 1],
                              filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
-        if options["detailed"]:
-            return uq_result, fci_obj.minimizers, fci_obj.maximizers
-        else:
-            return uq_result
+        return uq_result
 
     def _uq_lci(self, options: dict):
         """
@@ -198,13 +210,50 @@ class FittedModel:
                              filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
 
-    def significant_blobs(self, sigma_min: float = 1., sigma_max: float = 15., num_sigma: int = 8, k: int = None,
-                          ratio: float = 1.):
-        alpha = 0.05
-        blobs = blob_detection.detect_significant_blobs(alpha=alpha, m=self._m_f, n=self._n_f,
-                                                                model=self._linearized_model, x_map=self._x_map_vec,
-                                                                sigma_min=sigma_min, sigma_max=sigma_max,
-                                                                num_sigma=num_sigma, k=k, ratio=ratio)
+    def compute_fci_stack(self, sigma_list: Sequence[Union[float, np.ndarray]], options: dict = None) \
+            -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Computes a stack of FCIs corresponding to the given list of sigmas.
+        WARNING: Only works in the linear case.
+
+        :param sigma_list: The list of sigma-values for which a FCI has to be computed.
+        :param options:
+            - "discretization": The employed discretization for the stellar distribution function.
+                - "trivial": Just the finest discretization.
+                - "window": Discretization with localization windows.
+                - "twolevel": Two-levels of discretization.
+            - "w1": Only relevant if "discretization" is set to "window" or "twolevel". Determines the vertical
+                radius of the localization window.
+            - "w2": Same as w1, but for the horizontal radius.
+            - "d1": Determines the discretization resolution in the vertical direction.
+            - "d2": Determines the discretization resolution in the horizontal direction.
+        :return: lower_stack, upper_stack
+            Each stack is a sxmxn-array, where each of the s slices corresponds to a lower/upper bound of the
+            corresponding FCI.
+
+        """
+        if not self._parameter_map.theta_fixed:
+            raise NotImplementedError("This method is only implemented for fixed theta.")
+        # The FCIs are stored in two lists, one for the lower and one for the upper bound.
+        lower_list = []
+        upper_list = []
+        # For each sigma, compute the corresponding FCI.
+        for sigma in sigma_list:
+            print(f"Compute FCI for sigma={sigma}.")
+            options["sigma"] = sigma
+            fci = self._uq_fci(options=options)
+            lower_list.append(fci.lower_f)
+            upper_list.append(fci.upper_f)
+        # Turn lists into corresponding arrays
+        lower_stack = np.array(lower_list)
+        upper_stack = np.array(upper_list)
+        return lower_stack, upper_stack
+
+    def significant_blobs(self, sigmas: Sequence[float], lower_stack: np.ndarray, upper_stack: np.ndarray,
+                          rthresh: float = 0.01, overlap: float = 0.5):
+        f_map = self._reshape_f(self._f_map)
+        blobs = blob_detection.detect_significant_blobs(reference=f_map, sigma_list=sigmas, lower_stack=lower_stack,
+                                                        upper_stack=upper_stack, rthresh=rthresh, overlap=overlap)
         return blobs
 
     def _uq_dummy(self, options: dict):
@@ -250,8 +299,8 @@ class FittedModel:
         elif discretization_name == "window":
             f_discretization = uq_mode.LocalizationWindows(im_ref=self._reshape_f(self._f_map), w1=w1, w2=w2)
         elif discretization_name == "twolevel":
-            f_discretization = uq_mode.AdaptiveTwoLevelDiscretization(im_ref=self._reshape_f(self._f_map),
-                                                                    d1=d1, d2=d2, w1=w1, w2=w2)
+            f_discretization = uq_mode.AdaptiveTwoLevelDiscretization(im_ref=self._reshape_f(self._f_map), d1=d1, d2=d2,
+                                                                      w1=w1, w2=w2)
         else:
             raise KeyError("Unknown value for parameter 'discretization'.")
         # If theta is not fixed, we have to use a hybrid discretization.
@@ -269,6 +318,8 @@ class FittedModel:
         This can be used to tune the localization architecture.
 
         :param n_sample: Number of pixels used for the random sample.
+        :param w1_list: List of values for parameter w1.
+        :param w2_list: List of values for parameter w2.
         :return: computation_times, errors
             - computation_times: A list of the estimated computation time corresponding to each localization architecture.
             - errors: A list of the approximation errors with respect to the baseline FCI (i.e. without any localization).
@@ -284,7 +335,6 @@ class FittedModel:
         for w1, w2 in zip(w1_list, w2_list):
             options = {"sigma1": sigma, "sigma2": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "sample": pixel_sample,
                        "discretization": discretization_name}
-            t0 = time()
             # Create appropriate filter
             filter_function, filter_f, filter_theta = self._get_filter_function(options)
             discretization = self._get_discretization(options)
@@ -292,8 +342,7 @@ class FittedModel:
             fci_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                                   ffunction=filter_function, discretization=discretization, options=options)
             fci = fci_obj.interval
-            t1 = time()
-            t_list.append((t1 - t0) * self._dim_f / n_sample)   # estimated computation time for all pixels.
+            t_list.append(fci.time_avg * self._dim_f)   # estimated computation time for all pixels.
             fci_list.append(fci)
 
         # ---Compute baseline error.
@@ -301,10 +350,8 @@ class FittedModel:
         discretization = self._get_discretization(options)
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # compute filtered credible intervals
-        t0 = time()
         fci_base_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                               ffunction=filter_function, discretization=discretization, options=options)
-        t1 = time()
         fci_base = fci_base_obj.interval
 
         # Compute relative localization error

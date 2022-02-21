@@ -6,7 +6,7 @@ import numpy as np
 from uq4pk_src.distribution_function import RandomGMM_DistributionFunction
 from uq4pk_fit.inference import *
 
-from experiment_kit.experiment.experiment_data import ExperimentData
+from .experiment_data import ExperimentData
 from .sample_theta import sample_theta
 
 
@@ -52,6 +52,7 @@ def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, downsampling: i
     y = y_exact + noi
     print(f"Actual snr = {np.linalg.norm(y_exact) / np.linalg.norm(noi)}")
     print(f"||y_exact|| / ||y_sd|| = {np.linalg.norm(y_exact) / np.linalg.norm(y_sd)}")
-    experiment_data = ExperimentData(name=name, y=y, y_sd=y_sd, f_true=f_true, f_ref=f_true, theta_true=theta_v, theta_guess=theta_guess,
-                                     theta_sd=theta_sd, forward_operator=op, theta_noise=theta_noise)
+    experiment_data = ExperimentData(name=name, snr=snr, y=y, y_sd=y_sd, f_true=f_true, f_ref=f_true, theta_true=theta_v,
+                                     theta_guess=theta_guess, theta_sd=theta_sd, forward_operator=op,
+                                     theta_noise=theta_v - theta_guess)
     return experiment_data

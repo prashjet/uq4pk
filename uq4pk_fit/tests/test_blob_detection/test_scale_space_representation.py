@@ -7,17 +7,17 @@ from uq4pk_fit.blob_detection.scale_space_representation import scale_space_repr
 
 SHOW = False    # Set True if you want to see plots.
 NSCALES = 16
-R_MIN = 0.5
-R_MAX = 25
+SIGMA_MIN = 0.5
+SIGMA_MAX = 25
 
 
 def test_scale_space_representation():
     # Load test image.
     f = np.loadtxt("data/map.csv", delimiter=",")
     # Compute scale space representation
-    r_step = (R_MAX - R_MIN) / NSCALES
-    radii = [R_MIN + n * r_step for n in range(NSCALES)]
-    scales = [0.25 * r ** 2 for r in radii]
+    sigma_step = (SIGMA_MAX - SIGMA_MIN) / NSCALES
+    radii = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
+    scales = [0.5 * r ** 2 for r in radii]
     f_ssr = scale_space_representation(f, scales)
     # Check that scale-space representation has correct dimension
     m, n = f.shape
@@ -30,7 +30,7 @@ def test_scale_space_representation():
     # Finally, plot the scale-slices.
     i = 0
     for f_h in f_ssr:
-        fig = plt.figure(num=f"h = {scales[i]}", figsize=(6, 2.5))
+        fig = plt.figure(num=f"t = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
     if SHOW: plt.show()
@@ -39,9 +39,9 @@ def test_scale_space_representation():
 def test_reflect():
     # Load test image.
     f = np.loadtxt("data/map.csv", delimiter=",")
-    r_step = (R_MAX - R_MIN) / NSCALES
-    radii = [R_MIN + n * r_step for n in range(NSCALES)]
-    scales = [0.25 * r ** 2 for r in radii]
+    sigma_step = (SIGMA_MAX - SIGMA_MIN) / NSCALES
+    radii = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
+    scales = [0.5 * r ** 2 for r in radii]
     f_ssr = scale_space_representation(f, scales, mode="reflect")
     # Check that scale-space representation has correct dimension
     m, n = f.shape
@@ -54,7 +54,7 @@ def test_reflect():
     # Finally, plot the scale-slices.
     i = 0
     for f_h in f_ssr:
-        fig = plt.figure(num=f"h = {scales[i]}", figsize=(6, 2.5))
+        fig = plt.figure(num=f"t = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
     if SHOW: plt.show()
@@ -64,10 +64,10 @@ def test_with_ratio():
     ratio = 0.5
     # Load test image.
     f = np.loadtxt("data/map.csv", delimiter=",")
-    r_step = (R_MAX - R_MIN) / NSCALES
-    radii = [R_MIN + n * r_step for n in range(NSCALES)]
-    scales = [0.25 * r ** 2 for r in radii]
-    f_ssr = scale_space_representation(f, scales, ratio=ratio, mode="constant")
+    sigma_step = (SIGMA_MAX - SIGMA_MIN) / NSCALES
+    sigmas = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
+    scales = [0.5 * np.array([s * ratio, s]) ** 2 for s in sigmas]
+    f_ssr = scale_space_representation(f, scales, mode="constant")
     # Check that scale-space representation has correct dimension
     m, n = f.shape
     assert f_ssr.shape == (len(scales), m, n)
@@ -79,7 +79,7 @@ def test_with_ratio():
     # Finally, plot the scale-slices.
     i = 0
     for f_h in f_ssr:
-        fig = plt.figure(num=f"h = {scales[i]}", figsize=(6, 2.5))
+        fig = plt.figure(num=f"t = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
     if SHOW: plt.show()

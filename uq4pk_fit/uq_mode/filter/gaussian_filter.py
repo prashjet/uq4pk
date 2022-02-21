@@ -3,7 +3,7 @@ from math import sqrt
 
 import numpy as np
 from scipy.stats import norm
-from typing import Literal
+from typing import Literal, Union
 
 from ..geometry2d import indices_to_coords
 from .filter_kernel import FilterKernel
@@ -15,14 +15,19 @@ class GaussianKernel2D(FilterKernel):
     """
     The two-dimensional Gaussian kernel k(x) = e^(-(x1/sqrt(2)*sigma)^2 - (x2/sqrt(2)*sigma)^2) / Z
     """
-    def __init__(self, sigma1: float, sigma2: float):
+    def __init__(self, sigma: Union[float, np.ndarray]):
         """
-        :param sigma1: Standard deviation in vertical direction.
-        :param sigma2: Standard deviation in horizontal direction.
+        :param sigma: Standard deviation of the Gaussian kernel. Can also be a (2,) array, where the entries correspond
+            to the standard deviations in the vertical and horizontal direction.
         """
         self.dim = 2
-        self._sigma1 = sigma1
-        self._sigma2 = sigma2
+        if isinstance(sigma, np.ndarray):
+            assert sigma.shape == (2,)
+            self._sigma1 = sigma[0]
+            self._sigma2 = sigma[1]
+        else:
+            self._sigma1 = sigma
+            self._sigma2 = sigma
 
     def weighting(self, x: np.ndarray) -> float:
         """
@@ -36,20 +41,19 @@ class GaussianKernel2D(FilterKernel):
 
 class GaussianFilter2D(KernelFilter):
 
-    def __init__(self, m: int, n: int, center: np.ndarray, sigma1: float, sigma2: float,
+    def __init__(self, m: int, n: int, center: np.ndarray, sigma: Union[float, np.ndarray],
                  boundary: Literal["zero", "reflect"]):
-        gaussian_kernel = GaussianKernel2D(sigma1=sigma1, sigma2=sigma2)
+        gaussian_kernel = GaussianKernel2D(sigma=sigma)
         KernelFilter.__init__(self, m=m, n=n, center=center, kernel=gaussian_kernel, boundary=boundary)
 
 
 class GaussianFilterFunction2D(ImageFilterFunction):
 
-    def __init__(self, m: int, n: int, sigma1: float, sigma2: float, boundary: Literal["zero", "reflect"]):
+    def __init__(self, m: int, n: int, sigma: Union[float, np.ndarray], boundary: Literal["zero", "reflect"]):
         """
         :param m: Image height in pixels.
         :param n: Image width in pixels.
-        :param sigma1: Standard deviation in vertical direction.
-        :param sigma2: Standard deviation in horizontal direction.
+        :param sigma: Standard deviation for Gaussian kernel.
         :param boundary: Determines how the image is extended at the boundaries.
         """
         # Prepare list of filters
@@ -59,7 +63,7 @@ class GaussianFilterFunction2D(ImageFilterFunction):
 
         filter_list = []
         for ij in all_coords.T:
-            filter_ij = GaussianFilter2D(m=m, n=n, center=ij, sigma1=sigma1, sigma2=sigma2, boundary=boundary)
+            filter_ij = GaussianFilter2D(m=m, n=n, center=ij, sigma=sigma, boundary=boundary)
             filter_list.append(filter_ij)
         assert len(filter_list) == dim
         ImageFilterFunction.__init__(self, m, n, filter_list=filter_list)

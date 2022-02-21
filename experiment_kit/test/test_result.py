@@ -23,7 +23,7 @@ class TestResult:
         if uq.lower_f is None:
             self.ci_f = None
         else:
-            self.ci_f = np.column_stack([uq.lower_f, uq.upper_f])
+            self.ci_f = np.column_stack([uq.lower_f.flatten(), uq.upper_f.flatten()])
         if uq.lower_theta is None:
             self.ci_theta = None
         else:

@@ -1,6 +1,6 @@
 import numpy as np
 
-from uq4pk_fit.blob_detection.significant_blobs.compute_significant_blobs import _discretize_sigma, _find_blob
+from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _discretize_sigma, _find_blob
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 
 R_MIN = 0.5
@@ -9,20 +9,20 @@ NSCALES = 16
 
 
 def test_find_blob():
-    blob = GaussianBlob(x=10, y=10, sigma_x=2, sigma_y=2, log=0.)
-    blob1 = GaussianBlob(x=1, y=1, sigma_x=.5, sigma_y=.5, log=0.)
-    blob2 = GaussianBlob(x=8, y=10, sigma_x=2., sigma_y=2., log=0)
-    blob3 = GaussianBlob(x=10, y=9, sigma_x=2, sigma_y=2, log=0)
+    blob = GaussianBlob(x2=10, x1=10, sigma=2, log=0.)
+    blob1 = GaussianBlob(x2=1, x1=1, sigma=.5, log=0.)
+    blob2 = GaussianBlob(x2=8, x1=10, sigma=2., log=0)
+    blob3 = GaussianBlob(x2=10, x1=9, sigma=2, log=0)
     blobs = [blob1, blob2, blob3]
     # Should match two features
     candidate = _find_blob(blob, blobs, overlap=0.5)
-    assert np.isclose(candidate.vector, np.array([8, 10, 2, 2])).all()
+    assert np.isclose(candidate.vector, np.array([10, 8, 2, 2])).all()
 
 
 def test_find_blob_returns_None():
-    blob = GaussianBlob(x=1, y=1, sigma_x=3, sigma_y=3, log=0.)
-    blob1 = GaussianBlob(x=10, y=10, sigma_x=3, sigma_y=3, log=0.)
-    blob2 = GaussianBlob(x=5, y=5, sigma_x=1, sigma_y=1, log=0)
+    blob = GaussianBlob(x2=1, x1=1, sigma=3,log=0.)
+    blob1 = GaussianBlob(x2=10, x1=10, sigma=3, log=0.)
+    blob2 = GaussianBlob(x2=5, x1=5, sigma=1, log=0)
     blobs = [blob1, blob2]
     assert _find_blob(blob, blobs, overlap=0.5) is None
 

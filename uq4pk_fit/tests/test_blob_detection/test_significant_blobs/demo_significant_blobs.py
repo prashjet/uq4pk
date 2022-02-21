@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 import numpy as np
 
-from uq4pk_fit.blob_detection.significant_blobs.compute_significant_blobs import _compute_mapped_pairs
+from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _compute_mapped_pairs
 from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
 
 SIGMA_MIN = 1
@@ -17,6 +17,7 @@ def demo_compute_mapped_pairs():
     # Set test parameters
     sigma_step = (SIGMA_MAX - SIGMA_MIN) / (NSCALES - 1)
     sigmas = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
+    sigma_list = [np.array([RATIO * sigma, sigma]) for sigma in sigmas]
     scales = [0.5 * s ** 2 for s in sigmas]
 
     # Load blanket stack
@@ -28,12 +29,11 @@ def demo_compute_mapped_pairs():
 
     # Also need MAP features
     map_im = np.loadtxt("../data/map.csv", delimiter=",")
-    map_blobs = detect_blobs(image=map_im, sigma_min=SIGMA_MIN, sigma_max=SIGMA_MAX, num_sigma=NSCALES - 2,
-                             ratio=RATIO)
+    map_blobs = detect_blobs(image=map_im, sigma_list=sigma_list)
 
     # Test the detection of significant blobs.
-    mapped_pairs = _compute_mapped_pairs(blanket_stack=blanket_stack, resolutions=scales, map_blobs=map_blobs,
-                                         ratio=RATIO, rthresh=0.01, max_overlap=0.5)
+    mapped_pairs = _compute_mapped_pairs(blanket_stack=blanket_stack, sigma_list=sigma_list, map_blobs=map_blobs,
+                                         rthresh=0.1, max_overlap=0.5)
     # Visualize
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
@@ -44,16 +44,16 @@ def demo_compute_mapped_pairs():
         if c is None:
             w = b.width
             h = b.height
-            ax.add_patch(patches.Ellipse(tuple(b.position), width=w, height=h, color="red",
+            ax.add_patch(patches.Ellipse((b.x2, b.x1), width=w, height=h, color="red",
                                     fill=False))
         else:
             w1 = b.width
             h1 = b.height
             w2 = c.width
             h2 = c.height
-            ax.add_patch(patches.Ellipse(tuple(b.position), width=w1, height=h1, color="yellow",
+            ax.add_patch(patches.Ellipse((b.x2, b.x1), width=w1, height=h1, color="yellow",
                                     fill=False))
-            ax.add_patch(patches.Ellipse(tuple(c.position), width=w2, height=h2, color="lime",
+            ax.add_patch(patches.Ellipse((c.x2, c.x1), width=w2, height=h2, color="lime",
                                     fill=False))
     plt.savefig("significant_features.png", bbox_inches="tight")
     plt.show()

@@ -16,12 +16,9 @@ class FCI:
     """
     Object that is returned by the function "fci".
     """
-    def __init__(self, phi_lower_enlarged: np.ndarray, phi_upper_enlarged: np.ndarray, minimizers: Sequence[np.ndarray],
-                 maximizers: Sequence[np.ndarray]):
+    def __init__(self, phi_lower_enlarged: np.ndarray, phi_upper_enlarged: np.ndarray, time_avg: float = -1):
         self.interval = np.column_stack([phi_lower_enlarged, phi_upper_enlarged])
-        self.upper = phi_upper_enlarged
-        self.minimizers = minimizers
-        self.maximizers = maximizers
+        self.time_avg = time_avg
 
 
 def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction,
@@ -43,6 +40,7 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     :returns: Object of type :py:class:`FCI`.
     """
     _check_input(alpha, model, x_map, ffunction, discretization)
+    if options is None: options = {}
     # Generate an affine evaluation map from the filter function
     affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map)
     # If subsample is not None, kick out all pixels that are not in sample.
@@ -55,8 +53,7 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     # Create FCI-object
     phi_lower = credible_interval.phi_lower
     phi_upper = credible_interval.phi_upper
-    fci_obj = FCI(phi_lower_enlarged=phi_lower, phi_upper_enlarged=phi_upper,
-                  minimizers=credible_interval.minimizers, maximizers=credible_interval.maximizers)
+    fci_obj = FCI(phi_lower_enlarged=phi_lower, phi_upper_enlarged=phi_upper, time_avg=credible_interval.time_avg)
 
     return fci_obj
 

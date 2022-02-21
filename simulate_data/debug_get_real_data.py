@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-from simulate.get_real_data import get_real_data, _extract_data, _normalize_data, _do_ppxf
+from .get_real_data import get_real_data, _extract_data, _normalize_data, _do_ppxf
 
 
 def debug_get_real_data():

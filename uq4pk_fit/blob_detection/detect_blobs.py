@@ -1,7 +1,7 @@
 
 import copy
 import numpy as np
-from typing import List, Sequence
+from typing import List, Sequence, Union
 from skimage import morphology
 import shapely.affinity as aff
 import shapely.geometry as geom
@@ -11,58 +11,40 @@ from .scale_space_representation import scale_space_representation
 from .scale_normalized_laplacian import scale_normalized_laplacian
 
 
-def detect_blobs(image: np.ndarray, sigma_min: float, sigma_max: float, num_sigma: int = 10, max_overlap: float = 0.5,
-                 rthresh: float = 0.01, mode: str = "constant", ratio: float = 1.) -> List[GaussianBlob]:
+SigmaList = Sequence[Union[float, np.ndarray]]
+
+
+def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 0.5,
+                 rthresh: float = 0.01, mode: str = "constant") -> List[GaussianBlob]:
     """
     Detects blobs in an image using the difference-of-Gaussians method.
     See https://en.wikipedia.org/wiki/Difference_of_Gaussians.
 
     :param image: The image as 2d-array.
-    :param sigma_min: The minimal sigma at which blobs should be detected.
-    :param sigma_max: The maximal sigma at which features should be detected.
-    :param num_sigma: The number of intermediate sigma values between `sigma_min` and `sigma_max`. For example, if
-        `sigma_min = 1`, `sigma_max = 15` and `num_sigma = 3`, then the Laplacian-of-Gaussian is evaluated for the
-        sigma values 1, 2.5, 5, 7.5 and 10.
+    :param sigma_list: List of the standard deviations used for the Gaussian blobs. Each element must either be float
+        or a (2,)-array, where the two numbers correspond to the standard deviation in vertical and horizontal
+        direction.
     :param rthresh: The relative threshold for detection of blobs. A blob is only detected if it corresponds to a
         scale-space minimum of the scale-normalized Laplacian that is below ``rthresh * log_stack.min()``, where
         ``log_stack`` is the stack of Laplacian-of-Gaussians.
     :param max_overlap: If two blobs have a relative overlap larger than this number, they are considered as one.
     :param mode: Determines how the image boundaries are handled.
-    :param ratio: Determines the width/height ratio (y / x) of the ellipses.
-    :return: The detected blobs are returned as an array of shape (k, 5), where each row corresponds to a feature
-        and is of the form (x, y, sigma_x, sigma_y, ssl), where (x, y) is the position of the blob
+    :return: Returns a list of GaussianBlob-objects, each representing one detected blob.
     """
-    # Check input.
-    _check_input(image, sigma_min, sigma_max)
-    # Set the threshold intensity for detected features. The intensity is a constant multiple of the maximum of
-    # ``image``.
-
-    # Discretize sigma
-    r_step = (sigma_max - sigma_min) / (num_sigma + 1)
-    sigmas = [sigma_min + i * r_step for i in range(num_sigma + 2)]
+    # Check input for consistency.
+    assert image.ndim == 2
 
     # COMPUTE LOG-STACK
-    scales = [0.5 * sigma ** 2 for sigma in sigmas]
+    t_list = [0.5 * sigma ** 2 for sigma in sigma_list]
     # Compute scale-space representation.
-    ssr = scale_space_representation(image, scales, mode, ratio)
+    ssr = scale_space_representation(image=image, scales=t_list, mode=mode)
     # Evaluate scale-normalized Laplacian
-    log_stack = scale_normalized_laplacian(ssr, scales, mode="reflect")
+    log_stack = scale_normalized_laplacian(ssr, t_list, mode="reflect")
 
-    # DETERMINE SCALE-SPACE BLOBS
-    # Determine local scale-space minima
-    blobs = stack_to_blobs(scale_stack=log_stack, sigmas=sigmas, ratio=ratio, rthresh=rthresh, max_overlap=max_overlap)
+    # Determine scale-space blobs as local scale-space minima
+    blobs = stack_to_blobs(scale_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh, max_overlap=max_overlap)
 
     return blobs
-
-
-def _check_input(image: np.ndarray, r_min: float, r_max: float):
-    """
-    Checks that ``image`` is indeed a 2d-array and that minscale <= maxscale.
-    """
-    if image.ndim != 2:
-        raise Exception("`image` must be a 2-dimensional array.")
-    if r_min > r_max:
-        raise Exception("'r_min' must not be larger than 'r_max'.")
 
 
 def threshold_local_minima(blobs: Sequence[GaussianBlob], thresh: float):
@@ -150,14 +132,13 @@ def _create_ellipse(blob: GaussianBlob):
     return rotated_ellipse
 
 
-def stack_to_blobs(scale_stack: np.ndarray, sigmas: Sequence[float], ratio: float, rthresh: float, max_overlap: float)\
+def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, max_overlap: float)\
         -> List[GaussianBlob]:
     """
     Given a scale-space stack, detects blobs as scale-space minima.
 
     :param scale_stack:
-    :param sigmas:
-    :param ratio:
+    :param sigma_list: The list of standard deviations for each filter.
     :param rthresh:
     :param max_overlap:
     :return:
@@ -173,10 +154,9 @@ def stack_to_blobs(scale_stack: np.ndarray, sigmas: Sequence[float], ratio: floa
         # Bring output in correct format.
         blobs = []
         for b in local_minima:
-            sigma_y = sigmas[b[0]]
-            sigma_x = ratio * sigma_y
+            sigma_b = sigma_list[b[0]]
             sslaplacian = scale_stack[b[0], b[1], b[2]]
-            blob = GaussianBlob(x=b[2], y=b[1], sigma_x=sigma_x, sigma_y=sigma_y, log=sslaplacian)
+            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=sslaplacian)
             blobs.append(blob)
 
         # Remove all features below threshold.
