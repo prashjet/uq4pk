@@ -1,13 +1,13 @@
 
 import numpy as np
-from typing import Sequence
+from typing import Sequence, Union
 
 from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
 from uq4pk_fit.blob_detection.scale_space_representation import scale_space_representation
 
 
 
-def blob_operator(scales: Sequence[float], m: int, n: int, ratio: float = 1) -> np.ndarray:
+def blob_operator(scales: Sequence[Union[float, np.ndarray]], m: int, n: int) -> np.ndarray:
     """
     Returns the matrix representation of the flattened blob operator
     :math:`\\Delta_x^h G_h: \\mathbb{R}^{mn} \\to \mathbb{R}^{smn}`,

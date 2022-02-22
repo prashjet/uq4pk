@@ -11,7 +11,7 @@ def test_filter_to_evaluation_map():
     n1 = 12
     n2 = 50
     x_map = np.ones((n1 * n2, ))
-    ffunction = GaussianFilterFunction2D(m=n1, n=n2, sigma1=1., sigma2=1., boundary="zero")
+    ffunction = GaussianFilterFunction2D(m=n1, n=n2, sigma=1., boundary="zero")
     discretization = TrivialAdaptiveDiscretization(dim=n1 * n2)
     evaluation_map = filter_function_to_evaluation_map(filter_function=ffunction, discretization=discretization,
                                                        x_map=x_map)

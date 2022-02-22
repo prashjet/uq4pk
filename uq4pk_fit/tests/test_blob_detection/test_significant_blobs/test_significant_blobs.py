@@ -21,7 +21,7 @@ def test_find_blob():
     # Should match two features
     candidate = _find_blob(blob, blobs, overlap=0.5)
     blob_list = [(blob, candidate)]
-    plot_blobs(image=test_img, blobs=blob_list)
+    if show: plot_blobs(image=test_img, blobs=blob_list)
     assert np.isclose(candidate.vector, np.array([9, 10, 2, 2])).all()
 
 

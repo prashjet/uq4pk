@@ -5,7 +5,7 @@ from uq4pk_fit.visualization import plot_blobs
 from uq4pk_fit.blob_detection import GaussianBlob
 from uq4pk_fit.blob_detection.blob_geometry import compute_overlap
 
-SHOW = True
+SHOW = False
 test_image = np.loadtxt("data/test.csv", delimiter=",")
 
 
