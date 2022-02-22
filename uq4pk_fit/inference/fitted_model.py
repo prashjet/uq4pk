@@ -5,12 +5,7 @@ Contains class "FittedModel"
 from copy import deepcopy
 import numpy as np
 from numpy.typing import ArrayLike
-<<<<<<< HEAD
-from typing import List, Sequence
-=======
-from time import time
 from typing import List, Sequence, Tuple, Union
->>>>>>> localization
 
 import uq4pk_fit.cgn as cgn
 from uq4pk_fit.cgn.translator.translator import Translator
@@ -292,10 +287,6 @@ class FittedModel:
         f_im = np.reshape(f, (self._m_f, self._n_f))
         return f_im
 
-<<<<<<< HEAD
-    def make_localization_plot(self, n_sample: int, c_list: Sequence[int], d_list: Sequence[int],
-                               scale: float, a: int=1, b: int=1):
-=======
     def _get_discretization(self, options: dict) -> uq_mode.AdaptiveImageDiscretization:
         discretization_name = options.setdefault("discretization", "trivial")
         d1 = options.setdefault("d1", 1)
@@ -321,7 +312,6 @@ class FittedModel:
 
     def make_localization_plot(self, n_sample: int, w1_list: Sequence[int], w2_list: Sequence[int],
                                sigma: Union[float, np.ndarray], discretization_name: str, d1: int=None, d2: int=None):
->>>>>>> localization
         """
         Creates a heuristic localization plot for FCIs based on a random sample of pixels.
         This can be used to tune the localization architecture.
@@ -338,20 +328,12 @@ class FittedModel:
         # Randomly sample pixels.
         all_pixels = np.arange(self._dim_f)
         pixel_sample = np.random.choice(a=all_pixels, size=n_sample, replace=False)
-        # Translate pixel_sample to fine scale.
-        translated_pixel_sample = self._pixel_to_superpixel(pixel_sample, a, b)
         # For each c-d configuration, compute the FCIs with respect to pixel_sample.
         fci_list = []
         t_list = []
-<<<<<<< HEAD
-        no_ci = self._dim_f // (a * b)
-        for c, d in zip(c_list, d_list):
-            options = {"h": scale, "a": a, "b": b, "c": c, "d": d, "sample": translated_pixel_sample}
-=======
         for w1, w2 in zip(w1_list, w2_list):
             options = {"sigma": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "sample": pixel_sample,
                        "discretization": discretization_name}
->>>>>>> localization
             # Create appropriate filter
             filter_function, filter_f, filter_theta = self._get_filter_function(options)
             discretization = self._get_discretization(options)
@@ -359,18 +341,6 @@ class FittedModel:
             fci_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                                   ffunction=filter_function, discretization=discretization, options=options)
             fci = fci_obj.interval
-<<<<<<< HEAD
-            t = fci_obj.time_avg
-            t_list.append(t * no_ci)   # estimated computation time for complete credible interval
-            fci_list.append(fci)
-
-        # Compute baseline.
-        options = {"h": scale, "sample": pixel_sample}
-        filter_function, filter_f, filter_theta = self._get_filter_function(options)
-        # compute filtered credible intervals
-        fci_base_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
-                              ffunction=filter_function, options=options)
-=======
             t_list.append(fci_obj.time_avg * self._dim_f)   # estimated computation time for all pixels.
             fci_list.append(fci)
 
@@ -381,7 +351,6 @@ class FittedModel:
         # compute filtered credible intervals
         fci_base_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                               ffunction=filter_function, discretization=discretization, options=options)
->>>>>>> localization
         fci_base = fci_base_obj.interval
 
         # Compute relative localization error
