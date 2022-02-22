@@ -4,13 +4,14 @@
 import asyncio
 import ray
 from ray.actor import ActorHandle
-from typing import Tuple
+from typing import Tuple, List
 import tqdm
 
 @ray.remote
 class ProgressBarActor:
     counter: int
     delta: int
+    times: List
     event: asyncio.Event
 
     def __init__(self) -> None:

@@ -16,11 +16,12 @@ class FCI:
     Object that is returned by the function "fci".
     """
     def __init__(self, phi_lower_enlarged: np.ndarray, phi_upper_enlarged: np.ndarray, minimizers: Sequence[np.ndarray],
-                 maximizers: Sequence[np.ndarray]):
+                 maximizers: Sequence[np.ndarray], time_avg: float):
         self.interval = np.column_stack([phi_lower_enlarged, phi_upper_enlarged])
         self.upper = phi_upper_enlarged
         self.minimizers = minimizers
         self.maximizers = maximizers
+        self.time_avg = time_avg
 
 
 def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict = None) \
@@ -61,7 +62,8 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
         phi_lower_enlarged = phi_lower
         phi_upper_enlarged = phi_upper
     fci_obj = FCI(phi_lower_enlarged=phi_lower_enlarged, phi_upper_enlarged=phi_upper_enlarged,
-                  minimizers=credible_interval.minimizers, maximizers=credible_interval.maximizers)
+                  minimizers=credible_interval.minimizers, maximizers=credible_interval.maximizers,
+                  time_avg=credible_interval.time_avg)
 
     return fci_obj
 

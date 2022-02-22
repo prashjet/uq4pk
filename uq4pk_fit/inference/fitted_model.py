@@ -5,7 +5,6 @@ Contains class "FittedModel"
 from copy import deepcopy
 import numpy as np
 from numpy.typing import ArrayLike
-from time import time
 from typing import List, Sequence
 
 import uq4pk_fit.cgn as cgn
@@ -237,7 +236,7 @@ class FittedModel:
         return f_im
 
     def make_localization_plot(self, n_sample: int, c_list: Sequence[int], d_list: Sequence[int],
-                               scale: float):
+                               scale: float, a: int=1, b: int=1):
         """
         Creates a heuristic localization plot for FCIs based on a random sample of pixels.
         This can be used to tune the localization architecture.
@@ -256,33 +255,31 @@ class FittedModel:
         # Randomly sample pixels.
         all_pixels = np.arange(self._dim_f)
         pixel_sample = np.random.choice(a=all_pixels, size=n_sample, replace=False)
+        # Translate pixel_sample to fine scale.
+        translated_pixel_sample = self._pixel_to_superpixel(pixel_sample, a, b)
         # For each c-d configuration, compute the FCIs with respect to pixel_sample.
         fci_list = []
         t_list = []
+        no_ci = self._dim_f // (a * b)
         for c, d in zip(c_list, d_list):
-            options = {"h": scale, "c": c, "d": d, "sample": pixel_sample}
-            t0 = time()
+            options = {"h": scale, "a": a, "b": b, "c": c, "d": d, "sample": translated_pixel_sample}
             # Create appropriate filter
             filter_function, filter_f, filter_theta = self._get_filter_function(options)
             # compute filtered credible intervals
             fci_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                                   ffunction=filter_function, options=options)
             fci = fci_obj.interval
-            t1 = time()
-            t_list.append((t1 - t0) * self._dim_f / n_sample)   # estimated computation time for all pixels.
+            t = fci_obj.time_avg
+            t_list.append(t * no_ci)   # estimated computation time for complete credible interval
             fci_list.append(fci)
 
-        # ---Compute baseline error.
+        # Compute baseline.
         options = {"h": scale, "sample": pixel_sample}
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # compute filtered credible intervals
-        t0 = time()
         fci_base_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                               ffunction=filter_function, options=options)
-        t1 = time()
         fci_base = fci_base_obj.interval
-        fci_list.append(fci_base)
-        t_list.append((t1 - t0) * self._dim_f / n_sample)
 
         # Compute relative localization error
         e_rloc_list = []
@@ -291,6 +288,23 @@ class FittedModel:
             e_rloc_list.append(mean_jaccard)
 
         return t_list, e_rloc_list
+
+    def _pixel_to_superpixel(self, pixels, a, b):
+        """
+        Takes an array of pixels and translated them to corresponding superpixel coordinates.
+        :param pixels:
+        :return:
+        """
+        # Translate index to coordinate
+        x_coords = pixels % self._n_f
+        y_coords = pixels // self._n_f
+        # Translate pixel-coordinates to superpixel-coordinates
+        y_coords = y_coords // a
+        x_coords = x_coords // b
+        n_super = self._n_f // b
+        # Translate back to indices
+        superpixel_indices = n_super * y_coords + x_coords
+        return superpixel_indices
 
 
 

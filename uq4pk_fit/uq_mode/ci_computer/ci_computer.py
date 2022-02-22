@@ -95,6 +95,10 @@ class CIComputer:
         # associated to the j-th window-frame pair.
         phi_lower = np.concatenate([out[0] for out in out_lower_list_result])
         phi_upper = np.concatenate([out[0] for out in out_upper_list_result])
+        times_lower = np.array([out[2] for out in out_lower_list_result])
+        times_upper = np.array([out[2] for out in out_upper_list_result])
+        times = times_lower + times_upper
+        time_avg = np.mean(np.array(times))
         assert np.all(phi_lower <= phi_upper + 1e-8)
         if self._return_optimizers:
             minimizers = [out[1] for out in out_lower_list_result]
@@ -103,7 +107,7 @@ class CIComputer:
             minimizers = []
             maximizers = []
         credible_interval = CredibleInterval(phi_lower=phi_lower, phi_upper=phi_upper, minimizers=minimizers,
-                                             maximizers=maximizers)
+                                             maximizers=maximizers, time_avg=time_avg)
 
         return credible_interval
 
