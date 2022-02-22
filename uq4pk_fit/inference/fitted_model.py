@@ -312,7 +312,7 @@ class FittedModel:
         return discretization
 
     def make_localization_plot(self, n_sample: int, w1_list: Sequence[int], w2_list: Sequence[int],
-                               sigma: float, discretization_name: str, d1: int=None, d2: int=None):
+                               sigma: Union[float, np.ndarray], discretization_name: str, d1: int=None, d2: int=None):
         """
         Creates a heuristic localization plot for FCIs based on a random sample of pixels.
         This can be used to tune the localization architecture.
@@ -333,7 +333,7 @@ class FittedModel:
         fci_list = []
         t_list = []
         for w1, w2 in zip(w1_list, w2_list):
-            options = {"sigma1": sigma, "sigma2": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "sample": pixel_sample,
+            options = {"sigma": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "sample": pixel_sample,
                        "discretization": discretization_name}
             # Create appropriate filter
             filter_function, filter_f, filter_theta = self._get_filter_function(options)
@@ -342,11 +342,11 @@ class FittedModel:
             fci_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                                   ffunction=filter_function, discretization=discretization, options=options)
             fci = fci_obj.interval
-            t_list.append(fci.time_avg * self._dim_f)   # estimated computation time for all pixels.
+            t_list.append(fci_obj.time_avg * self._dim_f)   # estimated computation time for all pixels.
             fci_list.append(fci)
 
         # ---Compute baseline error.
-        options = {"sigma1": sigma, "sigma2": sigma, "sample": pixel_sample, "discretization": "trivial"}
+        options = {"sigma": sigma, "sample": pixel_sample, "discretization": "trivial"}
         discretization = self._get_discretization(options)
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # compute filtered credible intervals

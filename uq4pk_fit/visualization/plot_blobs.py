@@ -49,10 +49,13 @@ def plot_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob, Union[Gaus
             # feature is significant
             y1, x1 = b.position
             y2, x2 = c.position
+            # If the width and height of the significant blob agree with map blob, we increase the former slightly for
+            # better visualization.
+            factor = 1.05
             ax.add_patch(patches.Ellipse((x1, y1), width=b.width, height=b.height, color=feature_color,
                                          fill=False))
-            ax.add_patch(patches.Ellipse((x2, y2), width=c.width, height=c.height, color=significant_color,
-                                         fill=False))
+            ax.add_patch(patches.Ellipse((x2, y2), width=factor * c.width, height=factor * c.height,
+                                         color=significant_color, fill=False))
     if savefile is not None:
         plt.savefig(savefile, bbox_inches="tight")
     if show:

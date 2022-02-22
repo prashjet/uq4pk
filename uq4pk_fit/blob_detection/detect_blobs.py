@@ -3,12 +3,11 @@ import copy
 import numpy as np
 from typing import List, Sequence, Union
 from skimage import morphology
-import shapely.affinity as aff
-import shapely.geometry as geom
 
 from .gaussian_blob import GaussianBlob
 from .scale_space_representation import scale_space_representation
 from .scale_normalized_laplacian import scale_normalized_laplacian
+from .blob_geometry import compute_overlap
 
 
 SigmaList = Sequence[Union[float, np.ndarray]]
@@ -86,50 +85,6 @@ def remove_overlap(blobs: List[GaussianBlob], max_overlap: float):
         blobs_increasing_log = keep_list
 
     return cleaned_blobs
-
-
-def compute_overlap(blob1: GaussianBlob, blob2: GaussianBlob) -> float:
-    """
-    Computes the relative overlap of two blobs using shapely, i.e.
-
-    .. math::
-        o_r = \\frac{A_{intersection}}{\\min(A_1, A_2)}.
-
-    The implementation uses shapely (https://pypi.org/project/Shapely/).
-
-    :param blob1:
-    :param blob2:
-    :return: The relative overlap, a number between 0 and 1.
-    """
-    # Create shapely.ellipse objects
-    ell1 = _create_ellipse(blob1)
-    ell2 = _create_ellipse(blob2)
-
-    # Compute areas of the two ellipses.
-    a1 = ell1.area
-    a2 = ell2.area
-    # Compute intersection area.
-    a_intersection = ell1.intersection(ell2).area
-
-    # Compute relative overlap.
-    relative_overlap = a_intersection / min(a1, a2)
-
-    # Return relative overlap
-    assert 0. <= relative_overlap <= 1.
-    return relative_overlap
-
-
-def _create_ellipse(blob: GaussianBlob):
-    """
-    Creates a shapely-ellipse object from a Gaussian blob.
-
-    :param blob:
-    :return: A shapely ellipse.
-    """
-    circ = geom.Point(blob.position).buffer(1)
-    ellipse = aff.scale(circ, 0.5 * blob.width, 0.5 * blob.height)
-    rotated_ellipse = aff.rotate(ellipse, angle=blob.angle)
-    return rotated_ellipse
 
 
 def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, max_overlap: float)\

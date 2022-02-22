@@ -146,6 +146,12 @@ def _match_blobs(significant_blobs: List[GaussianBlob], map_blobs: List[Gaussian
     for map_blob in map_blobs:
         # Find the feature matching the map_feature
         significant_blob = _find_blob(map_blob, blobs_increasing_log, overlap=overlap)
+        # Check that blobs really have the right overlap
+        if significant_blob is not None:
+            overl = compute_overlap(map_blob, significant_blob)
+            print(f"Map blob = {map_blob.vector}, significant_blob = {significant_blob.vector}")
+            print(f"Overlap = {overl}")
+            assert overl >= overlap
         # Add corresponding pair to "mapped_pairs".
         mapped_pairs.append(tuple([map_blob, significant_blob]))
 

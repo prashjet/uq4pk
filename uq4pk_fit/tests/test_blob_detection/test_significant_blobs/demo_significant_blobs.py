@@ -3,7 +3,9 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 import numpy as np
 
-from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _compute_mapped_pairs
+from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.blob_detection.detect_blobs import stack_to_blobs
+from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _match_blobs
 from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
 
 SIGMA_MIN = 1
@@ -11,6 +13,8 @@ SIGMA_MAX = 15
 NSCALES = 12
 
 RATIO = 0.5
+rthresh = 0.01
+overlap = 0.5
 
 
 def demo_compute_mapped_pairs():
@@ -31,9 +35,12 @@ def demo_compute_mapped_pairs():
     map_im = np.loadtxt("../data/map.csv", delimiter=",")
     map_blobs = detect_blobs(image=map_im, sigma_list=sigma_list)
 
+    laplacian_blanket_stack = scale_normalized_laplacian(blanket_stack, sigma_list, mode="reflect")
+    sig_blobs = stack_to_blobs(scale_stack=laplacian_blanket_stack, sigma_list=sigma_list, rthresh=rthresh,
+                               max_overlap=overlap)
+
     # Test the detection of significant blobs.
-    mapped_pairs = _compute_mapped_pairs(blanket_stack=blanket_stack, sigma_list=sigma_list, map_blobs=map_blobs,
-                                         rthresh=0.1, max_overlap=0.5)
+    mapped_pairs = _match_blobs(map_blobs=map_blobs, significant_blobs=sig_blobs, overlap=overlap)
     # Visualize
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
