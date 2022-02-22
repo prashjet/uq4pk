@@ -26,7 +26,7 @@ def blob_operator(scales: Sequence[float], m: int, n: int, ratio: float = 1) -> 
     for basis_vector in basis:
         basis_image = np.reshape(basis_vector, (m, n))
         # Compute scale-space representation of basis image.
-        f_x_h = scale_space_representation(basis_image, scales, ratio=ratio, mode="constant")
+        f_x_h = scale_space_representation(basis_image, scales, mode="constant")
         out = scale_normalized_laplacian(ssr=f_x_h, scales=scales, mode="reflect").flatten()
         out_list.append(out)
     shape_operator = np.column_stack(out_list)

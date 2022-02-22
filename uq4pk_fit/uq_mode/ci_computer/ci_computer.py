@@ -36,7 +36,6 @@ class CIComputer:
         # Read options.
         if options is None:
             options = {}
-        self._return_optimizers = options.setdefault("detailed", False)
         self._use_ray = options.setdefault("use_ray", True)
         self._num_cpus = options.setdefault("num_cpus", 8)
         solver_name = options.setdefault("solver", DEFAULT_SOLVER)
@@ -69,9 +68,6 @@ class CIComputer:
         # Initialize lists for storing the FCI-values.
         out_lower_list = []
         out_upper_list = []
-        # Initialize list for storing the FCI-optimizers (only if self._optimize).
-        x_lower_list = []
-        x_upper_list = []
         # For every coordinate, compute the value of the lower and upper bounds of the kernel localization functional
         # over the credible region.
         cicounter = 0       # counts number of computed credible intervals
@@ -93,21 +89,14 @@ class CIComputer:
         ray.shutdown()
         # The Ray results are now converted to an array. The j-th row of the array corresponds to the credible interval
         # associated to the j-th window-frame pair.
-        phi_lower = np.concatenate([out[0] for out in out_lower_list_result])
-        phi_upper = np.concatenate([out[0] for out in out_upper_list_result])
-        times_lower = np.array([out[2] for out in out_lower_list_result])
-        times_upper = np.array([out[2] for out in out_upper_list_result])
+        phi_lower = np.array([out[0] for out in out_lower_list_result])
+        phi_upper = np.array([out[0] for out in out_upper_list_result])
+        times_lower = np.array([out[1] for out in out_lower_list_result])
+        times_upper = np.array([out[1] for out in out_upper_list_result])
         times = times_lower + times_upper
         time_avg = np.mean(np.array(times))
         assert np.all(phi_lower <= phi_upper + 1e-8)
-        if self._return_optimizers:
-            minimizers = [out[1] for out in out_lower_list_result]
-            maximizers = [out[1] for out in out_upper_list_result]
-        else:
-            minimizers = []
-            maximizers = []
-        credible_interval = CredibleInterval(phi_lower=phi_lower, phi_upper=phi_upper, minimizers=minimizers,
-                                             maximizers=maximizers, time_avg=time_avg)
+        credible_interval = CredibleInterval(phi_lower=phi_lower, phi_upper=phi_upper, time_avg=time_avg)
 
         return credible_interval
 
@@ -146,9 +135,9 @@ class CIComputer:
         """
         Creates the SOCP for the computation of the generalized credible interval.
         The constraints
-        ||T f - d_tilde||_2^2 <= e_tilde,
-        A f = b,
-        f >= lb
+        ||T x - d_tilde||_2^2 <= e_tilde,
+        A x = b,
+        x >= lb
 
         are reformulated in terms of z, where x = U z + v:
         ||T_z z - d_z||_2^2 <= e_z,

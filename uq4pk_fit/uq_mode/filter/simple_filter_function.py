@@ -1,27 +1,32 @@
-
 import numpy as np
-from typing import List
 
-from ..filter import LinearFilter
+from .linear_filter import LinearFilter
 from .filter_function import FilterFunction
-from ..partition.trivial_partition import TrivialPartition
+
+
+class SimpleFilter(LinearFilter):
+    """
+    Simple filter defined by weight vector.
+    """
+    def __init__(self, weights: np.ndarray):
+        assert weights.ndim == 1
+        self.dim = weights.size
+        self.weights = weights.copy()
 
 
 class SimpleFilterFunction(FilterFunction):
     """
-    Simple version of a filter function that associates to each coordinate a weighted sum of the complete parameter
-    vector.
+    Simple filter function consisting of simple filters.
     """
-    def __init__(self, dim: int, weights: List[np.ndarray]):
+    def __init__(self, weights: np.ndarray):
         """
-        :param dim: The dimension of the underlying parameter space.
-        :param weights: Each element in ``weights`` must be a numpy array of shape (``dim``,).
+        :param weights: (n, n)-array, where the i-th row corresponds to the weight vector for the i-th filter.
         """
-        # make trivial partition
-        partition = TrivialPartition(dim)
-        # for each weight, make a corresponding filter
+        assert weights.ndim == 2
+        assert weights.shape[0] == weights.shape[1]
         filter_list = []
-        for i in range(dim):
-            filter_i = LinearFilter(indices=np.arange(dim), weights=weights[i])
-            filter_list.append(filter_i)
-        FilterFunction.__init__(self, partition, filter_list)
+        for w in weights:
+            filter_w = SimpleFilter(weights=w)
+            filter_list.append(filter_w)
+        FilterFunction.__init__(self, dim=weights.shape[0], filter_list=filter_list)
+

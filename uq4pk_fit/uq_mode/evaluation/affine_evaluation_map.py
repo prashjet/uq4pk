@@ -20,9 +20,7 @@ class AffineEvaluationMap:
         self.aef_list = aef_list
         self.dim = aef_list[0].dim
         # Compute phidim
-        self.phidim = 0
-        for aef in aef_list:
-            self.phidim += aef.phidim
+        self.phidim = len(aef_list)
 
     @property
     def size(self) -> int:
@@ -39,11 +37,8 @@ class AffineEvaluationMap:
         """
         new_aef_list = [self.aef_list[i] for i in indices]
         # Have to recompute phidim.
-        new_phdim = 0
-        for aef in new_aef_list:
-            new_phdim += aef.phidim
         self.aef_list = new_aef_list
-        self.phidim = new_phdim
+        self.phidim = indices.size
 
     def _check_input(self, aef_list: List[AffineEvaluationFunctional]):
         # list must not be empty

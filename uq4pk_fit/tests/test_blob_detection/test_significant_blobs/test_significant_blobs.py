@@ -1,60 +1,46 @@
 import numpy as np
 
-from uq4pk_fit.blob_detection.significant_blobs import _discretize_radius, _find_feature, \
-    _compute_overlap
+from uq4pk_fit.visualization import plot_blobs
+from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _discretize_sigma, _find_blob, \
+    best_blob_first
+from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 
 R_MIN = 0.5
 R_MAX = 15
 NSCALES = 16
+show = False
+test_img = np.random.randn(20, 20)
 
 
-def test_find_feature():
-    feature = np.array([2, 10, 10])
-    features = np.array([[.5, 1, 1], [2, 8, 10], [2, 10, 9]])
+def test_find_blob():
+    blob = GaussianBlob(x2=10, x1=10, sigma=2, log=0.)
+    blob1 = GaussianBlob(x2=1, x1=1, sigma=.5, log=0.)
+    blob2 = GaussianBlob(x2=8, x1=10, sigma=2., log=0)
+    blob3 = GaussianBlob(x2=10, x1=9, sigma=2, log=-1.)
+    blobs = best_blob_first([blob1, blob2, blob3])
     # Should match two features
-    candidate = _find_feature(feature, features, othresh=0.5)
-    assert np.isclose(candidate, np.array([2, 10, 9])).all()
+    candidate = _find_blob(blob, blobs, overlap=0.5)
+    blob_list = [(blob, candidate)]
+    plot_blobs(image=test_img, blobs=blob_list)
+    assert np.isclose(candidate.vector, np.array([9, 10, 2, 2])).all()
 
 
-def test_find_feature_returns_None():
-    feature = np.array([3, 1, 1])
-    features = np.array([[3, 10, 10], [1, 5, 5]])
-    assert _find_feature(feature, features) is None
-
-
-def test_relative_overlap_disjoint():
-    # If circles are disjoint, overlap should be 0.
-    circ1 = np.array([5, 1, 1])
-    circ2 = np.array([1, 10, 10])
-    overlap = _compute_overlap(circ1, circ2)
-    assert overlap == 0.
-
-
-def test_relative_overlap_inside():
-    # If one circle is contained in the other, overlap should be 1.
-    circ1 = np.array([1, 2, 2])
-    circ2 = np.array([3, 1, 1])
-    overlap = _compute_overlap(circ1, circ2)
-    assert overlap == 1.
-
-
-def test_relative_overlap_intersect():
-    # Relative overlap must be between 0 and 1.
-    circ1 = np.array([2, 1, 1])
-    circ2 = np.array([1, 2, 2])
-    # In this case, it must even be larger than 50 %, since center of smaller circle is contained in larger circle.
-    overlap = _compute_overlap(circ1, circ2)
-    assert 0.5 < overlap < 1
+def test_find_blob_returns_None():
+    blob = GaussianBlob(x2=1, x1=1, sigma=3,log=0.)
+    blob1 = GaussianBlob(x2=10, x1=10, sigma=3, log=0.)
+    blob2 = GaussianBlob(x2=5, x1=5, sigma=1, log=0)
+    blobs = [blob1, blob2]
+    assert _find_blob(blob, blobs, overlap=0.5) is None
 
 
 def test_get_resolutions():
-    min_scale = 1.
-    max_scale = 10.
+    min_sigma = 1.
+    max_sigma = 10.
     nsteps = 4
-    resolutions = _discretize_radius(min_scale, max_scale, nsteps)
+    resolutions = _discretize_sigma(min_sigma, max_sigma, nsteps)
     # First entry must be equal to min_scale.
-    assert np.isclose(resolutions[0], min_scale)
+    assert np.isclose(resolutions[0], min_sigma)
     assert len(resolutions) == nsteps + 2
     # max_scale must lie between resolutions[-2] and resolutions[-1]
-    assert resolutions[-2] <= max_scale <= resolutions[-1]
+    assert resolutions[-2] <= max_sigma <= resolutions[-1]
 

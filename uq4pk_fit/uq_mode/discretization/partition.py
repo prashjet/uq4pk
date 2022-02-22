@@ -7,7 +7,7 @@ import numpy as np
 
 class Partition:
     """
-    A partition is a list of index sets that partition the given space.
+    A discretization is a list of index sets that discretization the given space.
     """
     def __init__(self, dim, elements):
         """
@@ -20,6 +20,11 @@ class Partition:
         self.dim = dim
         self._check_elements(elements)
         self._element_list = elements
+        # Create the index, i.e. the list that maps each coordinate to the index of the corresponding partition element.
+        self._index = -1 * np.ones(dim, dtype=int)
+        for i in range(len(elements)):
+            element_i = elements[i]
+            self._index[element_i] = i
         self.size = len(elements)
 
     def element(self, i):
@@ -29,6 +34,12 @@ class Partition:
         :return: numpy array of ints
         """
         return self._element_list[i]
+
+    def in_which_element(self, i) -> int:
+        """
+        Returns the index of the element that contains the i-th coordinate.
+        """
+        return self._index[i]
 
     def get_element_list(self):
         """

@@ -1,11 +1,10 @@
 
-from math import sqrt
 import numpy as np
 from skimage import filters
-from typing import Sequence
+from typing import Sequence, Union
 
 
-def scale_space_representation(image: np.ndarray, scales: Sequence[float], mode: str="constant", ratio: float = 1.)\
+def scale_space_representation(image: np.ndarray, scales: Sequence[Union[float, np.ndarray]], mode: str="constant")\
         -> np.ndarray:
     """
     Computes the Gaussian scale-space representation of a given image. That is, for an image f(x, y), it computes
@@ -20,9 +19,8 @@ def scale_space_representation(image: np.ndarray, scales: Sequence[float], mode:
     scaled_images = []
     for scale in scales:
         # Note that the scale parameter h corresponds to standard deviation sigma = sqrt(2 * h).
-        sigma = sqrt(2 * scale)
-        sigma_vec = np.array([sigma, ratio * sigma])
-        scaled_image = filters.gaussian(image, mode=mode, sigma=sigma_vec)
+        sigma = np.sqrt(2 * scale)
+        scaled_image = filters.gaussian(image, mode=mode, sigma=sigma)
         scaled_images.append(scaled_image)
     ssr = np.array(scaled_images)
     return ssr

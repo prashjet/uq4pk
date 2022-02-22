@@ -18,7 +18,7 @@ class UpsamplingForwardOperator(ForwardOperator):
         self._fine_op = ForwardOperator(hermite_order, mask, ssps, dv, do_log_resample)
         self.m_f_orig = self.m_f
         self.n_f_orig = self.n_f
-        # make rectangle partition of the image
+        # make rectangle discretization of the image
         if scale == 1:
             a = 1
             b = 1

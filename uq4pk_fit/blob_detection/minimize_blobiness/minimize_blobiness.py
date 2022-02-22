@@ -7,7 +7,7 @@ from skimage import filters
 from uq4pk_fit.uq_mode.linear_model import LinearModel
 from ..detect_blobs import detect_blobs
 from .scale_space_minimization import scale_space_minimization
-from ..significant_blobs.compute_significant_blobs import _match_to_map
+from ..significant_blobs.detect_significant_blobs import _match_blobs
 
 
 RTHRESH = 0.05
@@ -49,6 +49,6 @@ def minimize_blobiness(alpha: float, m: int, n: int, model: LinearModel, x_map: 
                              max_overlap=OTHRESH, rthresh=RTHRESH, mode="constant", ratio=ratio)
 
     # Perform feature matching.
-    blob_pairs = _match_to_map(significant_blobs=boi, map_blobs=map_blobs, ratio=ratio)
+    blob_pairs = _match_blobs(significant_blobs=boi, map_blobs=map_blobs, overlap=)
 
     return blob_pairs

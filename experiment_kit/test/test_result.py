@@ -20,15 +20,21 @@ class TestResult:
         self.cost_map = fitted_model.costfun(self.f_map, self.theta_map)
         self.cost_true = fitted_model.costfun(self.data.f_true, self.data.theta_true)
         self.cost_ref = fitted_model.costfun(self.data.f_ref, self.data.theta_guess)
-        self.ci_f = uq.ci_f
-        self.ci_theta = uq.ci_theta
+        if uq.lower_f is None:
+            self.ci_f = None
+        else:
+            self.ci_f = np.column_stack([uq.lower_f.flatten(), uq.upper_f.flatten()])
+        if uq.lower_theta is None:
+            self.ci_theta = None
+        else:
+            self.ci_theta = np.column_stack([uq.lower_theta, uq.upper_theta])
         self.features = uq.features
         filter_f = uq.filter_f
         self.uq_scale = uq.scale
         if filter_f is not None:
-            self.phi_map = filter_f.enlarge(filter_f.evaluate(self.f_map))
-            self.phi_true = filter_f.enlarge(filter_f.evaluate(self.data.f_true))
-            self.phi_ref = filter_f.enlarge(filter_f.evaluate(self.data.f_ref))
+            self.phi_map = filter_f.evaluate(self.f_map)
+            self.phi_true = filter_f.evaluate(self.data.f_true)
+            self.phi_ref = filter_f.evaluate(self.data.f_ref)
         else:
             self.phi_map = self.f_map
             self.phi_true = self.data.f_true

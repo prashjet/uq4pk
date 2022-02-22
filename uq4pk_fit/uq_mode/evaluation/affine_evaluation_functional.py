@@ -21,13 +21,24 @@ class AffineEvaluationFunctional:
     """
     dim: int        # The dimension N of the parameter space.
     zdim: int       # The dimension of the dependent variable.
-    phidim: int     # The dimension of the output of phi.
-    w: np.ndarray   # The vector that determines the linear loss function J(z) = w^\top z.
-    u: np.ndarray   # The matrix M in the affine map x(z) = U z + v
-    v: np.ndarray   # The vector v in the affine map x(z) = U z + v
     z0: np.ndarray  # Starting value for z for the optimization.
+    w: np.ndarray   # The weight vector for the linear loss.
 
-    def phi(self, z: np.ndarray) -> np.ndarray:
+    @property
+    def u(self) -> np.ndarray:
+        """
+        Returns the matrix U.
+        """
+        raise NotImplementedError
+
+    @property
+    def v(self) -> np.ndarray:
+        """
+        Returns the vector v
+        """
+        raise NotImplementedError
+
+    def phi(self, z: np.ndarray) -> float:
         """
         The evaluation functional. The credible interval is understood to be [phi(z_min), phi(z_max)], where
         z_min is the minimizer of loss(z), and z_max is the maximizer.
@@ -38,7 +49,7 @@ class AffineEvaluationFunctional:
         """
         Shortcut for u @ z + v
         """
-        return self.u @ z + self.v
+        raise NotImplementedError
 
     def lb_z(self, lb: np.ndarray) -> np.ndarray:
         """

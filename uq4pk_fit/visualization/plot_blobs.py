@@ -3,21 +3,24 @@ from math import sqrt
 from matplotlib import pyplot as plt
 from matplotlib import patches
 import numpy as np
-from typing import Sequence, Tuple
+from typing import Sequence, Tuple, Union
+
+from uq4pk_fit.blob_detection import GaussianBlob
 
 
-def plot_blobs(image: np.ndarray, blobs: Sequence[Tuple], savefile: str = None, vmin: float = None, vmax: float = None,
-              ssps = None, show: bool = True):
+def plot_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob, Union[GaussianBlob, None]]], savefile: str = None,
+               vmin: float = None, vmax: float = None, ssps = None, show: bool = True):
     """
     Makes a blob-plot for given image an blobs.
 
     :param image: The image as (m, n)-array.
-    :param blobs: The blobs. Each blob is given as a tuple (b, c), where b is the MAP-blob and c is either None
-        or the significant blob. (A blob is an array of format (s, i, j), where s is the scale and (i, j) the center
-        index for the blob.
+    :param blobs: A sequence of tuples. The first element corresponds to a blob detected in the image, while the
+        second element is either None (the blob is not significant) or another blob, representing the significant feature.
     :param savefile: The name under which the plot should be saved (including file-type).
-    :param vmin:
-    :param vmax:
+    :param vmin: Minimum intensity shown in plot.
+    :param vmax: Maximum intensity shown in plot.
+    :param ssps: The grid object needed for plotting.
+    :param show: If False, not plot is shown.
     """
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
@@ -39,24 +42,20 @@ def plot_blobs(image: np.ndarray, blobs: Sequence[Tuple], savefile: str = None, 
         b = blob[0]
         c = blob[1]
         if c is None:
-            # feature is not significant
-            s_x, s_y, y, x = b
-            w = 2 * sqrt(2) * s_x
-            h = 2 * sqrt(2) * s_y
-            ax.add_patch(patches.Ellipse((x, y), width=w, height=h, color=insignificant_color,
+            y, x = b.position
+            ax.add_patch(patches.Ellipse((x, y), width=b.width, height=b.height, color=insignificant_color,
                             fill=False))
         else:
             # feature is significant
-            s_x1, s_y1, y1, x1 = b
-            s_x2, s_y2, y2, x2 = c
-            w1 = 2 * sqrt(2) * s_x1
-            h1 = 2 * sqrt(2) * s_y1
-            w2 = 2 * sqrt(2) * s_x2
-            h2 = 2 * sqrt(2) * s_y2
-            ax.add_patch(patches.Ellipse((x1, y1), width=w1, height=h1, color=feature_color,
+            y1, x1 = b.position
+            y2, x2 = c.position
+            # If the width and height of the significant blob agree with map blob, we increase the former slightly for
+            # better visualization.
+            factor = 1.05
+            ax.add_patch(patches.Ellipse((x1, y1), width=b.width, height=b.height, color=feature_color,
                                          fill=False))
-            ax.add_patch(patches.Ellipse((x2, y2), width=w2, height=h2, color=significant_color,
-                                         fill=False))
+            ax.add_patch(patches.Ellipse((x2, y2), width=factor * c.width, height=factor * c.height,
+                                         color=significant_color, fill=False))
     if savefile is not None:
         plt.savefig(savefile, bbox_inches="tight")
     if show:

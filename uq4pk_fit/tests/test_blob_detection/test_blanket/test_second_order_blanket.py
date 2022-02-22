@@ -6,11 +6,14 @@ from uq4pk_fit.special_operators import DiscreteLaplacian
 from uq4pk_fit.blob_detection.blankets import second_order_blanket
 
 
+SHOW = False
+
+
 def test_1d():
     # Get lb and ub as slices from lower and upper bound
     # Load lower and upper bounds from files.
-    lower = np.loadtxt("../data/test_lower.csv", delimiter=",")
-    upper = np.loadtxt("../data/test_upper.csv", delimiter=",")
+    lower = np.loadtxt("data/test_lower.csv", delimiter=",")
+    upper = np.loadtxt("data/test_upper.csv", delimiter=",")
     i = [8]
     n = lower.shape[1]
     lower_slice = lower[i, :].reshape((n,))
@@ -34,13 +37,13 @@ def test_1d():
     for slice, name in zip([snd_deriv], names):
         plt.plot(x_span, slice, label=name)
     plt.legend()
-    plt.show()
+    if SHOW: plt.show()
 
 
 def test_2d():
     # Load lower and upper bounds from files.
-    lower = np.loadtxt("../data/test_lower.csv", delimiter=",")
-    upper = np.loadtxt("../data/test_upper.csv", delimiter=",")
+    lower = np.loadtxt("data/test_lower.csv", delimiter=",")
+    upper = np.loadtxt("data/test_upper.csv", delimiter=",")
     blanket = second_order_blanket(lb=lower, ub=upper)
     # Make pictures
     cmap = plt.get_cmap("gnuplot")
@@ -66,4 +69,4 @@ def test_2d():
     for slice, name in zip([lower_slice, upper_slice, blanket_slice], names):
         plt.plot(x_span, slice, label=name)
     plt.legend()
-    plt.show()
+    if SHOW: plt.show()

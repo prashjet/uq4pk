@@ -16,12 +16,25 @@ class LCIEvaluationFunctional(AffineEvaluationFunctional):
         self.zdim = index_set.size
         self.phidim = self.zdim
         self.w = np.ones((1, ))
-        self.u = np.ones((self.dim, 1))
-        self.v = x_map
+        self._v = x_map
         self.z0 = np.zeros((1, ))
 
+    @property
+    def u(self) -> np.ndarray:
+        return np.ones((self.dim, 1))
+
+    @property
+    def v(self) -> np.ndarray:
+        return self._v.copy()
+
+    def x(self, z: np.ndarray) -> np.ndarray:
+        x = self.v
+        x[self._index_set] += z[0]
+        return x
+
     def phi(self, z: np.ndarray) -> np.ndarray:
-        return self.x(z)
+        phi = self.x(z)
+        return phi
 
     def lb_z(self, lb: np.ndarray) -> np.ndarray:
         return max((lb - self._x_map)[self._index_set]) * np.ones((1, ))

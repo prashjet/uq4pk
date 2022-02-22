@@ -11,8 +11,17 @@ class TestFunctional(AffineEvaluationFunctional):
         self.phidim = dim
         self.zdim = dim
         self.z0 = np.zeros((dim, ))
-        self.u = np.identity(dim)
-        self.v = np.zeros((dim, ))
+
+    @property
+    def u(self):
+        return np.identity(self.dim)
+
+    @property
+    def v(self):
+        return np.zeros((self.dim, ))
+
+    def x(self, z):
+        return z
 
     def phi(self, z: np.ndarray) -> np.ndarray:
         return z
@@ -32,7 +41,6 @@ def test_affine_evaluation_map():
     testmap = AffineEvaluationMap(aef_list)
     assert testmap.dim == n
     assert testmap.size == nofun
-    assert testmap.phidim == n * nofun
 
 
 def test_cannot_initialize_with_empty_list():

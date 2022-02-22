@@ -1,10 +1,11 @@
 
 import numpy as np
 import scipy.ndimage as spim
-from typing import Sequence
+from typing import Sequence, Union
 
 
-def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[float], mode: str="reflect") -> np.ndarray:
+def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float, np.ndarray]], mode: str="reflect") \
+        -> np.ndarray:
     """
     Computes the scale-normalized Laplacian of a given scale-space representation.
 
@@ -21,9 +22,9 @@ def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[float], mode: s
     # For each scale h, compute h * Laplacian(ssr[i]).
     snl_list = []
     for i in range(len(scales)):
-        h_i = scales[i]
+        t_i = np.linalg.norm(scales[i]) # in case scales[i] is two-dimensional
         delta_f_i = spim.laplace(ssr[i], mode=mode)
-        snl_i = h_i * delta_f_i
+        snl_i = t_i * delta_f_i
         snl_list.append(snl_i)
     snl = np.array(snl_list)
 

@@ -9,8 +9,8 @@ from .image_partition import ImagePartition
 
 def rectangle_partition(m, n, a, b) -> ImagePartition:
     """
-    Makes a rectangle partition.
-    Returns indices for a partition of an image of shape (n_x, n_y) into rectangles of shape (a_x, a_y).
+    Makes a rectangle discretization.
+    Returns indices for a discretization of an image of shape (n_x, n_y) into rectangles of shape (a_x, a_y).
     If the array is not evenly divisible, the rectangles may be larger.
     :param m: int
         Number of rows of the image.
