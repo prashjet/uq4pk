@@ -10,6 +10,9 @@ from .experiment_data import ExperimentData
 from .sample_theta import sample_theta
 
 
+HERMITE_ORDER = 4
+
+
 def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, downsampling: int=1) -> ExperimentData:
     """
     Simulates a dataset. Generates a measurement from the provided distribution function, while
@@ -30,7 +33,7 @@ def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, downsampling: i
     if downsampling != 1:
         op = UpsamplingForwardOperator(scale=downsampling)
     else:
-        op = ForwardOperator()
+        op = ForwardOperator(hermite_order=HERMITE_ORDER)
     if f_im is None:
         # if no f is provided, we simulate_data one.
         f_im = RandomGMM_DistributionFunction(modgrid=op.modgrid).F
@@ -53,6 +56,5 @@ def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, downsampling: i
     print(f"Actual snr = {np.linalg.norm(y_exact) / np.linalg.norm(noi)}")
     print(f"||y_exact|| / ||y_sd|| = {np.linalg.norm(y_exact) / np.linalg.norm(y_sd)}")
     experiment_data = ExperimentData(name=name, snr=snr, y=y, y_sd=y_sd, f_true=f_true, f_ref=f_true, theta_true=theta_v,
-                                     theta_guess=theta_guess, theta_sd=theta_sd, forward_operator=op,
-                                     theta_noise=theta_v - theta_guess)
+                                     theta_guess=theta_guess, theta_sd=theta_sd, hermite_order=HERMITE_ORDER)
     return experiment_data
