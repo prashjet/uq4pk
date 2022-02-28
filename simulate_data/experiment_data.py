@@ -140,8 +140,8 @@ def load_experiment_data(savedir: str) -> ExperimentData:
 
     # Load individual components.
     info_array = quickload("info.npy")
-    snr = quickload("snr.npy")
-    hermite_order = quickload("hermite_order.npy")
+    snr = float(quickload("snr.npy"))
+    hermite_order = int(quickload("hermite_order.npy"))
     y = quickload("y.npy")
     y_sd = quickload("y_sd.npy")
     f_true = quickload("f_true.npy")

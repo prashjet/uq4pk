@@ -3,6 +3,7 @@ import numpy as np
 
 from simulate_data.experiment_data import save_experiment_data, load_experiment_data, ExperimentData
 
+savename="test_data"
 
 m = 900
 n1 = 12
@@ -11,7 +12,8 @@ horder = 4
 theta_dim = horder + 3
 
 # Create dummy experiment data object.
-data = ExperimentData(name="test",
+def create_dummy_data():
+    data = ExperimentData(name="test",
                       snr=2000,
                       y=np.random.randn(m),
                       y_sd=np.ones(m),
@@ -22,18 +24,24 @@ data = ExperimentData(name="test",
                       theta_sd=np.ones(theta_dim),
                       hermite_order=horder
                       )
-savename="test_data"
+    return data
+
 
 def test_save_experiment_data():
+    data = create_dummy_data()
     # Save it
     save_experiment_data(data=data, savename=savename)
 
 
 def test_load_experiment_data():
+    data = create_dummy_data()
+    save_experiment_data(data=data, savename=savename)
     loaded_data = load_experiment_data(savedir=savename)
     # Check that this is equal to dummy object on a sample basis.
     assert np.isclose(data.y, loaded_data.y).all()
     assert np.isclose(data.f_true, loaded_data.f_true).all()
+    print(f"SNR = {data.snr}")
+    print(f"SNR = {loaded_data.snr}")
     assert np.isclose(data.snr, loaded_data.snr)
 
 
