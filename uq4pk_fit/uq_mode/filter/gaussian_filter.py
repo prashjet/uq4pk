@@ -31,8 +31,8 @@ class GaussianKernel2D(FilterKernel):
 
     def weighting(self, x: np.ndarray) -> float:
         """
-        :param x: Of shape (2, n).
-        :return: Vector of shape (n, )
+        :param x: Of shape (2, dim).
+        :return: Vector of shape (dim, )
         """
         p1 = norm.pdf(x=x[0, :], scale=self._sigma1)
         p2 = norm.pdf(x=x[1, :], scale=self._sigma2)

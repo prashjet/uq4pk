@@ -33,23 +33,34 @@ class RegularizationOperator:
     @property
     def mat(self) -> np.ndarray:
         """
-        The matrix representation of the regularization operator. A matrix of shape (r,n), where
-        n= :py:attr:`~dim` and r= :py:attr:`~rdim`.
+        The matrix representation of the regularization operator. A matrix of shape (r,dim), where
+        dim= :py:attr:`~dim` and r= :py:attr:`~rdim`.
         """
         return deepcopy(self._mat)
 
     def fwd(self, v: np.ndarray) -> np.ndarray:
         """
         Evaluates the forward action of the regularization operator.
-        :param v: :param v: Of shape (n,m), where n = :py:attr:`~dim`.
+
+        :param v: :param v: Of shape (dim,m), where dim = :py:attr:`~dim`.
         :return: Of shape (r,m), where r = :py:attr:`rdim`.
         """
         raise NotImplementedError
 
-    def adj(self, w: np.ndarray):
+    def adj(self, w: np.ndarray) -> np.ndarray:
         """
         Evaluates the adjoint action of the regularization operator.
+
         :param w: Of shape (r, m), where r = :py:attr:`~rdim`.
-        :return: Of shape (n, m), where n = :py:attr:`~dim`.
+        :return: Of shape (dim, m), where dim = :py:attr:`~dim`.
+        """
+        raise NotImplementedError
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        """
+        Returns the (pseudo-) inverse of the regularization operator, i.e. the solution v of R v = w.
+
+        :param w: Of shape (r,).
+        :return: Of shape (dim,).
         """
         raise NotImplementedError

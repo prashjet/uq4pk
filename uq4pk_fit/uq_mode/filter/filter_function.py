@@ -39,7 +39,7 @@ class FilterFunction:
             w[i] = FilterFunction.filter(i).evaluate(v).
         NOTE: This function could probably be optimized, as it uses an inefficient for-loop. However, it is not
         called often, and hence it does really matter.
-        :param v: Must satisfy n == :py:attr:`dim`
+        :param v: Must satisfy dim == :py:attr:`dim`
         :return: Of shape (:py:attr:`size`,).
         """
         w = np.zeros(self.dim)

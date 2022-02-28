@@ -9,7 +9,7 @@ class BoundedOsborneProblem(OsborneProblem):
     def __init__(self):
         OsborneProblem.__init__(self)
         # add nonnegativity constraints
-        n = self._problem.n
+        n = self._problem.dim
         lb = np.zeros(n)
         self._problem.parameter("x").lb = lb
         # rest is same ...

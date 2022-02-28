@@ -9,7 +9,7 @@ def mygradient(arr: np.ndarray, mode: str = "reflect") -> List[np.ndarray]:
 
     :param arr: The array for which the gradient is to be computed.
     :returns: A list of the gradient fields in each direction. Each gradient field has the same shape as ``arr``.
-        For example, for an array of shape (m, n), ``gradient`` will return two arrays of shape (m, n), corresponding
+        For example, for an array of shape (m, dim), ``gradient`` will return two arrays of shape (m, dim), corresponding
         to the gradients in x- and y-direction.
     """
     N = arr.ndim

@@ -15,7 +15,7 @@ def scale_space_minimization(alpha: float, m: int, n: int, model: LinearModel, x
 
     .. math::
         min_f ||\\nabla \\Delta_{x}^h L||_2^2 + \\beta ||f||_2^2
-        s.t. L(x, h) = G_h f, f \\in C_{\\alpha},
+        s.t. L(x, h) = G_h f, f \\idim C_{\\alpha},
 
     where :math:`G_h` is the isotropic Gaussian filter with scale parameter h.
 
@@ -25,15 +25,15 @@ def scale_space_minimization(alpha: float, m: int, n: int, model: LinearModel, x
     :param model: The linear statistical model.
     :param x_map: The MAP estimate for ``model``.
     :return: f, blobs
-        - f: Numpy array of shape (m, n).
+        - f: Numpy array of shape (m, dim).
         - blobs: Numpy array of shape (k, 4), where each row corresponds to a blob of f and is of the form
             (s_x, s_y, i, j),
             where s_x, s_y are the stdev in x- and y-direction for the blob, and (i, j) its center.
     """
     # Check input for consistency.
     assert 0 < alpha < 1
-    assert model.n == m * n
-    assert x_map.shape == (model.n,)
+    assert model.dim == m * n
+    assert x_map.shape == (model.dim,)
 
     # Translate sigmas to scales
     scales = [0.5 * sigma ** 2 for sigma in sigma_list]

@@ -23,3 +23,9 @@ class IdentityOperator(RegularizationOperator):
         See :py:attr:`RegularizationOperator.adj`.
         """
         return v
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        """
+        Id^(-1) = Id
+        """
+        return w

@@ -9,7 +9,7 @@ from uq4pk_fit.blob_detection.extra import image_hessian
 
 def hessian_operator(m: int, n: int):
     """
-    Returns the operator of shape (m * n, m * n) that computes the Hessian of an image.
+    Returns the operator of shape (m * dim, m * dim) that computes the Hessian of an image.
 
     :param m:
     :param n:
@@ -51,7 +51,7 @@ class DOH:
         Return the Jacobian of the operator det H f.
 
         :param f: The flattened image.
-        :return: A matrix of shape (d, d), where d = m * n.
+        :return: A matrix of shape (d, d), where d = m * dim.
         """
         j = (self.h11 @ f) * self.h22 + (self.h22 @ f) * self.h11 - (self.h21 @ f) * self.h12 - \
             (self.h12 @ f) * self.h21

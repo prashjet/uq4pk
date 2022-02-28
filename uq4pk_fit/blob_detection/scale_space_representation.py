@@ -14,7 +14,7 @@ def scale_space_representation(image: np.ndarray, scales: Sequence[Union[float, 
     :param scales: The scales.
     :param mode: Determines how the image is padded at the boundaries. See scikit.image.filters.gaussian.
     :param ratio: Height / width ratio.
-    :return: Of shape (len(scales), m, n).
+    :return: Of shape (len(scales), m, dim).
     """
     scaled_images = []
     for scale in scales:

@@ -109,7 +109,7 @@ class Parameter:
     def rdim(self):
         """
         The dimension of the codomain in which the regularization :math:`R` maps. This means that if :math:`R` is an
-        :math:`(r, n)`-matrix, then :py:attr:`rdim` will equal :math:`r`.
+        :math:`(r, dim)`-matrix, then :py:attr:`rdim` will equal :math:`r`.
         """
         return self._rdim
 

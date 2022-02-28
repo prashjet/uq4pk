@@ -1,2 +1,2 @@
-from .significant_blobs import detect_significant_blobs
+from .significant_blobs import detect_significant_blobs, detect_significant_blobs_from_samples
 from .gaussian_blob import GaussianBlob

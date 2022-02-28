@@ -11,11 +11,11 @@ NUMBER_OF_TESTFUNCTIONS = 20
 
 
 def yes_or_no(question):
-    while "only answer with 'y' or 'n'":
-        reply = str(input(question + ' (y/n): ')).lower().strip()
+    while "only answer with 'y' or 'dim'":
+        reply = str(input(question + ' (y/dim): ')).lower().strip()
         if reply[0] == 'y':
             return True
-        elif reply[0] == 'n':
+        elif reply[0] == 'dim':
             return False
 
 def make_ftest(ntest):
@@ -36,7 +36,7 @@ def make_ftest(ntest):
             # show the distribution
             plot_distribution_function(image=f, show=True, ssps=op.ssps)
             # ask the user if he accepts the function
-            assertion = yes_or_no("Do you accept the distribution? [y/n]?")
+            assertion = yes_or_no("Do you accept the distribution? [y/dim]?")
             if assertion:
                 np.savetxt(f"../data/ftest_{n}.csv", f, delimiter=',')
                 print(f"Created 'ftest_{n}.csv'.")

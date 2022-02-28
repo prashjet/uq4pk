@@ -53,9 +53,9 @@ def _extract_data():
         A good initial guess for the corresponding LOSVD-parameters.
     :returns theta_sd: (7,) array
         The associated prior standard deviations.
-    :returns f_gt: (n,) array
+    :returns f_gt: (dim,) array
         The ground truth as a flattened vector, normalized such that
-    :returns f_ppxf: (n,) array
+    :returns f_ppxf: (dim,) array
         The MAP estimate from the PPFX software.
     """
     # prepare data

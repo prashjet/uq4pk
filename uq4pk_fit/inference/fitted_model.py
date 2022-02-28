@@ -101,8 +101,6 @@ class FittedModel:
             options = {}
         if method == "fci":
             return self._uq_fci(options)
-        elif method == "mc":
-            return self._uq_mc(options)
         elif method == "dummy":
             return self._uq_dummy(options)
         elif method == "lci":
@@ -185,29 +183,44 @@ class FittedModel:
                              filter_f=filter_f, filter_theta=None, scale=1)
         return uq_result
 
-    def _uq_mc(self, options: dict):
+    def rml_sample(self, n_samples: int, sample_prior: bool, options: dict):
         """
-        Computes filtered credible intervals using randomized resampling.
-        :param dict options:
-        :return: UQResult
+        Computes pseudo-samples of the posterior using the randomized maximum-likelihood method.
+
+        :param n_samples: Desired number of samples.
+        :param sample_prior: If True, samples the prior guess in every step. If False, only perturbs the measurement.
+        :param dict options: Further options for the sampler. See help(uq4pk_fit.uq_mode.rml) for an explanation
+            of the possible options.
+        :return: Of shape (n, d). The pseudo-samples, where rows correspond to different samples and columns correspond
+            to different coordinates.
         """
-        alpha = 0.05  # 95%-credibility
-        # As remarked in Cappellari and Emsellem, one want to use smaller values for the regularization parameters
-        # when performing RML than when performing MAP estimation.
-        # Setup the uq_mode.fci.FilterFunction object
-        options["reduction"] = options.setdefault("reduction", 42)
-        uq_scale = options.setdefault("h", 3)
+        samples = uq_mode.rml(model=self._linearized_model, x_map=self._x_map_vec, n_samples=n_samples,
+                              sample_prior=sample_prior, options=options)
+        return samples
+
+    def fci_from_samples(self, samples: np.ndarray, alpha: float, options: dict = None) -> UQResult:
+        """
+        Estimates a desired FCI from samples.
+
+        :param samples: Of shape (n, model.dim), where n is the number of samples.
+        :param alpha: The credibility parameters.
+        :param options: Same as for self.uq
+        :return: An UQResult object.
+        """
+        # Initialize filter function.
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
-        ci_x = uq_mode.fci_rml(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
-                               ffunction=filter_function, options=options)
-        # Make UQResult object.
+        # Estimate FCI using the samples.
+        fci_obj = uq_mode.fci_sampling(alpha=alpha, samples=samples, ffunction=filter_function)
+        ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
+        uq_scale = options["sigma"]
         # Reshape
         lower_f = self._reshape_f(ci_f[:, 0])
         upper_f = self._reshape_f(ci_f[:, 1])
         uq_result = UQResult(lower_f=lower_f, upper_f=upper_f, lower_theta=ci_theta[:, 0], upper_theta=ci_theta[:, 1],
                              filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
         return uq_result
+
 
     def compute_fci_stack(self, sigma_list: Sequence[Union[float, np.ndarray]], options: dict = None) \
             -> Tuple[np.ndarray, np.ndarray]:
@@ -310,15 +323,18 @@ class FittedModel:
                                                   dim_theta=self._parameter_map.dims[1])
         return discretization
 
-    def make_localization_plot(self, n_sample: int, w1_list: Sequence[int], w2_list: Sequence[int],
-                               sigma: Union[float, np.ndarray], discretization_name: str, d1: int=None, d2: int=None):
+    def make_localization_plot(self, w1_list: Sequence[int], w2_list: Sequence[int],
+                               sigma: Union[float, np.ndarray], discretization_name: str, d1: int=None, d2: int=None,
+                               n_sample: int = None):
         """
         Creates a heuristic localization plot for FCIs based on a random sample of pixels.
         This can be used to tune the localization architecture.
 
-        :param n_sample: Number of pixels used for the random sample.
+        :param n_sample: Number of pixels used for the random sample. If not provided, all pixels will be used in computations.
         :param w1_list: List of values for parameter w1.
         :param w2_list: List of values for parameter w2.
+        :param d1: The discretization-resolution in vertical direction.
+        :param d2: The discretization-resolution in horizontal direction.
         :return: computation_times, errors
             - computation_times: A list of the estimated computation time corresponding to each localization architecture.
             - errors: A list of the approximation errors with respect to the baseline FCI (i.e. without any localization).
@@ -332,8 +348,9 @@ class FittedModel:
         fci_list = []
         t_list = []
         for w1, w2 in zip(w1_list, w2_list):
-            options = {"sigma": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "sample": pixel_sample,
-                       "discretization": discretization_name}
+            options = {"sigma": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "discretization": discretization_name}
+            if n_sample is not None:
+                options["sample"] = pixel_sample
             # Create appropriate filter
             filter_function, filter_f, filter_theta = self._get_filter_function(options)
             discretization = self._get_discretization(options)
@@ -345,21 +362,25 @@ class FittedModel:
             fci_list.append(fci)
 
         # ---Compute baseline error.
-        options = {"sigma": sigma, "sample": pixel_sample, "discretization": "trivial"}
+        options = {"sigma": sigma, "discretization": "trivial"}
+        if n_sample is not None: options["sample"] = pixel_sample
         discretization = self._get_discretization(options)
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # compute filtered credible intervals
         fci_base_obj = uq_mode.fci(alpha=alpha, x_map=self._x_map_vec, model=self._linearized_model,
                               ffunction=filter_function, discretization=discretization, options=options)
         fci_base = fci_base_obj.interval
+        t_base = fci_base_obj.time_avg * self._dim_f
 
         # Compute relative localization error
-        e_rloc_list = []
+        mjd_list = []
         for fci in fci_list:
             mean_jaccard = mean_jaccard_distance(fci, fci_base)
-            e_rloc_list.append(mean_jaccard)
-
-        return t_list, e_rloc_list
+            mjd_list.append(mean_jaccard)
+        # Also append baseline
+        t_list.append(t_base)
+        mjd_list.append(mean_jaccard_distance(fci_base, fci_base))
+        return t_list, mjd_list
 
     def _pixel_to_superpixel(self, pixels, a, b):
         """

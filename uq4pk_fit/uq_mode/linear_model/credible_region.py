@@ -16,7 +16,7 @@ class CredibleRegion:
         self._cost = model.cost
         self._x_map = x_map
         self._alpha = alpha
-        self._dim = model.n
+        self._dim = model.dim
         tau = sqrt(16 * log(3 / self._alpha) / self._dim)
         self._k_alpha = self._dim * (tau + 1)
         self._gamma_alpha = self._cost_map + self._k_alpha
@@ -72,7 +72,7 @@ class CredibleRegion:
         """
         The matrix that defines the equality constraint A x = b.
 
-        :return: Of shape (c, n), or None if there is no equality constraint.
+        :return: Of shape (c, dim), or None if there is no equality constraint.
         """
         return self._a
 
@@ -91,7 +91,7 @@ class CredibleRegion:
         """
         The bound for the lower-bound constraint f >= lb.
 
-        :return: Of shape (n, ), or None if there is no lower bound constraint.
+        :return: Of shape (dim, ), or None if there is no lower bound constraint.
         """
         return self._lb
 
@@ -128,12 +128,12 @@ class CredibleRegion:
         where R is invertible upper triangular.
 
         :return: t, d_tilde, e_tilde, a, b, lb.
-            - t: An invertible upper triangular matrix of shape (n, n).
-            - d_tilde: An n-vector.
+            - t: An invertible upper triangular matrix of shape (dim, dim).
+            - d_tilde: An dim-vector.
             - e_tilde: A nonnegative float.
-            - a: A matrix of shape (c, n).
+            - a: A matrix of shape (c, dim).
             - b: A c-vector.
-            - lb: An n-vector, representing the lower bound.
+            - lb: An dim-vector, representing the lower bound.
         """
         a = self._model.a
         b = self._model.b
@@ -143,7 +143,7 @@ class CredibleRegion:
         r = self._model.r
         m = self._model.m
         lb = self._model.lb
-        n = self._model.n
+        n = self._model.dim
 
         # Assemble the matrix C, the vector d and the RHS e.
         c1 = q.fwd(h)

@@ -84,9 +84,9 @@ def _compute_blanket_stack(lower_stack: np.ndarray, upper_stack: np.ndarray) \
 
     f_t = argmin int || \\nabla \\Laplace f(x)||_2^2 dx     s. t. l_t <= f_t <= u_t.
 
-    :param lower_stack: Of shape (s, m, n). The stack of lower bounds of the FCIs.
-    :param upper_stack: Of shape (s, m, n). The stack of upper bounds of the FCIs.
-    :return: The blanket stack, of shape (s, m, n). The first axis corresponds to scale, the other two axis to the
+    :param lower_stack: Of shape (s, m, dim). The stack of lower bounds of the FCIs.
+    :param upper_stack: Of shape (s, m, dim). The stack of upper bounds of the FCIs.
+    :return: The blanket stack, of shape (s, m, dim). The first axis corresponds to scale, the other two axis to the
         image domain.
     """
     # Check input for consistency.
@@ -111,9 +111,9 @@ def _compute_blanket(lower: np.ndarray, upper: np.ndarray)\
     """
     Compute blankets at given resolution for the given model.
 
-    :param lower: Of shape (m, n). The lower bound of the FCI.
-    :param upper: Of shape (m, n). The upper bound of the FCI.
-    :returns: Of shape (m, n). The computed blanket
+    :param lower: Of shape (m, dim). The lower bound of the FCI.
+    :param upper: Of shape (m, dim). The upper bound of the FCI.
+    :returns: Of shape (m, dim). The computed blanket
     """
     # Check input.
     assert lower.ndim == 2 == upper.ndim
@@ -166,7 +166,7 @@ def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float) ->
     If the relative overlap is 1 for more than one feature in ``features``, the first matching feature is selected.
 
     :param blob: Of shape (4, ). The feature to be found.
-    :param blobs: Of shape (n, 4). The array of features in which ``feature`` is searched.
+    :param blobs: Of shape (dim, 4). The array of features in which ``feature`` is searched.
     :return: The mapped feature. If no fitting feature is found, None is returned.
     """
     # Iterate over blobs.

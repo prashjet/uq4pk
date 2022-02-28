@@ -24,3 +24,9 @@ class NullOperator(RegularizationOperator):
         Always return 0.
         """
         return np.zeros((1,))
+
+    def inv(self, w: np.ndarray):
+        """
+        Always return 0.
+        """
+        return np.zeros((1,))

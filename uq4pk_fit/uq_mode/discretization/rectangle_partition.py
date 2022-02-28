@@ -25,7 +25,7 @@ def rectangle_partition(m, n, a, b) -> ImagePartition:
     """
     # check input
     assert a < m, "a must be smaller than dim_y"
-    assert b < n, "b must be smaller than n"
+    assert b < n, "b must be smaller than dim"
     # create array of indices
     index_array = np.arange(m * n)
     index_array = np.reshape(index_array, (m, n))

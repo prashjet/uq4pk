@@ -20,7 +20,7 @@ def minimize_blobiness(alpha: float, m: int, n: int, model: LinearModel, x_map: 
 
     .. math::
 
-        \\min_f || \\nabla \\Delta_{norm} f ||_2^2      s. t. f \\in C_\\alpha.
+        \\min_f || \\nabla \\Delta_{norm} f ||_2^2      s. t. f \\idim C_\\alpha.
 
     :param alpha:
     :param m:
@@ -32,7 +32,7 @@ def minimize_blobiness(alpha: float, m: int, n: int, model: LinearModel, x_map: 
     :param num_sigma:
     :param ratio:
     :return: f, boi
-        - f: Of shape (m, n). The "minimally blobby element".
+        - f: Of shape (m, dim). The "minimally blobby element".
     """
     # First, solve the scale-space optimization problem
     f_min_pre = scale_space_minimization(alpha=alpha, m=m, n=n, model=model, x_map=x_map, sigma_list=sigma_list)

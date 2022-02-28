@@ -13,7 +13,7 @@ from .indices_to_coords import indices_to_coords
 
 def rectangle_indices(m, n, upper_left, lower_right, return_relative=False):
     """
-    Given the coordinates of the upper-left and lower-right corner of a rectangle inside an (m,n)-image, returns
+    Given the coordinates of the upper-left and lower-right corner of a rectangle inside an (m,dim)-image, returns
     the coordinates of all points that are inside that rectangle.
     :param m: int
         Number of rows of the image.

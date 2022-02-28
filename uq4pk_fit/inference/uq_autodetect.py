@@ -22,7 +22,7 @@ def autodetect(m: int, n: int, x_map: np.ndarray, model: uq_mode.LinearModel, op
         which the components where identified.
     """
     # Check matching
-    assert model.n == m * n
+    assert model.dim == m * n
     # Read options
     kernel = options.setdefault("kernel", "laplace")
     # Set starting scale

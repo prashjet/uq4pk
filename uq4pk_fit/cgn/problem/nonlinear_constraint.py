@@ -18,7 +18,7 @@ class NonlinearConstraint(Constraint):
         :param fun: The function that determines the constraint. Must take ``len(parameters)`` arguments and return
             a numpy array of shape (c,).
         :param jac: The Jacobian of `fun`. Must take arguments of the same form as `fun`, and return a numpy array
-            of shape (c, n), where n is the dimension of the concatenated parameter vector.
+            of shape (c, dim), where dim is the dimension of the concatenated parameter vector.
         :param ctype: The type of the constraint.
         """
         Constraint.__init__(self, parameters=parameters, fun=fun, jac=jac, ctype=ctype)

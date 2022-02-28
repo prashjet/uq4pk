@@ -136,7 +136,7 @@ def _uq_error(truth: np.ndarray, ci: np.ndarray, scaling_matrix: np.ndarray = No
     Then, the uncertainty error (scaled by a matrix S) is computed as:
     euq = ||(S(x - xi_low))^- + (S(x - xi_upp))^+||_2 / ||S x ||_2
 
-    :param ci: The credible intervals as array of shape (n,2).
+    :param ci: The credible intervals as array of shape (dim,2).
     :param scaling_matrix: The scaling matrix S. Defaults to the identity matrix if none is provided.
     :returns: The float ``euq``.
     """

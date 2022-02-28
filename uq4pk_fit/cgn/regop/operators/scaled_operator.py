@@ -1,6 +1,7 @@
 
 from math import sqrt
-from numpy.typing import ArrayLike
+import numpy as np
+
 
 from ..regularization_operator import RegularizationOperator
 
@@ -16,14 +17,18 @@ class ScaledOperator(RegularizationOperator):
         mat = self._sqrt_a * self._p._mat
         RegularizationOperator.__init__(self, mat)
 
-    def fwd(self, v: ArrayLike):
+    def fwd(self, v: np.ndarray):
         """
         See :py:attr:`RegularizationOperator.fwd`.
         """
         return self._sqrt_a * self._p.fwd(v)
 
-    def adj(self, v: ArrayLike):
+    def adj(self, v: np.ndarray):
         """
         See :py:attr:`RegularizationOperator.adj`.
         """
         return self._sqrt_a * self._p.adj(v)
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        return self._inv_sqrt_a * self._p.inv(w)
+

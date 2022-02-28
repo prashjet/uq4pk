@@ -31,7 +31,7 @@ class LinearModel:
         else:
             self.lb = deepcopy(lb)
         # store further information to save computation time
-        self.n = int(m.size)
+        self.dim = int(m.size)
         self.qh = self.q.fwd(self.h)
 
     def cost(self, x: np.ndarray) -> float:

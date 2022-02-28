@@ -91,7 +91,7 @@ class ConstrainedGaussNewton:
     def _posterior_precision(self, state: CGNState):
         """
         given the MAP estimator, computes an approximation of the square-root of the posterior covariance.
-        :return: ndarray of shape (n,n)
+        :return: ndarray of shape (dim,dim)
         """
         j_min = state.jac
         p = self._cnls.r

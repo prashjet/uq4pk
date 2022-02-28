@@ -11,7 +11,7 @@ def cls_solve(cls: CLS) -> np.ndarray:
     """
     Solves a constrained least-squares problem.
     :param cls: The problem object.
-    :return: Of shape (n,). The minimizer of the constrained least-squares problem.
+    :return: Of shape (dim,). The minimizer of the constrained least-squares problem.
     """
     # Bring the CLS problem in the right format.
     r, s, g, h, a, b, lb, ub = _bring_problem_in_right_form(cls)

@@ -6,7 +6,7 @@ def sample_theta(q, theta_v):
     Generates a noisy guess of theta_v
     :param q: noise percentage
     :param theta_v: the true value of theta_v
-    :return: ndarray (n,), ndarray (n,n)
+    :return: ndarray (dim,), ndarray (dim,dim)
         The initial guess and the corresponding regularization operator.
     """
     n_theta = theta_v.size

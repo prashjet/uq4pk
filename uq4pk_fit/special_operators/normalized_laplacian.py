@@ -13,7 +13,7 @@ class NormalizedLaplacian(RegularizationOperator):
         \\Delta_{x,h} f(h, x) = h \\Delta_x f(h, x).
     It is assumed that f is given as flattened 3-dimensional array, i.e. we obtain the correct 3-dimensional
     representation
-    by executing ``np.reshape(f, (nscales, m, n))``, so that the first axis corresponds to scale, and the two other axes
+    by executing ``np.reshape(f, (nscales, m, dim))``, so that the first axis corresponds to scale, and the two other axes
     are the two image dimensions.
     """
 
@@ -39,6 +39,10 @@ class NormalizedLaplacian(RegularizationOperator):
 
     def adj(self, u: np.ndarray) -> np.ndarray:
         return self._mat.T @ u
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        v = np.linalg.lstsq(self._mat, w)
+        return v
 
     def _compute_mat(self) -> np.ndarray:
         """
@@ -85,8 +89,8 @@ class NormalizedLaplacian(RegularizationOperator):
         """
         Computes \\Delta_x f(h, x)
 
-        :param f: Of shape (nscales, m, n).
-        :return: Of shape (nscales, m, n).
+        :param f: Of shape (nscales, m, dim).
+        :return: Of shape (nscales, m, dim).
         """
         # Flatten the two last axes of f
         f2d = np.reshape(f, (self._nscales, self._m * self._n))

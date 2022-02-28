@@ -18,8 +18,8 @@ class OrnsteinUhlenbeck(RegularizationOperator):
         self._dim = m * n
         self._rdim = self.dim
         self.cov = self._compute_cov()
-        imat = np.array(sl.sqrtm(self.cov))
-        mat = np.linalg.inv(imat)
+        self._imat = np.array(sl.sqrtm(self.cov))
+        mat = np.linalg.inv(self._imat)
         RegularizationOperator.__init__(self, mat)
 
     @property
@@ -36,6 +36,9 @@ class OrnsteinUhlenbeck(RegularizationOperator):
     def adj(self, v: ArrayLike):
         return self.mat.T @ v
 
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        return self._imat @ w
+
     # PRIVATE
 
     def _compute_cov(self):
@@ -47,7 +50,7 @@ class OrnsteinUhlenbeck(RegularizationOperator):
             :return: The Ornstein-Uhlenbeck covariance matrix, a numpy array of shape (n1*n2, n1*n2).
             """
         # This function is simply a vectorized implementation of the above index-wise formula.
-        # First, we compute the vector of normalized positions for all n*n-1 pixels.
+        # First, we compute the vector of normalized positions for all dim*dim-1 pixels.
         p = np.zeros((self._m * self._n, 2))
         for i in range(self._m * self._n):
             p[i, :] = self._pos(i) / self._h
@@ -61,7 +64,7 @@ class OrnsteinUhlenbeck(RegularizationOperator):
 
     def _pos(self, i):
         """
-        Given a picture of size (n,n), assuming that the pixels are in lexicographic order, and that the image is
+        Given a picture of size (dim,dim), assuming that the pixels are in lexicographic order, and that the image is
         square.
         Returns an approximate position for each pixel, scaling the image to [0,1]^2.
         That is, the i-th pixel has the position [(i % n2) / (n2-1), (i // n2) / (n1-1)] in the domain [0,1]x[0,1].

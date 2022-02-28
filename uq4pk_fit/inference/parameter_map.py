@@ -91,7 +91,7 @@ class ParameterMap:
     def ci_f_theta(self, ci_x):
         """
         Translates credible interval for the concatenated vector to credible intervals for f and theta.
-        :param ci_x: (n,2) array, where n = self.dim_x
+        :param ci_x: (dim,2) array, where dim = self.dim_x
         :return: ci_f, ci_theta
         """
         ci_f = ci_x[:self._dim_f, :]

@@ -17,7 +17,7 @@ def blob_operator(scales: Sequence[Union[float, np.ndarray]], m: int, n: int) ->
     :param m: Number of image rows.
     :param n: Number of image columns.
     :param ratio: The height/width ratio for the Gaussian filter.
-    :return: Array of shape (s*m*n, m * n), where s = len(scales).
+    :return: Array of shape (s*m*dim, m * dim), where s = len(scales).
     """
     # Assemble the discretization of :math:`\\nabla \\Delta_x^h G_h` by applying the operator to each basis element of
     # R^{mn}.

@@ -5,12 +5,12 @@ from typing import List
 
 class Discretization:
     """
-    An affine discretization of R^n is an affine map D: R^d -> R^n, D(z) = U z + v, for z in R^d.
+    An affine discretization of R^dim is an affine map D: R^d -> R^dim, D(z) = U z + v, for z in R^d.
     The number d corresponds to the degrees of freedom of the discretization.
     Furthermore, each discretization has to define a way in which a lower bound x >= lb is translated to a lower bound
     z >= lb_z.
     """
-    dim: int        # The dimension n of the space.
+    dim: int        # The dimension dim of the space.
     dof: int        # The degrees of freedom of the discretization.
 
     @property
@@ -42,7 +42,7 @@ class Discretization:
 
 class AdaptiveDiscretization:
     """
-    An adaptive discretization is a map that associates to each index i in [n] a discretization of R^n.
+    An adaptive discretization is a map that associates to each index i in [dim] a discretization of R^dim.
     """
     dim: int                                    # The dimension of the underlying space.
     discretizations: List[Discretization]       # Must have length 'dim'.

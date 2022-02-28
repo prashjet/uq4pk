@@ -5,7 +5,7 @@ class AffineEvaluationFunctional:
     """
     Abstract base class for evaluation functionals.
     An evaluation functional represents a way to compute a generalized credible intervals.
-    Given a dependent variable :math:`z \in \\mathbb{R}^k`, we have a linear loss function
+    Given a dependent variable :math:`z \idim \\mathbb{R}^k`, we have a linear loss function
     :math:`J: \\mathbb{R}^k \to \R', J(z) = w.T z,
      which is minimized/maximized, and an affine map x(z) = U z + v,
     that maps the dependent variable `z` to the parameter x.

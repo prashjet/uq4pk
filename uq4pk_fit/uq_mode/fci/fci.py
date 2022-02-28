@@ -65,6 +65,6 @@ def _check_input(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction:
     """
     if not 0 < alpha < 1:
         raise ValueError("'alpha' must satisfy 0 < alpha < 1.")
-    assert x_map.shape == (model.n, )
-    assert ffunction.dim == model.n
-    assert discretization.dim == model.n
+    assert x_map.shape == (model.dim,)
+    assert ffunction.dim == model.dim
+    assert discretization.dim == model.dim

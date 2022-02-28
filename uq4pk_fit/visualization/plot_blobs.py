@@ -13,7 +13,7 @@ def plot_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob, Union[Gaus
     """
     Makes a blob-plot for given image an blobs.
 
-    :param image: The image as (m, n)-array.
+    :param image: The image as (m, dim)-array.
     :param blobs: A sequence of tuples. The first element corresponds to a blob detected in the image, while the
         second element is either None (the blob is not significant) or another blob, representing the significant feature.
     :param savefile: The name under which the plot should be saved (including file-type).

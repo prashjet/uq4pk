@@ -17,7 +17,7 @@ class Constraint:
         :param fun: The function that determines the constraint. Must take ``len(parameters)`` arguments and return
             a numpy array of shape (c,).
         :param jac: The Jacobian of `fun`. Must take arguments of the same form as `fun`, and return a numpy array
-            of shape (c, n), where n is the dimension of the concatenated parameter vector.
+            of shape (c, dim), where dim is the dimension of the concatenated parameter vector.
         :param ctype: The type of the constraint.
         """
         # Check input
@@ -60,7 +60,7 @@ class Constraint:
     @property
     def dim(self) -> int:
         """
-        The parameter dimension :math:`n`.
+        The parameter dimension :math:`dim`.
         """
         return self._dim
 
@@ -68,7 +68,7 @@ class Constraint:
     def cdim(self) -> int:
         """
         The dimension :math:`c` of the codomain of the constraint function,
-        i.e. :math:`G:\\mathbb{R}^n \to \\mathbb{R}^c`.
+        i.e. :math:`G:\\mathbb{R}^dim \to \\mathbb{R}^c`.
         """
         return self._cdim
 

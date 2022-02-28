@@ -20,7 +20,7 @@ class SimpleFilterFunction(FilterFunction):
     """
     def __init__(self, weights: np.ndarray):
         """
-        :param weights: (n, n)-array, where the i-th row corresponds to the weight vector for the i-th filter.
+        :param weights: (dim, dim)-array, where the i-th row corresponds to the weight vector for the i-th filter.
         """
         assert weights.ndim == 2
         assert weights.shape[0] == weights.shape[1]
