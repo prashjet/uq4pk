@@ -56,10 +56,10 @@ class FittedModel:
     @property
     def f_map(self):
         """
-        Returns MAP estimate for age-metallicity distribution.
-        :return:
+        Returns MAP estimate for age-metallicity distribution in the correct format!
         """
-        return self._f_map.copy()
+        f_map_im = np.reshape(self._f_map, (self._m_f, self._n_f))
+        return f_map_im
 
     @property
     def theta_map(self):
@@ -272,7 +272,7 @@ class FittedModel:
         """
         Dummy output for uncertainty quantification. Only for testing purposes. Should be removed before release.
         """
-        ci_f = np.column_stack((self.f_map - 1, self.f_map + 1))
+        ci_f = np.column_stack((self._f_map - 1, self._f_map + 1))
         ci_theta = np.column_stack((self.theta_map - 1, self.theta_map + 1))
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         # Reshape

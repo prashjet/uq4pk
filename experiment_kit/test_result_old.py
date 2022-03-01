@@ -159,8 +159,7 @@ class TestResult:
             postfix = f"_{name}"
         # make images
         f_true_image = self._image(self._f_true)
-        f_map = self._fitted_model.f_map
-        f_map_image = self._image(f_map)
+        f_map_image = self._fitted_model.f_map
         f_ref_image = self._image(self._f_ref)
         f_all = np.concatenate((f_map_image.flatten(), f_ref_image.flatten(), f_true_image.flatten()))
         # determine v_max
