@@ -1,6 +1,8 @@
 
+from copy import deepcopy
 import numpy as np
 from ppxf import ppxf
+from matplotlib import pyplot as plt
 
 import uq4pk_src
 
@@ -8,7 +10,7 @@ from uq4pk_fit.inference import *
 from .experiment_data import ExperimentData
 
 THETA_NOISE = 0.05
-THETA_V = np.array([145, 35, 1., 0., 0., 0.028, -0.23])
+THETA_V = np.array([146, 3, 1., 0., 0., -0.008, -0.003])
 THETA_SCALE = np.array([145, 35, 1., 0.01, 0.01, 0.028, 0.23])
 
 
@@ -35,6 +37,8 @@ class RealExperimentData(ExperimentData):
         # Set all the instance variables
         self.name = "M54"
         self.hermite_order = 3
+        self.y_unmasked = y
+        self.y_sd_unmasked = y_sd
         self.y = y[mask]
         self.y_sd = y_sd[mask]
         self.f_ref = f_gt
@@ -53,6 +57,60 @@ class RealExperimentData(ExperimentData):
     @property
     def forward_operator(self) -> ForwardOperator:
         return self._fwdop
+
+    def correct_forward_operator(self, continuum_distortion: np.ndarray):
+        """
+        Corrects the observation operator by multiplying it with a given Legendre polynomial.
+
+        :param continuum_distortion:
+        """
+        self._ssps.Xw *= (self._ssps.Xw.T * continuum_distortion).T
+        self._fwdop = ForwardOperator(ssps=self._ssps, dv=self._ssps.dv, do_log_resample=False, mask=self.mask)
+
+    def legendre_best_fit(self) -> np.ndarray:
+        """
+        Fits a Legendre polynomial-correction using ppxf.
+        :return:
+        """
+        ssps=self._ssps
+        y = self.y_unmasked
+        y_sd = self.y_sd_unmasked
+        mask = self.mask
+
+        templates = ssps.Xw
+        velscale = ssps.dv
+        start = [0., 30., 0., 0.]
+        bounds = [[-500, 500], [3, 300.], [-0.3, 0.3], [-0.3, 0.3]]
+        moments = 4  # 6
+        templates = templates[:-1, :]
+        truncated_mask = mask[:-1]
+        galaxy = y[:-1]
+        noise = y_sd[:-1]
+        # Perform PPXF fit.
+        ppxf_fit_mdegree = ppxf.ppxf(
+            templates,
+            galaxy,
+            noise,
+            velscale,
+            start=start,
+            degree=-1,
+            mdegree=10,
+            moments=moments,
+            bounds=bounds,
+            regul=0,
+            mask=truncated_mask
+        )
+        # Plot the best fitting polynomial.
+        x = np.linspace(-1, 1, len(galaxy))
+        y = np.polynomial.legendre.legval(x, np.append(1, ppxf_fit_mdegree.mpolyweights))
+        plt.plot(x, y)
+        plt.show()
+
+        # Create continuum distortion
+        continuum_distortion = ppxf_fit_mdegree.mpoly
+        continuum_distortion = np.concatenate([continuum_distortion, [continuum_distortion[-1]]])
+        return continuum_distortion
+
 
     @staticmethod
     def _extract_data():
