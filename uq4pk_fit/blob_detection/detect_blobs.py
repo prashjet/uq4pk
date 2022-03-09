@@ -111,7 +111,7 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: floa
         for b in local_minima:
             sigma_b = sigma_list[b[0]]
             sslaplacian = scale_stack[b[0], b[1], b[2]]
-            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=sslaplacian, scaleno=b[0])
+            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=sslaplacian)
             blobs.append(blob)
 
         # Remove all features below threshold.

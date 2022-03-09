@@ -1,7 +1,7 @@
 import numpy as np
 
 from uq4pk_fit.visualization import plot_blobs
-from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _discretize_sigma, _find_blob, \
+from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _find_blob, \
     best_blob_first
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 
@@ -31,16 +31,4 @@ def test_find_blob_returns_None():
     blob2 = GaussianBlob(x2=5, x1=5, sigma=1, log=0)
     blobs = [blob1, blob2]
     assert _find_blob(blob, blobs, overlap=0.5) is None
-
-
-def test_get_resolutions():
-    min_sigma = 1.
-    max_sigma = 10.
-    nsteps = 4
-    resolutions = _discretize_sigma(min_sigma, max_sigma, nsteps)
-    # First entry must be equal to min_scale.
-    assert np.isclose(resolutions[0], min_sigma)
-    assert len(resolutions) == nsteps + 2
-    # max_scale must lie between resolutions[-2] and resolutions[-1]
-    assert resolutions[-2] <= max_sigma <= resolutions[-1]
 

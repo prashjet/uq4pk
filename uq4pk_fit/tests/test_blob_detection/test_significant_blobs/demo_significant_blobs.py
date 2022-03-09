@@ -13,7 +13,7 @@ SIGMA_MAX = 15
 NSCALES = 12
 
 RATIO = 0.5
-rthresh = 0.01
+rthresh = 0.001
 overlap = 0.5
 
 
@@ -22,7 +22,6 @@ def demo_compute_mapped_pairs():
     sigma_step = (SIGMA_MAX - SIGMA_MIN) / (NSCALES - 1)
     sigmas = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
     sigma_list = [np.array([RATIO * sigma, sigma]) for sigma in sigmas]
-    scales = [0.5 * s ** 2 for s in sigmas]
 
     # Load blanket stack
     blanket_list = []
@@ -40,7 +39,8 @@ def demo_compute_mapped_pairs():
                                max_overlap=overlap)
 
     # Test the detection of significant blobs.
-    mapped_pairs = _match_blobs(map_blobs=map_blobs, significant_blobs=sig_blobs, overlap=overlap)
+    mapped_pairs = _match_blobs(sigma_list=sigma_list, reference_blobs=map_blobs, log_stack=laplacian_blanket_stack,
+                                overlap=overlap, rthresh=rthresh)
     # Visualize
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()

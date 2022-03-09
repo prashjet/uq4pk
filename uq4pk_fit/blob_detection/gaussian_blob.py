@@ -8,8 +8,7 @@ class GaussianBlob:
     """
     Represents a two-dimensional anisotropic Gaussian blob.
     """
-    def __init__(self, x1: int, x2: int, sigma: Union[float, np.ndarray], log: float, scaleno: int = 0,
-                 angle: float = 0):
+    def __init__(self, x1: int, x2: int, sigma: Union[float, np.ndarray], log: float, angle: float = 0):
         """
         We always use the axes
         0----> x2
@@ -37,7 +36,6 @@ class GaussianBlob:
             self._sigma2 = sigma
         self._log = log
         self._angle = angle
-        self._scaleno = scaleno
 
     @property
     def position(self) -> np.ndarray:
