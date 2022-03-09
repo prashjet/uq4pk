@@ -198,7 +198,7 @@ class FittedModel:
                               sample_prior=sample_prior, options=options)
         return samples
 
-    def fci_from_samples(self, samples: np.ndarray, alpha: float, options: dict = None) -> UQResult:
+    def fci_from_samples(self, samples: np.ndarray, alpha: float, options: dict = None):
         """
         Estimates a desired FCI from samples.
 
@@ -213,13 +213,10 @@ class FittedModel:
         fci_obj = uq_mode.fci_sampling(alpha=alpha, samples=samples, ffunction=filter_function)
         ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
-        uq_scale = options["sigma"]
         # Reshape
         lower_f = self._reshape_f(ci_f[:, 0])
         upper_f = self._reshape_f(ci_f[:, 1])
-        uq_result = UQResult(lower_f=lower_f, upper_f=upper_f, lower_theta=ci_theta[:, 0], upper_theta=ci_theta[:, 1],
-                             filter_f=filter_f, filter_theta=filter_theta, scale=uq_scale)
-        return uq_result
+        return lower_f, upper_f
 
 
     def compute_fci_stack(self, sigma_list: Sequence[Union[float, np.ndarray]], options: dict = None) \
@@ -261,11 +258,28 @@ class FittedModel:
         upper_stack = np.array(upper_list)
         return lower_stack, upper_stack
 
+    def minimize_blobiness(self, alpha: float, sigmas: Sequence):
+        """
+        Computes the minimally blobby image in the credible region.
+
+        :param alpha: The credibility parameter.
+        :param sigmas: The list of the scales.
+        :return: f_min. Of shape (m_f, n_f).
+        """
+        f_min = blob_detection.minimize_blobiness(alpha=alpha, m=self._m_f, n=self._n_f, model=self._linearized_model,
+                                                  x_map=self._f_map.flatten(), sigma_list=sigmas)
+        return f_min
+
+
     def significant_blobs(self, sigmas: Sequence[float], lower_stack: np.ndarray, upper_stack: np.ndarray,
+                          reference_image: np.ndarray = None,
                           rthresh: float = 0.01, overlap: float = 0.5):
-        f_map = self._reshape_f(self._f_map)
-        blobs = blob_detection.detect_significant_blobs(reference=f_map, sigma_list=sigmas, lower_stack=lower_stack,
-                                                        upper_stack=upper_stack, rthresh=rthresh, overlap=overlap)
+        # If no reference image is provided, take MAP as reference:
+        if reference_image is None:
+            reference_image = self._reshape_f(self._f_map)
+        blobs = blob_detection.detect_significant_blobs(reference=reference_image, sigma_list=sigmas,
+                                                        lower_stack=lower_stack, upper_stack=upper_stack,
+                                                        rthresh=rthresh, overlap=overlap)
         return blobs
 
     def _uq_dummy(self, options: dict):

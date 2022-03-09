@@ -1,14 +1,14 @@
-
 from matplotlib import pyplot as plt
 import numpy as np
 
 from uq4pk_fit.blob_detection.minimize_blobiness.blob_operator import blob_operator
+from uq4pk_fit.special_operators import DiscreteLaplacian
 
 
 SHOW = True    # Set True if you want to see plots.
 
 
-def test_blob_operator():
+def test_shape_operator():
     # Load test image.
     f = np.loadtxt("../data/map.csv", delimiter=",")
     num_sigma = 10
@@ -20,9 +20,10 @@ def test_blob_operator():
     scales = [0.5 * sigma ** 2 for sigma in sigmas]
     # Compute blob operator
     m, n = f.shape
-    bob = blob_operator(scales=scales, m=m, n=n)
-    # Apply to test image and visualize output
-    g = bob @ f.flatten()
+    blobby = blob_operator(scales=scales, m=m, n=n)
+    dg = DiscreteLaplacian((len(sigmas), m, n)).mat
+    shape_operator = dg @ blobby
+    g = shape_operator @ f.flatten()
     g3d = np.reshape(g, (len(scales), m, n))
     i = 0
     for g_h in g3d:

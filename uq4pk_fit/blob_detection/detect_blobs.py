@@ -87,7 +87,7 @@ def remove_overlap(blobs: List[GaussianBlob], max_overlap: float):
     return cleaned_blobs
 
 
-def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, max_overlap: float)\
+def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, max_overlap: float = None)\
         -> List[GaussianBlob]:
     """
     Given a scale-space stack, detects blobs as scale-space minima.
@@ -95,7 +95,7 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: floa
     :param scale_stack:
     :param sigma_list: The list of standard deviations for each filter.
     :param rthresh:
-    :param max_overlap:
+    :param max_overlap: Maximal tolerable overlap between blobs. If None, any overlap is tolerated.
     :return:
     """
     # DETERMINE SCALE-SPACE BLOBS
@@ -111,7 +111,7 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: floa
         for b in local_minima:
             sigma_b = sigma_list[b[0]]
             sslaplacian = scale_stack[b[0], b[1], b[2]]
-            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=sslaplacian)
+            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=sslaplacian, scaleno=b[0])
             blobs.append(blob)
 
         # Remove all features below threshold.
@@ -119,7 +119,8 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: floa
         blobs = threshold_local_minima(blobs, athresh)
 
         # Remove overlap
-        blobs = remove_overlap(blobs, max_overlap)
+        if max_overlap is not None:
+            blobs = remove_overlap(blobs, max_overlap)
 
     return blobs
 

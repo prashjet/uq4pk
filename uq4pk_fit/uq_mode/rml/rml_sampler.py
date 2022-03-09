@@ -51,7 +51,7 @@ class RMLSampler:
 
             # CREATE PERTURBATION OF MEASUREMENT
             std_noise = np.random.randn(ydim)
-            noise = np.linalg.solve(self._model.q.inv(std_noise))
+            noise = self._model.q.inv(std_noise)
             # Add the noise to the "true" measurement to obtain a perturbed measurement y_i.
             x = self._fit_model(x_bar, noise)
             # Append to the list of samples.

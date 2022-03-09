@@ -90,8 +90,7 @@ class SimulatedExperimentData(ExperimentData):
         Creates the model forward operator.
         """
         ssps_pre = self._ssps_pre
-        op = ForwardOperator(hermite_order=self.hermite_order, mask=self.mask, ssps=ssps_pre, do_log_resample=False,
-                             dv=ssps_pre.dv)
+        op = ForwardOperator(hermite_order=self.hermite_order, mask=self.mask, ssps=ssps_pre)
         return op
 
     @property

@@ -3,7 +3,7 @@ import cvxpy as cp
 import numpy as np
 from typing import List, Sequence, Union
 
-from uq4pk_fit.special_operators import DiscreteGradient
+from uq4pk_fit.special_operators import DiscreteGradient, DiscreteLaplacian
 from uq4pk_fit.uq_mode.linear_model import CredibleRegion, LinearModel
 from uq4pk_fit.blob_detection.minimize_blobiness.blob_operator import blob_operator
 
@@ -95,14 +95,17 @@ def solve_optimization_problem(a: np.ndarray, c: CredibleRegion)\
     r = r0[:n, :]
 
     scale = np.sum(np.square(r @ c.x_map))
-    base = np.sum(np.square(c.x_map))
-    beta = 1. * scale / base
+    alpha = 1 / scale
+    beta = 0.0001
 
-    problem = cp.Problem(cp.Minimize(cp.sum_squares(r @ x) + beta * cp.sum_squares(x)), constraints)
+    problem = cp.Problem(cp.Minimize(alpha * cp.sum_squares(r @ x) + beta * cp.sum_squares(x)), constraints)
 
     # Solve the problem
     problem.solve(warm_start=False, verbose=False, solver=cp.ECOS)
 
     # Return the minimizer.
     x_min = x.value
+
+    print(f"Blobiness of map: {np.sum(np.square(r @ c.x_map))}")
+    print(f"Blobiness of solution: {np.sum(np.square(r @ x_min))}")
     return x_min

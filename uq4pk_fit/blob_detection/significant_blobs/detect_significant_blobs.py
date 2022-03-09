@@ -49,10 +49,9 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     blanket_stack = _compute_blanket_stack(lower_stack=lower_stack, upper_stack=upper_stack)
     # Compute significant blobs
     laplacian_blanket_stack = scale_normalized_laplacian(blanket_stack, sigma_list, mode="reflect")
-    sig_blobs = stack_to_blobs(scale_stack=laplacian_blanket_stack, sigma_list=sigma_list, rthresh=rthresh,
-                               max_overlap=overlap)
     # Compute mapped pairs.
-    mapped_pairs = _match_blobs(significant_blobs=sig_blobs, map_blobs=map_blobs, overlap=overlap)
+    mapped_pairs = _match_blobs(sigma_list=sigma_list, map_blobs=map_blobs, log_stack=laplacian_blanket_stack,
+                                overlap=overlap, rthresh=rthresh)
 
     # Return the mapped pairs.
     return mapped_pairs
@@ -127,23 +126,29 @@ def _compute_blanket(lower: np.ndarray, upper: np.ndarray)\
     return blanket
 
 
-def _match_blobs(significant_blobs: List[GaussianBlob], map_blobs: List[GaussianBlob], overlap: float) -> List[Tuple]:
+def _match_blobs(sigma_list: SigmaList, map_blobs: List[GaussianBlob], log_stack: np.ndarray, overlap: float,
+                 rthresh: float) -> List[Tuple]:
     """
     For a given blanket-feature array, determines whether any features "match" the features in ``map_features``
     at the given resolution.
 
-    :param significant_blobs:
-    :param map_blobs:
+    :param map_blobs: The blobs in the reference image.
+    :param log_stack: The Laplacian of Gaussian blob.
     :returns: The list of mapped pair. Each mapped pair is a tuple of the form (b, c) or (b, None). In the former case,
         b gives the MAP blob and c the associated significant blob. In the latter case, the MAP blob was not
         found to be significant.
     """
-    # Sort the significant features in order of increasing log.
-    blobs_increasing_log = best_blob_first(significant_blobs)
-
     mapped_pairs = []
     # Iterate over the MAP features
     for map_blob in map_blobs:
+        # Remove all scales below the scale of ``map_blob``.
+        log_stack_cut = log_stack[map_blob._scaleno:]
+        sigma_list_cut = sigma_list[map_blob._scaleno:]
+        # Detect significant features in log.
+        significant_blobs = stack_to_blobs(sigma_list=sigma_list_cut, scale_stack=log_stack_cut, rthresh=rthresh,
+                                           max_overlap=overlap)
+        # Sort the significant features in order of increasing log.
+        blobs_increasing_log = best_blob_first(significant_blobs)
         # Find the feature matching the map_feature
         significant_blob = _find_blob(map_blob, blobs_increasing_log, overlap=overlap)
         # Check that blobs really have the right overlap
@@ -176,5 +181,4 @@ def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float) ->
         if candidate_overlap >= overlap:
             found = candidate
             break
-
     return found

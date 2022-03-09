@@ -49,12 +49,12 @@ class CNLS:
         """
         constraint_error = 0.
         if self.equality_constrained:
-            constraint_error += np.linalg.norm(self.g(x))
+            constraint_error += np.linalg.norm(self.g(x), ord=1)
         if self.inequality_constrained:
-            constraint_error += np.linalg.norm((self.h(x)).clip(max=0.))
+            constraint_error += np.linalg.norm((self.h(x)).clip(max=0.), ord=1)
         if self.bound_constrained:
-            constraint_error += np.linalg.norm((self.lb - x).clip(min=0.))
-            constraint_error += np.linalg.norm((x - self.ub).clip(min=0.))
+            constraint_error += np.linalg.norm((self.lb - x).clip(min=0.), ord=1)
+            constraint_error += np.linalg.norm((x - self.ub).clip(min=0.), ord=1)
         return constraint_error
 
     def satisfies_constraints(self, x, tol=1e-5):

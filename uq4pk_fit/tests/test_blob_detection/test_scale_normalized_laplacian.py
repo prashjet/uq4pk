@@ -6,7 +6,7 @@ from uq4pk_fit.blob_detection.scale_space_representation import scale_space_repr
 from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
 
 
-SHOW = False    # Set True if you want to see plots
+SHOW = True    # Set True if you want to see plots
 NSCALES = 12
 R_MIN = 1
 R_MAX = 15

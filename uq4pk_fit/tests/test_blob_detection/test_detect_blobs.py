@@ -8,7 +8,7 @@ from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
 
 
-SHOW = False    # Set True if you want to see plots.
+SHOW = True    # Set True if you want to see plots.
 SIGMA_MIN = 1.
 SIGMA_MAX = 25.
 NUM_SIGMA = 10

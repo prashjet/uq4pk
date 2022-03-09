@@ -27,24 +27,10 @@ def minimize_blobiness(alpha: float, m: int, n: int, model: LinearModel, x_map: 
     :param n:
     :param model:
     :param x_map:
-    :param sigma_min:
-    :param sigma_max:
-    :param num_sigma:
-    :param ratio:
-    :return: f, boi
-        - f: Of shape (m, dim). The "minimally blobby element".
+    :param sigma_list: List of standard deviations for Gaussian kernels.
+    :return: f_min
     """
     # First, solve the scale-space optimization problem
     f_min_pre = scale_space_minimization(alpha=alpha, m=m, n=n, model=model, x_map=x_map, sigma_list=sigma_list)
-    f_min = filters.gaussian(f_min_pre, mode="reflect", sigma=sigma_list[0])
-
-    # Then, detect features in f_min
-    boi = detect_blobs(image=f_min, sigma_list=sigma_list, max_overlap=OTHRESH, rthresh=RTHRESH, mode="constant")
-    # Also detect MAP features
-    f_map = np.reshape(x_map, (m, n))
-    map_blobs = detect_blobs(image=f_map, sigma_list=sigma_list, max_overlap=OTHRESH, rthresh=RTHRESH, mode="constant")
-
-    # Perform feature matching.
-    blob_pairs = _match_blobs(significant_blobs=boi, map_blobs=map_blobs, overlap=OTHRESH)
-
-    return blob_pairs
+    f_min = filters.gaussian(f_min_pre, mode="constant", sigma=sigma_list[0])
+    return f_min

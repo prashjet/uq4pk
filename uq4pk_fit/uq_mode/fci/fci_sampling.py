@@ -3,6 +3,7 @@ import numpy as np
 
 from uq4pk_fit.uq_mode.filter import FilterFunction
 from .fci import FCI
+from .k_enclosing_box import alpha_enclosing_box
 
 
 RTOL = 0.1  # Relative tolerance for credibility parameter.
@@ -27,49 +28,18 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction) -> FCI:
     assert samples.ndim == 2
     assert samples.shape[1] == ffunction.dim
 
-    # first, evaluate the filter function on each sample.
+    # EVALUATE FILTER FUNCTION ON EACH SAMPLE
     n = samples.shape[0]
     phi_list = []
     for j in range(n):
         # Evaluate the filter function on the j-th sample and append to phi_list.
         phi_j = ffunction.evaluate(samples[j])
         phi_list.append(phi_j)
-    phi_arr = np.row_stack(phi_list)
+    filtered_samples = np.row_stack(phi_list)
 
-    # sort each row
-    phi_sorted = np.sort(phi_arr, axis=0)
-
-    # Find multidimensional FCI via bisection.
-    gamma_high = alpha
-    gamma_low = 0.
-    gamma = gamma_high
-    while gamma_high - gamma_low > RTOL * alpha:
-        # cut off the alpha/2 smallest and alpha/2 largest values
-        lower_cutoff = max(np.floor(0.5 * gamma * n - 1).astype(int), 0)
-        upper_cutoff = min(np.ceil((1 - 0.5 * gamma) * n - 1).astype(int), n-1)
-        lower_bounds = phi_sorted[lower_cutoff]
-        upper_bounds = phi_sorted[upper_cutoff]
-        credible_intervals = np.column_stack([lower_bounds, upper_bounds])
-
-        # Check that FCI property is satisfied.
-        mask = np.all(phi_arr >= lower_bounds, axis=1) & np.all(phi_arr <= upper_bounds, axis=1)
-        masked_array = phi_arr[mask, :]
-        n_samples_in_fci = masked_array.shape[0]
-        ratio = n_samples_in_fci / n
-        if ratio >= 1 - alpha:
-            gamma_low = gamma
-            gamma = 0.5 * (gamma_high + gamma_low)
-        else:
-            gamma_high = gamma
-            gamma = 0.5 * (gamma_high + gamma_low)
-
-    # Compute with respect to gamma_low to ensure that ratio >= 1 - alpha
-    # cut off the alpha/2 smallest and alpha/2 largest values
-    lower_cutoff = max(np.floor(0.5 * gamma_low * n - 1).astype(int), 0)
-    upper_cutoff = min(np.ceil((1 - 0.5 * gamma_low) * n - 1).astype(int), n - 1)
-    lower_bounds = phi_sorted[lower_cutoff]
-    upper_bounds = phi_sorted[upper_cutoff]
+    # FIND SMALLEST BOX THAT CONTAINS (1 - alpha) OF SAMPLES.
+    credible_box = alpha_enclosing_box(alpha=alpha, points=filtered_samples)
 
     # Create FCI object.
-    fci_obj = FCI(phi_lower_enlarged=lower_bounds, phi_upper_enlarged=upper_bounds)
+    fci_obj = FCI(phi_lower_enlarged=credible_box[0], phi_upper_enlarged=credible_box[1])
     return fci_obj
