@@ -118,6 +118,9 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: floa
         athresh = scale_stack.min() * rthresh
         blobs = threshold_local_minima(blobs, athresh)
 
+        number_of_blobs = len(blobs)
+        print(f"Found {number_of_blobs} blobs.")
+
         # Remove overlap
         if max_overlap is not None:
             blobs = remove_overlap(blobs, max_overlap)

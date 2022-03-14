@@ -4,7 +4,7 @@ import ray
 
 from ..linear_model import CredibleRegion, LinearModel
 from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
-from ..optimization import ECOS, SLSQP, IPOPT, SOCP, socp_solve, socp_solve_remote
+from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
 from .credible_intervals import CredibleInterval
 from .progress_bar import ProgressBar
 
@@ -41,8 +41,6 @@ class CIComputer:
         solver_name = options.setdefault("solver", DEFAULT_SOLVER)
         if solver_name == "slsqp":
             self._optimizer = SLSQP(ftol=FTOL)
-        elif solver_name == "ipopt":
-            self._optimizer = IPOPT(ftol=FTOL)
         elif solver_name == "ecos":
             self._optimizer = ECOS()
         else:
