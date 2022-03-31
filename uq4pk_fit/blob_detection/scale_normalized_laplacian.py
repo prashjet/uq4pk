@@ -4,7 +4,7 @@ import scipy.ndimage as spim
 from typing import Sequence, Union
 
 
-def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float, np.ndarray]], mode: str="reflect") \
+def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float, np.ndarray]], mode: str="nearest") \
         -> np.ndarray:
     """
     Computes the scale-normalized Laplacian of a given scale-space representation.

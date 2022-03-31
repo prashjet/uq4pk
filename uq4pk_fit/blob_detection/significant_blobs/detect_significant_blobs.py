@@ -1,12 +1,11 @@
 
 import numpy as np
-from skimage import morphology
 from typing import List, Tuple, Union, Sequence
 
-from uq4pk_fit.blob_detection.detect_blobs import best_blob_first, compute_overlap, detect_blobs
+from uq4pk_fit.blob_detection.detect_blobs import compute_overlap, detect_blobs
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.blankets.second_order_blanket import second_order_blanket
-from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.visualization import plot_blobs
 
 
 # Make type for sigma list
@@ -32,9 +31,10 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     :param reference: The image for which significant features need to be determined, e.g. the MAP estimate.
     :param rthresh: The relative threshold for filtering out weak features.
     :param overlap: The maximum allowed overlap for detected features.
-    :returns: A list of tuples. The first element of each tuple is a blob detected in the MAP estimate. It is an
-        :py:class:`GaussianBlob` object. The other element is either None (if the blob is not significant), or another
-        Gaussian blob, representing the significant feature.
+    :returns: A list of triplets. The first element of each triplet is a blob detected in the MAP estimate. It is an
+        :py:class:`GaussianBlob` object. The second element is either None (if the blob is not significant), or another
+        Gaussian blob, representing the significant feature. The third element is either None (if the blob is not
+        significant), or the scale at which the significance was detected.
     """
     # Check input for consistency.
     assert lower_stack.ndim == 3 == upper_stack.ndim
@@ -44,18 +44,15 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     assert len(sigma_list) == s
 
     # Identify features in reference image.
-    reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap, rthresh=rthresh,
-                                   mode="constant")
+    reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap, rthresh=rthresh)
     # Compute blanket stack.
     blanket_stack = _compute_blanket_stack(lower_stack=lower_stack, upper_stack=upper_stack)
-    # Compute significant blobs
-    laplacian_blanket_stack = scale_normalized_laplacian(blanket_stack, sigma_list, mode="reflect")
     # Compute mapped pairs.
-    mapped_pairs = _match_blobs(sigma_list=sigma_list, reference_blobs=reference_blobs,
-                                log_stack=laplacian_blanket_stack, overlap=overlap, rthresh=rthresh)
+    significance_triplets = _match_blobs(sigma_list=sigma_list, reference_blobs=reference_blobs,
+                                         blanket_stack=blanket_stack, overlap=overlap, rthresh=rthresh)
 
     # Return the mapped pairs.
-    return mapped_pairs
+    return significance_triplets
 
 
 def _compute_blanket_stack(lower_stack: np.ndarray, upper_stack: np.ndarray) \
@@ -109,60 +106,58 @@ def _compute_blanket(lower: np.ndarray, upper: np.ndarray)\
     return blanket
 
 
-def _match_blobs(sigma_list: SigmaList, reference_blobs: List[GaussianBlob], log_stack: np.ndarray, overlap: float,
+def _match_blobs(sigma_list: SigmaList, reference_blobs: List[GaussianBlob], blanket_stack: np.ndarray, overlap: float,
                  rthresh: float) -> List[Tuple]:
     """
     For a given blanket-feature array, determines whether any features "match" the features in ``map_features``
     at the given resolution.
 
     :param reference_blobs: The blobs in the reference image.
-    :param log_stack: The Laplacian of Gaussian blob.
+    :param blanket_stack: The stack of second-order blankets.
     :returns: The list of mapped pair. Each mapped pair is a tuple of the form (b, c) or (b, None). In the former case,
         b gives the MAP blob and c the associated significant blob. In the latter case, the MAP blob was not
         found to be significant.
     """
-    matched_blobs = []
-    unmatched_blobs = reference_blobs
-    significant_blobs = []
-    athresh = rthresh * log_stack.min()
+    n_blobs = len(reference_blobs)
+    significant_blobs = [None for blob in reference_blobs]
+    significant_scales = [None for blob in reference_blobs]
 
     # Iterate over log_stack
-    for sigma, log_image in zip(sigma_list, log_stack):
-        # Determine blobs of LoG slice.
-        local_minima = morphology.local_minima(image=log_image, indices=True)
-        local_minima = np.array(local_minima).T
-        # Turn minima to blobs
-        significant_blobs_sigma = _minima_to_blobs(local_minima, log_image, thresh=athresh, sigma=sigma)
-        # Remove all significant blobs that match matched blobs.
-        significant_blobs_sigma_unmatched = []
-        for significant_blob_sigma in significant_blobs_sigma:
-            match_already = _find_blob(significant_blob_sigma, matched_blobs, overlap=overlap)
-            if match_already is None:
-                significant_blobs_sigma_unmatched.append(significant_blob_sigma)
-        # Sort significant blobs in order of increasing LoG
-        significant_blobs_sigma_unmatched = best_blob_first(significant_blobs_sigma_unmatched)
-
-        # Match unmatched reference blobs with unmatched significant blobs.
-        still_unmatched = []
-        for i in range(len(unmatched_blobs)):
-            blob_i = unmatched_blobs[i]
-            significant_blob = _find_blob(blob_i, significant_blobs_sigma_unmatched, overlap=overlap)
-            if significant_blob is not None:
-                matched_blobs.append(blob_i)
-                significant_blobs.append(significant_blob)
+    for sigma, blanket in zip(sigma_list, blanket_stack):
+        # Determine blobs in blanket.
+        blanket_blobs = detect_blobs(image=blanket, sigma_list=sigma_list, max_overlap=overlap, rthresh=rthresh)
+        #plot_blobs(image=blanket, blobs=blanket_blobs, show=True)
+        n_significant = len(blanket_blobs)
+        print(f"Found {n_significant} blanket-blobs.")
+        # Match to blobs in MAP
+        print(f"Scale: {sigma}.")
+        for i in range(n_blobs):
+            blob_i = reference_blobs[i]
+            match_i = significant_blobs[i]
+            new_match = _find_blob(blob_i, blanket_blobs, overlap=overlap)
+            if match_i is None and new_match is not None:
+                print(f"Significant blob found at {new_match.position}")
+                significant_blobs[i] = new_match
+                significant_scales[i] = sigma
+            elif new_match is not None:
+                # If there is a match, compare to existing match. Replace if the new blob is stronger.
+                if new_match.log < match_i.log:
+                    print(f"Blob gets replaced. New position: {new_match.position}")
+                    significant_blobs[i] = new_match
+                    significant_scales[i] = sigma
             else:
-                still_unmatched.append(blob_i)
-        # Update list of unmatched blobs
-        unmatched_blobs = still_unmatched
+                # Else, nothing happens
+                pass
+
+    # Now, we have to remove intersections.
+    _remove_intersection(significant_blobs, overlap)
 
     # Generate output tuples
-    mapped_pairs = []
-    for blob, significant_blob in zip(matched_blobs, significant_blobs):
-        mapped_pairs.append(tuple([blob, significant_blob]))
-    for blob in unmatched_blobs:
-        mapped_pairs.append(tuple([blob, None]))
+    significance_triplets = []
+    for blob, significant_blob, sigma in zip(reference_blobs, significant_blobs, significant_scales):
+        significance_triplets.append(tuple([blob, significant_blob, sigma]))
 
-    return mapped_pairs
+    return significance_triplets
 
 
 def _minima_to_blobs(minima: np.ndarray, log: np.array, thresh: float, sigma: Union[float, np.ndarray]):
@@ -202,3 +197,30 @@ def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float) ->
             found = candidate
             break
     return found
+
+
+def _remove_intersection(blobs: List[Union[GaussianBlob, None]], max_overlap: float):
+    """
+    Given a list of blobs, removes overlap. The blob with the smallest scale "wins". If both blobs have the same
+    scale, the one with the best log wins.
+
+    :param blobs: Of shape (k, 5). Each row corresponds to a feature and is of the form (w, h, i, j, snl).
+    :param max_overlap: The maximum allowed overlap between features.
+    """
+    n_blobs = len(blobs)
+
+    for i in range(n_blobs):
+        blob_i = blobs[i]
+        if blob_i is not None:
+            # If blob is None, go through all blobs and compute intersection.
+            for j in range(n_blobs):
+                blob_j = blobs[j]
+                if blob_j is not None:
+                    # If intersection is above overlap, remove smaller blob.
+                    overlap = compute_overlap(blob_i, blob_j)
+                    if overlap > max_overlap:
+                        if blob_i.scale > blob_j.scale:
+                            blobs[i] = None
+                        elif blob_i.scale < blob_j.scale:
+                            blobs[j] = None
+                        # (If scales are equal, both blobs can stay.)

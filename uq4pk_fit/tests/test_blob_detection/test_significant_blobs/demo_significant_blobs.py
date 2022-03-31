@@ -39,7 +39,7 @@ def demo_compute_mapped_pairs():
                                max_overlap=overlap)
 
     # Test the detection of significant blobs.
-    mapped_pairs = _match_blobs(sigma_list=sigma_list, reference_blobs=map_blobs, log_stack=laplacian_blanket_stack,
+    mapped_pairs = _match_blobs(sigma_list=sigma_list, reference_blobs=map_blobs, blanket_stack=laplacian_blanket_stack,
                                 overlap=overlap, rthresh=rthresh)
     # Visualize
     fig = plt.figure(figsize=(6, 2.5))

@@ -87,3 +87,10 @@ class GaussianBlob:
         The value of the blob's scale-space Laplacian.
         """
         return self._log
+
+    @property
+    def scale(self) -> float:
+        """
+        The scale of a blob with deviations [sigma_1, sigma_2] is defined as 0.5 * ||sigma||^2.
+        """
+        return 0.5 * (self._sigma1 ** 2 + self._sigma2 ** 2)

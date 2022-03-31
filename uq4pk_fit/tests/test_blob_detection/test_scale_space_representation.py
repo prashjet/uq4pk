@@ -5,7 +5,7 @@ import numpy as np
 from uq4pk_fit.blob_detection.scale_space_representation import scale_space_representation
 
 
-SHOW = False    # Set True if you want to see plots.
+SHOW = True    # Set True if you want to see plots.
 NSCALES = 16
 SIGMA_MIN = 0.5
 SIGMA_MAX = 25

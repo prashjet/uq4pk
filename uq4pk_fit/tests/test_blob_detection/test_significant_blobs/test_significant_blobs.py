@@ -1,6 +1,6 @@
 import numpy as np
 
-from uq4pk_fit.visualization import plot_blobs
+from uq4pk_fit.visualization import plot_significant_blobs
 from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _find_blob, \
     best_blob_first
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
@@ -21,7 +21,7 @@ def test_find_blob():
     # Should match two features
     candidate = _find_blob(blob, blobs, overlap=0.5)
     blob_list = [(blob, candidate)]
-    if show: plot_blobs(image=test_img, blobs=blob_list)
+    if show: plot_significant_blobs(image=test_img, blobs=blob_list)
     assert np.isclose(candidate.vector, np.array([9, 10, 2, 2])).all()
 
 

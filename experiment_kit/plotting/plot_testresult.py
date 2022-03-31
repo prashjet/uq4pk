@@ -2,7 +2,7 @@
 import numpy as np
 from experiment_kit.test import TestResult
 
-from uq4pk_fit.visualization import plot_theta, plot_distribution_function, plot_blobs
+from uq4pk_fit.visualization import plot_theta, plot_distribution_function, plot_significant_blobs
 
 
 def plot_testresult(savedir: str, test_result: TestResult, extra_scale):
@@ -35,7 +35,7 @@ def plot_f(savedir: str, tr: TestResult, extra_scale=None):
         _create_plots_for_f(savedir, tr, scale, postfix)
     # finally, also make feature plot
     if tr.features is not None:
-        plot_blobs(image=f_map_image, blobs=tr.features, savefile=savedir + "/features.png", vmax=scale1)
+        plot_significant_blobs(image=f_map_image, blobs=tr.features, savefile=savedir + "/features.png", vmax=scale1)
 
 
 def _create_plots_for_f(savedir: str, tr: TestResult, vmax: float, postfix: str):
