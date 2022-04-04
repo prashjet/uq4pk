@@ -289,13 +289,13 @@ class FittedModel:
 
     def significant_blobs(self, sigmas: Sequence[float], lower_stack: np.ndarray, upper_stack: np.ndarray,
                           reference_image: np.ndarray = None,
-                          rthresh: float = 0.01, overlap: float = 0.5):
+                          rthresh: float = 0.01, overlap1: float = 0.1, overlap2: float = 0.5):
         # If no reference image is provided, take MAP as reference:
         if reference_image is None:
             reference_image = self._reshape_f(self._f_map)
-        blobs = blob_detection.detect_significant_blobs(reference=reference_image, sigma_list=sigmas,
-                                                        lower_stack=lower_stack, upper_stack=upper_stack,
-                                                        rthresh=rthresh, overlap=overlap)
+        blobs = blob_detection.detect_significant_blobs(sigma_list=sigmas, lower_stack=lower_stack,
+                                                        upper_stack=upper_stack, reference=reference_image,
+                                                        rthresh=rthresh, overlap1=overlap1, overlap2=overlap2)
         return blobs
 
     def _uq_dummy(self, options: dict):

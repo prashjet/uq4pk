@@ -38,7 +38,7 @@ class CIComputer:
         if options is None:
             options = {}
         self._use_ray = options.setdefault("use_ray", True)
-        self._num_cpus = options.setdefault("num_cpus", 8)
+        self._num_cpus = options.setdefault("num_cpus", 7)
         solver_name = options.setdefault("solver", DEFAULT_SOLVER)
         if solver_name == "slsqp":
             self._optimizer = SLSQP(ftol=FTOL)

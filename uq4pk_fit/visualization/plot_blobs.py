@@ -1,5 +1,4 @@
 
-from math import sqrt
 from matplotlib import pyplot as plt
 from matplotlib import patches
 import numpy as np
@@ -36,7 +35,6 @@ def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob
     for blob in blobs:
         b = blob[0]
         c = blob[1]
-        sig = blob[2]
         if c is None:
             y, x = b.position
             ax.add_patch(patches.Ellipse((x, y), width=b.width, height=b.height, color=insignificant_color,

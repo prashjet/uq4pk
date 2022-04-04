@@ -14,7 +14,7 @@ SigmaList = Sequence[Union[float, np.ndarray]]
 
 
 def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 0.5,
-                 rthresh: float = 0.01, athresh: float = None) -> List[GaussianBlob]:
+                 rthresh: float = 0.01) -> List[GaussianBlob]:
     """
     Detects blobs in an image using the difference-of-Gaussians method.
     See https://en.wikipedia.org/wiki/Difference_of_Gaussians.
@@ -33,9 +33,6 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
     """
     # Check input for consistency.
     assert image.ndim == 2
-    # If athresh is provided, rthresh is overwritten
-    if athresh is not None:
-        rthresh = None
 
     # COMPUTE LOG-STACK
     t_list = [0.5 * sigma ** 2 for sigma in sigma_list]
@@ -45,8 +42,7 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
     log_stack = scale_normalized_laplacian(ssr, t_list, mode="reflect")
 
     # Determine scale-space blobs as local scale-space minima
-    blobs = stack_to_blobs(scale_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh, athresh=athresh,
-                           max_overlap=max_overlap)
+    blobs = stack_to_blobs(scale_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh, max_overlap=max_overlap)
 
     return blobs
 
@@ -92,8 +88,8 @@ def remove_overlap(blobs: List[GaussianBlob], max_overlap: float):
     return cleaned_blobs
 
 
-def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, athresh: float,
-                   max_overlap: float = None) -> List[GaussianBlob]:
+def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, max_overlap: float = None)\
+        -> List[GaussianBlob]:
     """
     Given a scale-space stack, detects blobs as scale-space minima.
 
@@ -120,8 +116,7 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: floa
             blobs.append(blob)
 
         # Remove all features below threshold.
-        if rthresh is not None:
-            athresh = scale_stack.min() * rthresh
+        athresh = scale_stack.min() * rthresh
         blobs = threshold_local_minima(blobs, athresh)
 
         # Remove overlap
