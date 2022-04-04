@@ -15,11 +15,18 @@ class FilterFunctional(AffineEvaluationFunctional):
     x(z) = U z + v
     lb(z) = (lb - x_map)_I
     """
-    def __init__(self, filter: LinearFilter, discretization: Discretization, x_map: np.ndarray):
+    def __init__(self, filter: LinearFilter, discretization: Discretization, x_map: np.ndarray, weights: np.ndarray):
         assert filter.dim == discretization.dim == x_map.size
         self.dim = x_map.size
         self.zdim = discretization.dof
-        self._a = discretization.u.T @ filter.weights
+
+        if weights is None:
+            weight_vector = filter.weights
+        else:
+            assert weights.shape == filter.weights.shape
+            weight_vector = weights * filter.weights
+            assert weight_vector.shape == filter.weights.shape
+        self._a = discretization.u.T @ weight_vector
         self.w = self._a
         self._b = filter.weights @ discretization.v
         self._discretization = discretization

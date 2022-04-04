@@ -1,6 +1,7 @@
 
 import numpy as np
 import ray
+from typing import Union
 
 from ..linear_model import CredibleRegion, LinearModel
 from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap

@@ -22,7 +22,7 @@ class FCI:
 
 
 def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction,
-        discretization: AdaptiveDiscretization, options: dict = None) \
+        discretization: AdaptiveDiscretization, weights: np.ndarray = None, options: dict = None) \
         -> FCI:
     """
     Computes filtered credible intervals using the Pereyra approximation.
@@ -32,6 +32,9 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     :param x_map: The MAP estimate corresponding to ``model``.
     :param ffunction: A filter function that determines the filtering.
     :param discretization: The underlying discretization
+    :param weights: Of the same shape as x_map. If provided, the uncertainty quantification is not performed with
+        respect to the parameter x, but instead with respect to the rescaled parameter u = weights * x (entry-wise
+        multiplication).
     :param options: A dictionary with additional options.
             - "use_ray": If True, then the computation is parallelized with the Ray framework. Default is True.
             - "num_cpus": Number of CPUs used by Ray.
@@ -39,32 +42,28 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
             - "detailed": If True, then the solver also outputs all local optimizers. Default is False.
     :returns: Object of type :py:class:`FCI`.
     """
-    _check_input(alpha, model, x_map, ffunction, discretization)
+    # Check the input.
+    if not 0 < alpha < 1:
+        raise ValueError("'alpha' must satisfy 0 < alpha < 1.")
+    assert x_map.shape == (model.dim,)
+    assert ffunction.dim == model.dim
+    assert discretization.dim == model.dim
+    if weights is not None:
+        assert weights.shape == x_map.shape
+
     if options is None: options = {}
     # Generate an affine evaluation map from the filter function
-    affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map)
+    affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map, weights)
     # If subsample is not None, kick out all pixels that are not in sample.
     sample = options.setdefault("sample", None)
     if sample is not None:
         affine_evaluation_map.select(sample)
     # Compute the credible intervals (in phi-space)
     credible_interval = compute_credible_intervals(alpha=alpha, model=model, x_map=x_map, aemap=affine_evaluation_map,
-                                                    options=options)
+                                                   options=options)
     # Create FCI-object
     phi_lower = credible_interval.phi_lower
     phi_upper = credible_interval.phi_upper
     fci_obj = FCI(phi_lower_enlarged=phi_lower, phi_upper_enlarged=phi_upper, time_avg=credible_interval.time_avg)
 
     return fci_obj
-
-
-def _check_input(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction,
-                 discretization: AdaptiveDiscretization):
-    """
-    Checks the input of "fci" for consistency.
-    """
-    if not 0 < alpha < 1:
-        raise ValueError("'alpha' must satisfy 0 < alpha < 1.")
-    assert x_map.shape == (model.dim,)
-    assert ffunction.dim == model.dim
-    assert discretization.dim == model.dim

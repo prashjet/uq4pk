@@ -9,7 +9,7 @@ from .k_enclosing_box import alpha_enclosing_box
 RTOL = 0.1  # Relative tolerance for credibility parameter.
 
 
-def fci_sampling(alpha: float, samples, ffunction: FilterFunction) -> FCI:
+def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.ndarray = None) -> FCI:
     """
     Computes a filtered credible interval from samples. That is, it computes vectors lb and ub such that 1-alpha of
     the samples satisfy lb <= ffunction(sample) <= ub. Note that this is different from requiring the samples to
@@ -21,12 +21,17 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction) -> FCI:
         each row corresponds to a different sample.
     :param ffunction: The filter function that determines how the credible intervals are computed. An object of type
         uq4pk_fit.uq_mode.filter.FilterFunction.
-    :return: An FCI object.
+    :param weights: Of shape (d, ). If provided, the uncertainty quantification is performed with respect to the
+        rescaled parameter u = weights * x (pointwise multiplication).
+    :return: An :py:class:'FCI' object.
     """
     # Check the input for consistency.
     assert 0 < alpha < 1
     assert samples.ndim == 2
-    assert samples.shape[1] == ffunction.dim
+    d = samples.shape[1]
+    assert d == ffunction.dim
+    if weights is not None:
+        assert weights.shape == (d, )
 
     # EVALUATE FILTER FUNCTION ON EACH SAMPLE
     n = samples.shape[0]
