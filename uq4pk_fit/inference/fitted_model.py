@@ -144,9 +144,16 @@ class FittedModel:
         # Create appropriate filter
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         discretization = self._get_discretization(options)
+        # Extract the optional weights from the options-dict.
+        image_weights = options.setdefault("weights", None)
+        if image_weights is not None:
+            assert image_weights.shape == (self._m_f, self._n_f)
+            weights = image_weights.flatten()
+        else:
+            weights = None
         # compute filtered credible intervals
         fci_obj = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model,
-                              ffunction=filter_function, discretization=discretization,
+                              ffunction=filter_function, discretization=discretization, weights=weights,
                               options=options)
         ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
@@ -209,8 +216,15 @@ class FittedModel:
         """
         # Initialize filter function.
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
+        # Get weights.
+        image_weights = options.setdefault("weights", None)
+        if image_weights is not None:
+            assert image_weights.shape == (self._m_f, self._n_f)
+            weights = image_weights.flatten()
+        else:
+            weights = None
         # Estimate FCI using the samples.
-        fci_obj = uq_mode.fci_sampling(alpha=alpha, samples=samples, ffunction=filter_function)
+        fci_obj = uq_mode.fci_sampling(alpha=alpha, samples=samples, ffunction=filter_function, weights=weights)
         ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
         # Reshape
@@ -236,6 +250,8 @@ class FittedModel:
             - "w2": Same as w1, but for the horizontal radius.
             - "d1": Determines the discretization resolution in the vertical direction.
             - "d2": Determines the discretization resolution in the horizontal direction.
+            - "weights": Of shape (m, n). If provided, the uncertainty quantification is performed for the rescaled
+                image weights * f (pixel-wise multiplication).
         :return: lower_stack, upper_stack
             Each stack is a sxmxn-array, where each of the s slices corresponds to a lower/upper bound of the
             corresponding FCI.
