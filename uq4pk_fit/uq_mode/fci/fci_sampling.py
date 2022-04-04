@@ -37,8 +37,13 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
     n = samples.shape[0]
     phi_list = []
     for j in range(n):
+        # If weights is not None, rescale sample:
+        if weights is not None:
+            rescaled_sample = weights * samples[j]
+        else:
+            rescaled_sample = samples[j]
         # Evaluate the filter function on the j-th sample and append to phi_list.
-        phi_j = ffunction.evaluate(samples[j])
+        phi_j = ffunction.evaluate(rescaled_sample)
         phi_list.append(phi_j)
     filtered_samples = np.row_stack(phi_list)
 
