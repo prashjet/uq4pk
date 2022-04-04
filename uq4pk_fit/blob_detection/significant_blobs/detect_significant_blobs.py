@@ -58,7 +58,7 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, scales=scale_list, mode="reflect")
     # Compute blanket-blobs.
     blanket_blobs = stack_to_blobs(scale_stack=blanket_laplacian_stack, sigma_list=sigma_list, rthresh=rthresh,
-                                   max_overlap=overlap1)
+                                   max_overlap=overlap1, exclude_borders=True)
 
     # Compute mapped pairs.
     mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=blanket_blobs, overlap=overlap2)

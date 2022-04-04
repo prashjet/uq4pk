@@ -14,7 +14,7 @@ SigmaList = Sequence[Union[float, np.ndarray]]
 
 
 def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 0.5,
-                 rthresh: float = 0.01) -> List[GaussianBlob]:
+                 rthresh: float = 0.01, exclude_borders: bool = False) -> List[GaussianBlob]:
     """
     Detects blobs in an image using the difference-of-Gaussians method.
     See https://en.wikipedia.org/wiki/Difference_of_Gaussians.
@@ -26,9 +26,9 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
     :param rthresh: The relative threshold for detection of blobs. A blob is only detected if it corresponds to a
         scale-space minimum of the scale-normalized Laplacian that is below ``rthresh * log_stack.min()``, where
         ``log_stack`` is the stack of Laplacian-of-Gaussians.
-    :param athresh: Absolute threshold. Each blob has both to satisfy absolute threshold and relative threshold.
     :param max_overlap: If two blobs have a relative overlap larger than this number, they are considered as one.
-    :param mode: Determines how the image boundaries are handled.
+    :param exclude_borders: If True, the scale-space minima at the smallest and largest scale are ignored. This
+        can sometimes improve the results of the blob detection.
     :return: Returns a list of GaussianBlob-objects, each representing one detected blob.
     """
     # Check input for consistency.
@@ -42,7 +42,8 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
     log_stack = scale_normalized_laplacian(ssr, t_list, mode="reflect")
 
     # Determine scale-space blobs as local scale-space minima
-    blobs = stack_to_blobs(scale_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh, max_overlap=max_overlap)
+    blobs = stack_to_blobs(scale_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh, max_overlap=max_overlap,
+                           exclude_borders=exclude_borders)
 
     return blobs
 
@@ -88,7 +89,8 @@ def remove_overlap(blobs: List[GaussianBlob], max_overlap: float):
     return cleaned_blobs
 
 
-def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, max_overlap: float = None)\
+def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: float, max_overlap: Union[float, None],
+                   exclude_borders: bool)\
         -> List[GaussianBlob]:
     """
     Given a scale-space stack, detects blobs as scale-space minima.
@@ -103,6 +105,11 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList, rthresh: floa
     # Determine local scale-space minima
     local_minima = morphology.local_minima(image=scale_stack, indices=True, allow_borders=True)
     local_minima = np.array(local_minima).T
+
+    n_scales = scale_stack.shape[0]
+    # If exclude_borders is True, we remove the local minima at the largest and smallest scale.
+    if exclude_borders:
+        local_minima = np.array([minimizer for minimizer in local_minima if minimizer[0] not in [0, n_scales - 1]])
 
     if local_minima.size == 0:
         blobs = []
