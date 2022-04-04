@@ -5,7 +5,7 @@ from typing import List, Tuple, Union, Sequence
 from uq4pk_fit.blob_detection.detect_blobs import compute_overlap, detect_blobs
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.blankets.second_order_blanket import second_order_blanket
-from uq4pk_fit.visualization import plot_blobs
+from ..scale_normalized_laplacian import scale_normalized_laplacian
 
 
 # Make type for sigma list
@@ -43,13 +43,19 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     assert reference.shape == (m, n)
     assert len(sigma_list) == s
 
+    # Translate sigma_list to scale_list
+    scale_list = [0.5 * np.sum(np.square(sigma)) for sigma in sigma_list]
+
     # Identify features in reference image.
     reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap, rthresh=rthresh)
     # Compute blanket stack.
     blanket_stack = _compute_blanket_stack(lower_stack=lower_stack, upper_stack=upper_stack)
+    # Apply scale-normalized Laplacian to blanket stack.
+    blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, scales=scale_list, mode="reflect")
     # Compute mapped pairs.
     significance_triplets = _match_blobs(sigma_list=sigma_list, reference_blobs=reference_blobs,
-                                         blanket_stack=blanket_stack, overlap=overlap, rthresh=rthresh)
+                                         blanket_laplacian_stack=blanket_laplacian_stack, overlap=overlap,
+                                         rthresh=rthresh)
 
     # Return the mapped pairs.
     return significance_triplets
@@ -106,8 +112,8 @@ def _compute_blanket(lower: np.ndarray, upper: np.ndarray)\
     return blanket
 
 
-def _match_blobs(sigma_list: SigmaList, reference_blobs: List[GaussianBlob], blanket_stack: np.ndarray, overlap: float,
-                 rthresh: float) -> List[Tuple]:
+def _match_blobs(sigma_list: SigmaList, reference_blobs: List[GaussianBlob], blanket_laplacian_stack: np.ndarray,
+                 overlap: float, rthresh: float) -> List[Tuple]:
     """
     For a given blanket-feature array, determines whether any features "match" the features in ``map_features``
     at the given resolution.
