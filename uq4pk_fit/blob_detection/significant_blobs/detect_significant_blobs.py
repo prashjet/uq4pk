@@ -88,7 +88,7 @@ def _compute_blanket_stack(lower_stack: np.ndarray, upper_stack: np.ndarray) \
     for lower, upper in zip(lower_stack, upper_stack):
         # Compute blanket at scale t.
         blanket = _compute_blanket(lower, upper)
-        #plot_distribution_function(image=blanket, show=True)
+        plot_distribution_function(image=blanket, show=True)
         blanket_list.append(blanket)
     # Return blanket stack as array.
     blanket_stack = np.array(blanket_list)

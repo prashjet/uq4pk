@@ -9,11 +9,14 @@ from ..filter import LinearFilter
 class FilterFunctional(AffineEvaluationFunctional):
     """
     Special case of :py:class:`AffineEvaluationFunctional` based on a linear filter.
-    Given the filter with indices I and weight vector w, the corresponding affine evaluation functional is
-    w = w
-    phi(z) = a @ z + b
-    x(z) = U z + v
-    lb(z) = (lb - x_map)_I
+    Given the filter with weight vector k, additional weights w,  and a discretization x(z) = U z + v,
+    creates an affine evaluation functional for solving the optimization problem
+        min kappa.T x   s.t. x >= lb,
+    where kappa = (k * w).
+    But we have kappa.T x = kappa.T (U z + v) = kappa.T U z + kappa.T v = a.T z + b,
+    with a = U.T kappa, b = kappa.T v, and furthermore x >= lb <=> z >= lb_z, where lb_z is given by the discretization.
+    Hence, we can equivalently solve the reduced optimization problem
+        min a.T z + b   s.t. z >= lb_z.
     """
     def __init__(self, filter: LinearFilter, discretization: Discretization, x_map: np.ndarray, weights: np.ndarray):
         assert filter.dim == discretization.dim == x_map.size
@@ -21,14 +24,14 @@ class FilterFunctional(AffineEvaluationFunctional):
         self.zdim = discretization.dof
 
         if weights is None:
-            weight_vector = filter.weights
+            kappa = filter.weights
         else:
             assert weights.shape == filter.weights.shape
-            weight_vector = weights * filter.weights
-            assert weight_vector.shape == filter.weights.shape
-        self._a = discretization.u.T @ weight_vector
+            kappa = weights * filter.weights
+            assert kappa.shape == filter.weights.shape
+        self._a = discretization.u.T @ kappa
         self.w = self._a
-        self._b = filter.weights @ discretization.v
+        self._b = kappa @ discretization.v
         self._discretization = discretization
         self.z0 = discretization.translate_lower_bound(x_map)
 
