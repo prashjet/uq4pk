@@ -58,7 +58,7 @@ class GaussianBlob:
         The horizontal width of the blob. Since the horizontal radius r_y satisfies :math:`r_y = \\sqrt{2}\\sigma_y',
         the width, which is two-times the radius, is given by :math:'w = 2 \\sqrt{2} \\sigma_y`.
         """
-        return 2 * sqrt(2) * self._sigma2
+        return 4 * sqrt(2) * self._sigma2
 
     @property
     def angle(self) -> float:
@@ -72,7 +72,7 @@ class GaussianBlob:
         """
         The vertical height of the blob. It is given by 2 * sqrt(2) * sigma_x.
         """
-        return 2 * sqrt(2) * self._sigma1
+        return 4 * sqrt(2) * self._sigma1
 
     @property
     def vector(self) -> np.ndarray:

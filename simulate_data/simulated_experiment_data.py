@@ -156,7 +156,7 @@ def load_experiment_data(savedir: str) -> SimulatedExperimentData:
     y_sd = quickload("y_sd.npy")
     f_true = quickload("f_true.npy")
     f_ref = quickload("f_ref.npy")
-    theta_true = quickload("theta_true.npy")
+    theta_true = quickload("theta_ref.npy")
     theta_sd = quickload("theta_sd.npy")
     theta_guess = quickload("theta_guess.npy")
     mask = quickload("mask.npy")
