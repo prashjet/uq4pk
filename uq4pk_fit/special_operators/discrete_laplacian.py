@@ -3,7 +3,6 @@ Contains class 'DiscreteLaplacian'.
 """
 
 import numpy as np
-import cv2
 import scipy.ndimage as spim
 
 from typing import Sequence
