@@ -148,8 +148,8 @@ class modelGrid:
             axis = list(range(self.npars))
         n_ax = len(axis)
 
-        # dim = order of regularisation
-        # i.e. we minimise the sum of squared dim'th derivs
+        # n = order of regularisation
+        # i.e. we minimise the sum of squared n'th derivs
         if type(n) is int:
             n = n * np.ones(n_ax, dtype=int)
         else:
@@ -161,7 +161,7 @@ class modelGrid:
             ax_weights = np.ones(n_ax)
 
         # make C distance array
-        # C[dim, i, j] = signed distance in dim'th parameter between pixel i and j
+        # C[n, i, j] = signed distance in n'th parameter between pixel i and j
         shape = (self.npars, self.p, self.p)
         C = np.full(shape, self.p+1, dtype=int)
         for i in range(self.npars):
@@ -170,7 +170,7 @@ class modelGrid:
             C[i, :, :] = Ci
 
         # make D distance arary
-        # D[dim, i, j] = { C[dim, i, j] if other {1,...N}-{dim} parameters are equal
+        # D[n, i, j] = { C[n, i, j] if other {1,...N}-{n} parameters are equal
         #              { self.p+1 otherwise (this won't interfere with T calc.)
         shape = (len(axis), self.p, self.p)
         D = np.full(shape, self.p+1, dtype=int)

@@ -197,7 +197,8 @@ class Plotter:
                 clim=None,
                 neg_fill_value='min',
                 label_axes=True,
-                colorbar=False):
+                colorbar=False,
+                lognorm=True):
         if self.ssps.npars!=2:
             raise ValueError('Model not 2D')
         if ax is None:
@@ -210,7 +211,7 @@ class Plotter:
         elif view=='percentile':
             if percentile is None:
                 raise ValueError('Set percentile value 0 < ... < 100')
-            img = self.beta_smp.get_percentile()
+            img = self.beta_smp.get_percentile(percentile)
         elif view=='map':
             img = self.beta_smp.get_MAP()
         elif view=='mad':
@@ -233,9 +234,15 @@ class Plotter:
 
         # plot
         img = self.ssps.reshape_beta(img)
-        img = ax.imshow(img,
-                        **self.kw_post2d_plot,
-                        norm=colors.LogNorm(vmin=vmin, vmax=vmax))
+        if lognorm:
+            img = ax.imshow(img,
+                            **self.kw_post2d_plot,
+                            norm=colors.LogNorm(vmin=vmin, vmax=vmax))
+        else:
+            img = ax.imshow(img,
+                            **self.kw_post2d_plot,
+                            vmin=vmin,
+                            vmax=vmax)
 
         if label_axes:
             ax.set_xlabel(self.ssps.par_pltsym[1])
