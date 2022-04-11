@@ -4,7 +4,7 @@ import ray
 from typing import Union
 
 from ..linear_model import CredibleRegion, LinearModel
-from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
+from ..filter import FilterFunction
 from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
 from .credible_intervals import CredibleInterval
 from .progress_bar import ProgressBar
@@ -15,7 +15,8 @@ FTOL = 1e-5
 DEFAULT_SOLVER = "ecos"
 
 
-class CIComputer:
+
+class TruncatedComputer:
     """
     Manages the computation of credible intervals from evaluation maps.
 
@@ -24,12 +25,12 @@ class CIComputer:
     min_z / max_z w^\top z s.t. AU z = b - A v, ||C z - d||_2^2 <= e.
     and returns the credible interval [phi(z_min), phi(z_max)].
     """
-    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, aemap: AffineEvaluationMap, options: dict):
+    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction, options: dict):
         # precompute:
         self._alpha = alpha
         self._x_map = x_map.copy()
         self._dim = x_map.size
-        self._aemap = aemap
+        self._ffunction = ffunction
         cost_map = model.cost(x_map)
         self._ctol = RTOL * cost_map
 
@@ -37,19 +38,18 @@ class CIComputer:
         # Read options.
         if options is None:
             options = {}
-        self._use_ray = options.setdefault("use_ray", True)    # Temp.
+        self._use_ray = options.setdefault("use_ray", True)
         self._num_cpus = options.setdefault("num_cpus", 7)
         solver_name = options.setdefault("solver", DEFAULT_SOLVER)
         if solver_name == "slsqp":
             self._optimizer = SLSQP(ftol=FTOL)
         elif solver_name == "ecos":
-            print("Using ECOS.")
             self._optimizer = ECOS()
         else:
             raise KeyError(f"Unknown solver '{solver_name}'.")
         if solver_name != DEFAULT_SOLVER:
             print(f"Using {solver_name} solver.")
-        self._cino = len(self._aemap.aef_list)  # number of credible intervals
+        self._cino = self._x_map.size
         self._optno = 2 * self._cino            # number of optimization problems to solve
         # Setting up progress bar
         if self._use_ray:

@@ -17,6 +17,8 @@ from .parameter_map import ParameterMap
 from .uq_result import UQResult
 from .hybrid_discretization import HybridDiscretization
 
+from uq4pk_fit.uq_mode.fci.sampling_computer import fcis_via_sampling
+
 
 class FittedModel:
     """
@@ -90,9 +92,7 @@ class FittedModel:
             - "d1": Determines the discretization resolution in the vertical direction.
             - "d2": Determines the discretization resolution in the horizontal direction.
             - "detailed": If yes, the minimizers and maximizers are also returned.
-            - "sigma1": Only relevant if "kernel"="gauss". Determines the standard deviation of the Gaussian kernel
-                in vertical direction.
-            - "sigma2": Same as sigma1, but for the horizontal direction.
+            - "sigma": Determines the standard deviation of the Gaussian kernel.
         :param Optional[dict] options:
             A dict specifying further options. The possible options depend on the method used (...).
         :returns: UQResult
@@ -144,17 +144,9 @@ class FittedModel:
         # Create appropriate filter
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
         discretization = self._get_discretization(options)
-        # Extract the optional weights from the options-dict.
-        image_weights = options.setdefault("weights", None)
-        if image_weights is not None:
-            assert image_weights.shape == (self._m_f, self._n_f)
-            weights = image_weights.flatten()
-        else:
-            weights = None
         # compute filtered credible intervals
         fci_obj = uq_mode.fci(alpha=0.05, x_map=self._x_map_vec, model=self._linearized_model,
-                              ffunction=filter_function, discretization=discretization, weights=weights,
-                              options=options)
+                              ffunction=filter_function, discretization=discretization, options=options)
         ci_x = fci_obj.interval
         ci_f, ci_theta = self._parameter_map.ci_f_theta(ci_x)
         uq_scale = options["sigma"]
@@ -274,6 +266,11 @@ class FittedModel:
         upper_stack = np.array(upper_list)
         return lower_stack, upper_stack
 
+    def compute_fci_stack_sampling(self, sigma_list: Sequence[Union[float, np.ndarray]], n_samples: int):
+        lower_stack, upper_stack = fcis_via_sampling(alpha=0.05, model=self._linearized_model, im_map=self.f_map,
+                                                     sigmas=sigma_list, n_samples = n_samples)
+        return lower_stack, upper_stack
+
     def minimize_blobiness(self, alpha: float, sigmas: Sequence):
         """
         Computes the minimally blobby image in the credible region.
@@ -286,16 +283,26 @@ class FittedModel:
                                                   x_map=self._f_map.flatten(), sigma_list=sigmas)
         return f_min
 
+    def interesting_blobs(self, sigmas: Sequence[float], regularized_stack: np.ndarray,
+                          reference_image: np.ndarray = None, rthresh: float = 0.01, overlap1: float = 0.1,
+                          overlap2: float = 0.5):
+        if reference_image is None:
+            reference_image = self._reshape_f(self._f_map)
+        blobs = blob_detection.detect_interesting_blobs(sigma_list=sigmas, regularized_stack=regularized_stack,
+                                                        reference=reference_image, rthresh=rthresh,
+                                                        overlap1=overlap1, overlap2=overlap2)
+        return blobs
 
     def significant_blobs(self, sigmas: Sequence[float], lower_stack: np.ndarray, upper_stack: np.ndarray,
-                          reference_image: np.ndarray = None,
-                          rthresh: float = 0.01, overlap1: float = 0.1, overlap2: float = 0.5):
+                          reference_image: np.ndarray = None, rthresh1: float = 0.01, rthresh2: float = 0.1,
+                          overlap1: float = 0.1, overlap2: float = 0.5):
         # If no reference image is provided, take MAP as reference:
         if reference_image is None:
             reference_image = self._reshape_f(self._f_map)
         blobs = blob_detection.detect_significant_blobs(sigma_list=sigmas, lower_stack=lower_stack,
                                                         upper_stack=upper_stack, reference=reference_image,
-                                                        rthresh=rthresh, overlap1=overlap1, overlap2=overlap2)
+                                                        rthresh1=rthresh1, rthresh2=rthresh2, overlap1=overlap1,
+                                                        overlap2=overlap2)
         return blobs
 
     def _uq_dummy(self, options: dict):
@@ -378,7 +385,8 @@ class FittedModel:
         fci_list = []
         t_list = []
         for w1, w2 in zip(w1_list, w2_list):
-            options = {"sigma": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "discretization": discretization_name}
+            options = {"sigma": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "discretization": discretization_name,
+                       "solver": "ecos"}
             if n_sample is not None:
                 options["sample"] = pixel_sample
             # Create appropriate filter

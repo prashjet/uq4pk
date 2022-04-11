@@ -5,6 +5,7 @@ import numpy as np
 
 from uq4pk_src.distribution_function import RandomGMM_DistributionFunction
 from uq4pk_fit.inference import *
+from uq4pk_src import model_grids
 
 from .simulated_experiment_data import SimulatedExperimentData
 from .sample_theta import sample_theta
@@ -13,33 +14,20 @@ from .sample_theta import sample_theta
 HERMITE_ORDER = 4
 
 
-def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, theta_true=None, downsampling: int=1)\
-        -> SimulatedExperimentData:
+def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, theta_true=None, ssps=model_grids.MilesSSP(), dv=10,
+             do_log_resample=True, mask=None) -> SimulatedExperimentData:
     """
     Simulates a dataset. Generates a measurement from the provided distribution function, while
     theta_v is fixed to [30, 100, 1, 0, 0, -0.05, 0.1]. Then adds artificial noise to generate the simulated
     noisy measurement.
-    :param snr: float > 0
-        The desired signal-to-noise ratio. The signal-to-noise ratio is defined as
-        snr = ||y||/||y_noi - y||,
-        where y is the noise-free and y_noi is the noisy measurement.
-        The noise is scaled in such a way that this signal-to-noise ratio
-        holds exactly.
-    :param f_im: ndarray, optional
-        If provided, the measurements are simulated with this distribution function as ground truth.
-        Otherwise, a distribution function is simulated as a random Gaussian mixture.
+
     :return: ExperimentData
         All the relevant parameters combined in an object of type "ExperimentData".
     """
-    if downsampling != 1:
-        op = UpsamplingForwardOperator(scale=downsampling)
-    else:
-        op = ForwardOperator(hermite_order=HERMITE_ORDER)
+    op = ForwardOperator(hermite_order=HERMITE_ORDER, ssps=ssps, dv=dv, do_log_resample=do_log_resample, mask=mask)
     if f_im is None:
         # if no f is provided, we simulate_data one.
         f_im = RandomGMM_DistributionFunction(modgrid=op.modgrid).F
-    # downsample
-    f_im = op.downsample(f_im)
     # NORMALIZE
     f_im = f_im / np.sum(f_im)
     f_true = f_im.flatten()
@@ -57,8 +45,12 @@ def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, theta_true=None
     y_sd = sigma * np.ones(m)
     noi = y_sd * np.random.randn(y_exact.size)
     y = y_exact + noi
+    y_sd = y_sd
+    y = y
+    print(f"Data scale: {np.linalg.norm(y)}")
     print(f"Actual snr = {np.linalg.norm(y_exact) / np.linalg.norm(noi)}")
     print(f"||y_exact|| / ||y_sd|| = {np.linalg.norm(y_exact) / np.linalg.norm(y_sd)}")
-    experiment_data = SimulatedExperimentData(name=name, snr=snr, y=y, y_sd=y_sd, f_true=f_true, f_ref=f_true, theta_true=theta_v,
-                                     theta_guess=theta_guess, theta_sd=theta_sd, hermite_order=HERMITE_ORDER)
+    experiment_data = SimulatedExperimentData(name=name, snr=snr, y=y, y_sd=y_sd, f_true=f_true,
+                                              f_ref=f_true, theta_true=theta_v, theta_guess=theta_guess,
+                                              theta_sd=theta_sd, hermite_order=HERMITE_ORDER)
     return experiment_data

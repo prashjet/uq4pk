@@ -30,11 +30,13 @@ def second_order_blanket(lb: np.ndarray, ub: np.ndarray, mode: Literal["fast", "
     :return: The solution, as d-dimensional array of the same shape as 'lb' and 'ub'.
     """
     assert lb.shape == ub.shape
-
-    # Initialize the discrete Laplacian.
-    delta = DiscreteLaplacian(shape=lb.shape, mode="reflect").mat
-
-    # Compute second-order blanket with the method of choice.
-    blanket = minimize_surface(lb=lb, ub=ub, g=delta, mode=mode)
+    # If ub > lb, then we can safely return the zero blanket.
+    if ub.min() > lb.max():
+        blanket = np.ones(lb.shape) * lb.max()
+    else:
+        # Initialize the discrete Laplacian.
+        delta = DiscreteLaplacian(shape=lb.shape, mode="reflect").mat
+        # Compute second-order blanket with the method of choice.
+        blanket = minimize_surface(lb=lb, ub=ub, g=delta, mode=mode)
 
     return blanket

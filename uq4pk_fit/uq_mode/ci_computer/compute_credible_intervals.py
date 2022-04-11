@@ -2,6 +2,7 @@
 import numpy as np
 
 from ..evaluation import AffineEvaluationMap
+from ..filter import FilterFunction
 from ..linear_model import LinearModel
 from .ci_computer import CIComputer
 from .credible_intervals import CredibleInterval

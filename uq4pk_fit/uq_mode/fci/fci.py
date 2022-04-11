@@ -3,7 +3,6 @@ Contains function "lci".
 """
 
 import numpy as np
-from typing import Sequence
 
 from ..ci_computer import compute_credible_intervals
 from ..filter.filter_function import FilterFunction
@@ -22,7 +21,7 @@ class FCI:
 
 
 def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFunction,
-        discretization: AdaptiveDiscretization, weights: np.ndarray = None, options: dict = None) \
+        discretization: AdaptiveDiscretization, options: dict = None) \
         -> FCI:
     """
     Computes filtered credible intervals using the Pereyra approximation.
@@ -48,12 +47,12 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     assert x_map.shape == (model.dim,)
     assert ffunction.dim == model.dim
     assert discretization.dim == model.dim
-    if weights is not None:
-        assert weights.shape == x_map.shape
 
     if options is None: options = {}
+    # Get the optional weights
+    weights = options.setdefault("weights", None)
     # Generate an affine evaluation map from the filter function
-    affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map, weights)
+    affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map, weights=weights)
     # If subsample is not None, kick out all pixels that are not in sample.
     sample = options.setdefault("sample", None)
     if sample is not None:

@@ -88,12 +88,12 @@ class StatModel:
         """
         self._parameter_map.fix_theta(indices, values)
 
-    def normalize(self):
+    def normalize(self, mass: float):
         """
         Turns normalization on.
         """
         a = np.ones((1, self.dim_f))
-        b = np.ones((1,))
+        b = mass * np.ones((1,))
         self._set_equality_constraint_for_f(a, b)
 
     def fit(self):

@@ -1,4 +1,4 @@
-from .significant_blobs import detect_significant_blobs, detect_significant_blobs_from_samples
+from .significant_blobs import detect_significant_blobs, detect_significant_blobs_from_samples, detect_interesting_blobs
 from .detect_blobs import detect_blobs
 from .gaussian_blob import GaussianBlob
 from .minimize_blobiness import minimize_blobiness
