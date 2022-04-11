@@ -36,21 +36,21 @@ def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, theta_true=None
     else:
         theta_v = theta_true
     theta_guess, theta_sd = sample_theta(q=theta_noise, theta_v=theta_true)
-    y_exact = op.fwd(f_true, theta_v)
+    y_bar = op.fwd(f_true, theta_v)
     # the signal-to-noise ratio is defined as the ratio of np.mean(y) / np.mean(abs(xi))
     # next, perturb the measurement by Gaussian noise
-    m = y_exact.size
+    m = y_bar.size
     # noise is scaled to achieve exactly the given signal-to-noise ratio
-    sigma = np.linalg.norm(y_exact) / (snr * np.sqrt(m))
+    sigma = np.linalg.norm(y_bar) / (snr * np.sqrt(m))
     y_sd = sigma * np.ones(m)
-    noi = y_sd * np.random.randn(y_exact.size)
-    y = y_exact + noi
+    noi = y_sd * np.random.randn(y_bar.size)
+    y = y_bar + noi
     y_sd = y_sd
     y = y
     print(f"Data scale: {np.linalg.norm(y)}")
-    print(f"Actual snr = {np.linalg.norm(y_exact) / np.linalg.norm(noi)}")
-    print(f"||y_exact|| / ||y_sd|| = {np.linalg.norm(y_exact) / np.linalg.norm(y_sd)}")
-    experiment_data = SimulatedExperimentData(name=name, snr=snr, y=y, y_sd=y_sd, f_true=f_true,
+    print(f"Actual snr = {np.linalg.norm(y_bar) / np.linalg.norm(noi)}")
+    print(f"||y_exact|| / ||y_sd|| = {np.linalg.norm(y_bar) / np.linalg.norm(y_sd)}")
+    experiment_data = SimulatedExperimentData(name=name, snr=snr, y=y, y_sd=y_sd, y_bar=y_bar, f_true=f_true,
                                               f_ref=f_true, theta_true=theta_v, theta_guess=theta_guess,
                                               theta_sd=theta_sd, hermite_order=HERMITE_ORDER)
     return experiment_data
