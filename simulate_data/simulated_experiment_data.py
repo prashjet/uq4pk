@@ -28,15 +28,16 @@ class SimulatedExperimentData(ExperimentData):
 
     _possible_grid_types = ["MILES", "EMILES"]
 
-    def __init__(self, name: str, snr: float, y: np.ndarray, y_sd: np.ndarray, f_true: np.ndarray, f_ref: np.ndarray,
-                 theta_true: np.ndarray, theta_guess: np.ndarray, theta_sd: np.ndarray, hermite_order: int,
-                 mask: np.ndarray = None, grid_type: str = "MILES"):
+    def __init__(self, name: str, snr: float, y: np.ndarray, y_sd: np.ndarray, y_bar: np.ndarray, f_true: np.ndarray,
+                 f_ref: np.ndarray, theta_true: np.ndarray, theta_guess: np.ndarray, theta_sd: np.ndarray,
+                 hermite_order: int, mask: np.ndarray = None, grid_type: str = "MILES"):
         # CHECK INPUT FOR CONSISTENCY
         assert isinstance(name, str)
         if snr <= 0:
             raise ValueError("Non-positive SNR makes no sense!")
         assert y.ndim == 1
         assert y.shape == y_sd.shape
+        assert y_bar.shape == y.shape
         assert theta_true.size == theta_guess.size == theta_sd.size
         assert theta_true.size == hermite_order + 3
         # check that no of the provided parameters contain NaNs or infs.
@@ -64,6 +65,7 @@ class SimulatedExperimentData(ExperimentData):
         self.name = name
         self.snr = snr
         self.y = y
+        self.y_bar = y_bar
         self.f_true = f_true
         self.f_ref = f_ref
         self.theta_ref = theta_true
@@ -128,6 +130,7 @@ def save_experiment_data(data: SimulatedExperimentData, savename: str):
     quicksave(np.array(data.snr), "snr.npy")
     quicksave(np.array(data.hermite_order), "hermite_order.npy")
     quicksave(data.y, "y.npy")
+    quicksave(data.y_bar, "y_bar.npy")
     quicksave(data.y_sd, "y_sd.npy")
     quicksave(data.f_true, "f_true.npy")
     quicksave(data.f_ref, "f_ref.npy")
@@ -153,6 +156,7 @@ def load_experiment_data(savedir: str) -> SimulatedExperimentData:
     snr = quickload("snr.npy")
     hermite_order = quickload("hermite_order.npy")
     y = quickload("y.npy")
+    y_bar = quickload("y_bar.npy")
     y_sd = quickload("y_sd.npy")
     f_true = quickload("f_true.npy")
     f_ref = quickload("f_ref.npy")
@@ -163,7 +167,7 @@ def load_experiment_data(savedir: str) -> SimulatedExperimentData:
 
     # From the loaded components, create the corresponding ExperimentData object.
     data = SimulatedExperimentData(name=info_array[0], snr=snr, hermite_order=hermite_order, grid_type=info_array[1],
-                                   y=y, y_sd=y_sd, f_true=f_true, f_ref=f_ref, theta_true=theta_true, theta_sd=theta_sd,
-                                   theta_guess=theta_guess, mask=mask)
+                                   y=y, y_sd=y_sd, y_bar=y_bar, f_true=f_true, f_ref=f_ref, theta_true=theta_true,
+                                   theta_sd=theta_sd, theta_guess=theta_guess, mask=mask)
 
     return data
