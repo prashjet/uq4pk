@@ -1,17 +1,16 @@
 
 import numpy as np
 import ray
-from typing import Union
 
 from ..linear_model import CredibleRegion, LinearModel
 from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
-from ..optimization import ECOS, SLSQP, SOCP, socp_solve, socp_solve_remote
+from ..optimization import ECOS, SCS, SLSQP, SOCP, socp_solve, socp_solve_remote
 from .credible_intervals import CredibleInterval
 from .progress_bar import ProgressBar
 
 
 RTOL = 0.001     # relative tolerance for the cost-constraint
-FTOL = 1e-5
+RACC = 1e-3      # relative accuracy for optimization solvers.
 DEFAULT_SOLVER = "ecos"
 
 
@@ -24,7 +23,8 @@ class CIComputer:
     min_z / max_z w^\top z s.t. AU z = b - A v, ||C z - d||_2^2 <= e.
     and returns the credible interval [phi(z_min), phi(z_max)].
     """
-    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, aemap: AffineEvaluationMap, options: dict):
+    def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, aemap: AffineEvaluationMap, scale: float,
+                 options: dict):
         # precompute:
         self._alpha = alpha
         self._x_map = x_map.copy()
@@ -37,14 +37,16 @@ class CIComputer:
         # Read options.
         if options is None:
             options = {}
-        self._use_ray = options.setdefault("use_ray", True)    # Temp.
+        self._use_ray = options.setdefault("use_ray", True)
         self._num_cpus = options.setdefault("num_cpus", 7)
         solver_name = options.setdefault("solver", DEFAULT_SOLVER)
         if solver_name == "slsqp":
-            self._optimizer = SLSQP(ftol=FTOL)
+            self._optimizer = SLSQP(ftol=1e-8)
         elif solver_name == "ecos":
-            print("Using ECOS.")
-            self._optimizer = ECOS()
+            abstol = RACC * scale
+            self._optimizer = ECOS(abstol=abstol)
+        elif solver_name == "scs":
+            self._optimizer = SCS()
         else:
             raise KeyError(f"Unknown solver '{solver_name}'.")
         if solver_name != DEFAULT_SOLVER:

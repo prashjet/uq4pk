@@ -58,8 +58,10 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     if sample is not None:
         affine_evaluation_map.select(sample)
     # Compute the credible intervals (in phi-space)
+    phi_map = ffunction.evaluate(x_map)
+    scale = phi_map.max()
     credible_interval = compute_credible_intervals(alpha=alpha, model=model, x_map=x_map, aemap=affine_evaluation_map,
-                                                   options=options)
+                                                   scale=scale, options=options)
     # Create FCI-object
     phi_lower = credible_interval.phi_lower
     phi_upper = credible_interval.phi_upper

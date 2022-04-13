@@ -23,7 +23,7 @@ class SLSQP(Optimizer):
         self._ftol = ftol
         self._ctol = ctol
 
-    def optimize(self, problem: SOCP, start: np.ndarray, mode: Literal["min", "max"]) -> np.ndarray:
+    def optimize(self, problem: SOCP, start: np.ndarray, mode: Literal["min", "max"], ftol: float = None) -> np.ndarray:
         """
         Solves optimization problems with different methods
         :param problem: Optimization_Problem

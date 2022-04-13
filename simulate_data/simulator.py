@@ -14,8 +14,8 @@ from .sample_theta import sample_theta
 HERMITE_ORDER = 4
 
 
-def simulate(name: str, snr: float, f_im=None, theta_noise=0.05, theta_true=None, ssps=model_grids.MilesSSP(), dv=10,
-             do_log_resample=True, mask=None) -> SimulatedExperimentData:
+def simulate(name: str, snr: float, ssps, f_im=None, theta_noise=0.05, theta_true=None, dv=10, do_log_resample=True,
+             mask=None) -> SimulatedExperimentData:
     """
     Simulates a dataset. Generates a measurement from the provided distribution function, while
     theta_v is fixed to [30, 100, 1, 0, 0, -0.05, 0.1]. Then adds artificial noise to generate the simulated

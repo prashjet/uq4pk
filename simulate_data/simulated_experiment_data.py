@@ -3,8 +3,6 @@ import numpy as np
 import os
 from pathlib import Path
 
-from uq4pk_fit.inference import ForwardOperator
-from uq4pk_src import model_grids
 from .experiment_data import ExperimentData
 
 
@@ -26,11 +24,9 @@ class SimulatedExperimentData(ExperimentData):
     :ivar grid_type: A string denoting the used grid.
     """
 
-    _possible_grid_types = ["MILES", "EMILES"]
-
     def __init__(self, name: str, snr: float, y: np.ndarray, y_sd: np.ndarray, y_bar: np.ndarray, f_true: np.ndarray,
                  f_ref: np.ndarray, theta_true: np.ndarray, theta_guess: np.ndarray, theta_sd: np.ndarray,
-                 hermite_order: int, mask: np.ndarray = None, grid_type: str = "MILES"):
+                 hermite_order: int, mask: np.ndarray = None, ssps_info: str = "empty :("):
         # CHECK INPUT FOR CONSISTENCY
         assert isinstance(name, str)
         if snr <= 0:
@@ -59,7 +55,6 @@ class SimulatedExperimentData(ExperimentData):
             assert mask.size >= y.size
             assert mask.ndim == 1
             self.mask = mask
-        assert grid_type in self._possible_grid_types
 
         # Set instance variables.
         self.name = name
@@ -73,42 +68,7 @@ class SimulatedExperimentData(ExperimentData):
         self.theta_sd = theta_sd
         self.y_sd = y_sd
         self.hermite_order = hermite_order
-        self.grid_type = grid_type
-
-    @property
-    def ssps(self):
-        """
-        Returns the model grid.
-        """
-        ssps_pre = self._ssps_pre
-        # Let forward operator initialize ssps (HACK)
-        fwdop = ForwardOperator(hermite_order=self.hermite_order, mask=self.mask, ssps=ssps_pre)
-        ssps = fwdop.modgrid
-        return ssps
-
-    @property
-    def forward_operator(self) -> ForwardOperator:
-        """
-        Creates the model forward operator.
-        """
-        ssps_pre = self._ssps_pre
-        op = ForwardOperator(hermite_order=self.hermite_order, mask=self.mask, ssps=ssps_pre)
-        return op
-
-    @property
-    def _ssps_pre(self):
-        if self.grid_type == self._possible_grid_types[0]:
-            ssps_pre = model_grids.MilesSSP()
-        elif self.grid_type == self._possible_grid_types[1]:
-            ssps_pre = model_grids.MilesSSP(
-                miles_mod_directory='EMILES_BASTI_BASE_BI_FITS',
-                imf_string='Ebi1.30',
-                lmd_min=None,
-                lmd_max=None,
-            )
-        else:
-            raise NotImplementedError("This should not happen!")
-        return ssps_pre
+        self.ssps_info = ssps_info
 
 
 def save_experiment_data(data: SimulatedExperimentData, savename: str):
@@ -125,7 +85,7 @@ def save_experiment_data(data: SimulatedExperimentData, savename: str):
     def quicksave(arr, name):
         np.save(arr=arr, file=os.path.join(savename, name))
 
-    info_array = np.array([data.name, data.grid_type])
+    info_array = np.array([data.name, data.ssps_info])
     quicksave(info_array, "info.npy")
     quicksave(np.array(data.snr), "snr.npy")
     quicksave(np.array(data.hermite_order), "hermite_order.npy")
@@ -166,7 +126,7 @@ def load_experiment_data(savedir: str) -> SimulatedExperimentData:
     mask = quickload("mask.npy")
 
     # From the loaded components, create the corresponding ExperimentData object.
-    data = SimulatedExperimentData(name=info_array[0], snr=snr, hermite_order=hermite_order, grid_type=info_array[1],
+    data = SimulatedExperimentData(name=info_array[0], snr=snr, hermite_order=hermite_order, ssps_info=info_array[1],
                                    y=y, y_sd=y_sd, y_bar=y_bar, f_true=f_true, f_ref=f_ref, theta_true=theta_true,
                                    theta_sd=theta_sd, theta_guess=theta_guess, mask=mask)
 

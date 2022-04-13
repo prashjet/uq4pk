@@ -4,14 +4,14 @@ Wrapper for the observation operator, including the possibility of a mask.
 
 import numpy as np
 
-from uq4pk_src import model_grids
 from uq4pk_src.observation_operator import ObservationOperator
 from uq4pk_src.distribution_function import RandomGMM_DistributionFunction
 
+
 class ForwardOperator:
 
-    def __init__(self, hermite_order=4, mask=None, ssps=model_grids.MilesSSP(), dv=10,
-                 do_log_resample=True):
+    def __init__(self, ssps, dv=10,
+                 do_log_resample=True, hermite_order=4, mask=None):
         """
         :param hermite_order: optional, int
             Order of the hermite expansion. Default is 4.

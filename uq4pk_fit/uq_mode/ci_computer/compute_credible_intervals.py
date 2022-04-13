@@ -9,7 +9,7 @@ from .credible_intervals import CredibleInterval
 
 
 def compute_credible_intervals(alpha: float, model: LinearModel, x_map: np.ndarray, aemap: AffineEvaluationMap,
-                               options: dict) -> CredibleInterval:
+                               scale: float, options: dict) -> CredibleInterval:
     """
     Computes generalized credible intervals with respect to an :py:class:`EvaluationMap`.
 
@@ -20,7 +20,7 @@ def compute_credible_intervals(alpha: float, model: LinearModel, x_map: np.ndarr
     :param options: A dictionary with further options.
     """
     # Initialize CIComputer object
-    ci_computer = CIComputer(alpha=alpha, model=model, x_map=x_map, aemap=aemap, options=options)
+    ci_computer = CIComputer(alpha=alpha, model=model, x_map=x_map, aemap=aemap, scale=scale, options=options)
     # Compute credible intervals
     credible_interval = ci_computer.compute_all()
     return credible_interval

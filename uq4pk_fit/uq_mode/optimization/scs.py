@@ -1,4 +1,3 @@
-
 import cvxpy as cp
 import numpy as np
 from typing import Literal
@@ -7,12 +6,12 @@ from .optimizer import Optimizer
 from .socp import SOCP
 
 
-class ECOS(Optimizer):
+class SCS(Optimizer):
     """
-    Solves SOCP problems using ECOS (via the cvxopt interface).
+    Solves SOCP problems using SCS (via the cvxopt interface).
     """
-    def __init__(self, abstol: float = 1e-8):
-        self._abstol = abstol
+    def __init__(self, scale: float = 1.):
+        self._scale = scale
 
     def optimize(self, problem: SOCP, start: np.ndarray, mode: Literal["min", "max"]) -> np.ndarray:
         # define the cvxpy program
@@ -20,7 +19,7 @@ class ECOS(Optimizer):
         # Set starting value
         x.value = start
         # Solve
-        cp_problem.solve(warm_start=True, verbose=False, solver=cp.ECOS, abstol=self._abstol)
+        cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS, max_iters=100)
         x_opt = x.value
         # return value at optimum or raise exception
         if x_opt is None:

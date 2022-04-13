@@ -38,8 +38,7 @@ def detect_interesting_blobs(sigma_list: SigmaList, reference: np.ndarray, regul
                                        max_overlap=overlap1, exclude_max_scale=True)
     plot_blobs(image=reference, blobs=interesting_blobs, show=True)
     # Compute mapped pairs.
-    mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=interesting_blobs, rthresh=rthresh,
-                                overlap=overlap2)
+    mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=interesting_blobs, overlap=overlap2)
 
     # Return the mapped pairs.
     return mapped_pairs
@@ -92,11 +91,6 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     blanket_stack = _compute_blanket_stack(lower_stack=lower_stack, upper_stack=upper_stack)
     # Apply scale-normalized Laplacian to blanket stack.
     blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, scales=scale_list, mode="reflect")
-    # Plot the thing
-    lob_min = blanket_laplacian_stack.min()
-    lob_max = blanket_laplacian_stack.max()
-    for lob in blanket_laplacian_stack:
-        plot_distribution_function(image=-lob, show=True, vmin=lob_min, vmax=lob_max)
     # Compute blanket-blobs.
     athresh = rthresh2 * log_thresh
     blanket_blobs = stack_to_blobs(scale_stack=blanket_laplacian_stack, sigma_list=sigma_list, athresh=athresh,
