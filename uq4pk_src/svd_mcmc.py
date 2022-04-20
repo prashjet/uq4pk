@@ -156,7 +156,8 @@ class SVD_MCMC:
         ax[1].plot(ln_lmd, med-med)
         ax[1].fill_between(ln_lmd, lo-med, hi-med, alpha=0.5)
         ax[1].plot(ln_lmd, self.y-med, '.k', ms=1)
-        ax[1].plot(ln_lmd, self.ybar-med, '-k', lw=1)
+        if self.ybar is not None:
+            ax[1].plot(ln_lmd, self.ybar-med, '-k', lw=1)
         ax[1].set_xlabel('ln [$\lambda$/Ang.]')
         fig.tight_layout()
         return fig
