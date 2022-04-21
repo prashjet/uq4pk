@@ -20,17 +20,22 @@ class SVD_MCMC:
                  y=None,
                  ybar=None,
                  sigma_y=None,
-                 dv=30):
+                 dv=30,
+                 mask=None,
+                 do_log_resample=True):
         self.ssps = ssps
         n, p = self.ssps.Xw.shape
         self.n = n
         self.p = p
         self.Theta_v_true = Theta_v_true
         self.df = df
-        self.op = ObservationOperator(ssps=ssps, dv=dv)
+        self.op = ObservationOperator(ssps=ssps,
+                                      dv=dv,
+                                      do_log_resample=do_log_resample)
         self.y = y
         self.ybar = ybar
         self.sigma_y = sigma_y
+        self.mask = mask
         self.preprocess_ssp_templates()
         self.whiten_X()
         self.do_svd()
@@ -50,12 +55,17 @@ class SVD_MCMC:
         self.X = np.fft.irfft(FXw_conv, self.op.ssps.n_fft, axis=0)
 
     def whiten_X(self):
-        sum_x_j = np.sum(self.X, 0)
-        X_tmp = np.sum(self.y) * self.X/sum_x_j
+        if self.mask is None:
+            sum_x_j = np.sum(self.X, 0)
+            sum_y = np.sum(self.y)
+        else:
+            sum_x_j = np.sum(self.X[self.mask,:], 0)
+            sum_y = np.sum(self.y[self.mask])
+        X_tmp = sum_y * self.X/sum_x_j
         self.mu = np.mean(X_tmp, 1)
         self.X_tilde = (X_tmp.T - self.mu).T
-        self.D = np.diag(sum_x_j/np.sum(self.y))
-        self.Dinv = np.diag(np.diag(self.D)**-1)
+        self.D = np.diag(sum_x_j/sum_y)
+        self.Dinv = np.diag(sum_y/sum_x_j)
 
     def do_svd(self):
         U, Sig, VT = np.linalg.svd(self.X_tilde)
@@ -83,17 +93,31 @@ class SVD_MCMC:
     def get_eta_alpha_model(self,
                             sigma_alpha=0.1,
                             sigma_eta=0.1):
-        def eta_alpha_model(sigma_alpha=sigma_alpha,
-                            sigma_eta=sigma_eta,
-                            y_obs=None):
-            alpha = numpyro.sample("alpha", dist.Normal(1, sigma_alpha))
-            eta = numpyro.sample("eta",
-                                 dist.Normal(0, sigma_eta),
-                                 sample_shape=(self.q,))
-            ybar = alpha*self.mu + jnp.dot(self.Z, eta)
-            nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
-            y_obs = numpyro.sample("y_obs", nrm, obs=self.y)
-            return y_obs
+        if self.mask is None:
+            def eta_alpha_model(sigma_alpha=sigma_alpha,
+                                sigma_eta=sigma_eta,
+                                y_obs=None):
+                alpha = numpyro.sample("alpha", dist.Normal(1, sigma_alpha))
+                eta = numpyro.sample("eta",
+                                     dist.Normal(0, sigma_eta),
+                                     sample_shape=(self.q,))
+                ybar = alpha*self.mu + jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                y_obs = numpyro.sample("y_obs", nrm, obs=self.y)
+                return y_obs
+        else:
+            def eta_alpha_model(sigma_alpha=sigma_alpha,
+                                sigma_eta=sigma_eta,
+                                y_obs=None):
+                alpha = numpyro.sample("alpha", dist.Normal(1, sigma_alpha))
+                eta = numpyro.sample("eta",
+                                     dist.Normal(0, sigma_eta),
+                                     sample_shape=(self.q,))
+                ybar = alpha*self.mu + jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                masked_nrm = nrm.mask(self.mask)
+                y_obs = numpyro.sample("y_obs", masked_nrm, obs=self.y)
+                return y_obs
         return eta_alpha_model
 
     def get_beta_tilde_model(self,
