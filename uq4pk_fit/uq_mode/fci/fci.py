@@ -11,6 +11,9 @@ from ..discretization import AdaptiveDiscretization
 from .filter_function_to_evaluation_map import filter_function_to_evaluation_map
 
 
+RTOL = 0.01
+
+
 class FCI:
     """
     Object that is returned by the function "fci".
@@ -65,6 +68,7 @@ def fci(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction: FilterFu
     # Create FCI-object
     phi_lower = credible_interval.phi_lower
     phi_upper = credible_interval.phi_upper
+
     fci_obj = FCI(phi_lower_enlarged=phi_lower, phi_upper_enlarged=phi_upper, time_avg=credible_interval.time_avg)
 
     return fci_obj

@@ -150,7 +150,6 @@ def _minimize_surface_fast(lb: np.ndarray, ub: np.ndarray, g: Union[np.ndarray, 
     x.ub = ubvec
     problem = cgn.Problem(parameters=[x], fun=fun, jac=jac)
     solver = cgn.CGN()
-    solver.options.set_verbosity(lvl=2)
     solution = solver.solve(problem=problem, starting_values=[x0])
     x_min = solution.minimizer("x")
 
@@ -163,6 +162,8 @@ def _minimize_surface_fast(lb: np.ndarray, ub: np.ndarray, g: Union[np.ndarray, 
 
 def _check_input(lb: np.ndarray, ub: np.ndarray, g: Union[np.ndarray, None]):
     assert lb.shape == ub.shape
+    # Check that lb <= ub
+    assert np.all(lb <= ub), "'lb <= ub' must hold exactly!"
     d = lb.size
     if g is not None:
         assert g.ndim == 2

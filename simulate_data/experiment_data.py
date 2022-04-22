@@ -4,7 +4,6 @@ import numpy as np
 from uq4pk_fit.inference import ForwardOperator
 
 
-
 class ExperimentData:
     """
     Assembles all relevant parameters for an experiment.
@@ -22,17 +21,3 @@ class ExperimentData:
     theta_sd: np.ndarray        # Prior standard deviations associated to the initial guess on theta_v.
     mask: np.ndarray            # A Boolean mask for the measurement. If mask[i]=1, then y[i] is included in the
                                 # inference. If mask[i]=0, it is ignored.
-
-    @property
-    def ssps(self):
-        """
-        The ssps grid used for the measurements.
-        """
-        raise NotImplementedError
-
-    @property
-    def forward_operator(self) -> ForwardOperator:
-        """
-        The forward operator for the model.
-        """
-        raise NotImplementedError

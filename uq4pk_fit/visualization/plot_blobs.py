@@ -8,7 +8,7 @@ from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 
 
 def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob, Union[GaussianBlob, None]]], savefile: str = None,
-               vmin: float = None, vmax: float = None, ssps = None, show: bool = True):
+               vmin: float = None, vmax: float = None, ssps = None, show: bool = False):
     """
     Makes a blob-plot for given image an blobs.
 
@@ -66,7 +66,7 @@ def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob
 
 
 def plot_blobs(image: np.ndarray, blobs: Sequence[GaussianBlob], savefile: str = None,
-               vmin: float = None, vmax: float = None, ssps = None, show: bool = True):
+               vmin: float = None, vmax: float = None, ssps = None, show: bool = False):
     """
     Makes a blob-plot for given image an blobs.
 

@@ -1,4 +1,5 @@
 
+
 import numpy as np
 import os
 from pathlib import Path
@@ -16,17 +17,13 @@ class SimulatedExperimentData(ExperimentData):
     :ivar f_true: The ground truth for the distribution function.
     :ivar f_ref: A reference distribution function, for example the ppxf-estimate.
     :ivar theta_true: The ground truth for the parameter theta_v.
-    :ivar theta_guess: A corresponding initial guess for theta_v.
-    :ivar theta_sd: The prior standard deviations for theta_v.
     :ivar hermite_order: The order of the Gauss-Hermite expansion.
     :ivar mask: A vector of the same length as `y`. If mask[i]=1, then y[i] is included in the inference. If mask[i]=0,
         it is ignored.
-    :ivar grid_type: A string denoting the used grid.
     """
 
     def __init__(self, name: str, snr: float, y: np.ndarray, y_sd: np.ndarray, y_bar: np.ndarray, f_true: np.ndarray,
-                 f_ref: np.ndarray, theta_true: np.ndarray, theta_guess: np.ndarray, theta_sd: np.ndarray,
-                 hermite_order: int, mask: np.ndarray = None, ssps_info: str = "empty :("):
+                 f_ref: np.ndarray, theta_true: np.ndarray, hermite_order: int, mask: np.ndarray = None):
         # CHECK INPUT FOR CONSISTENCY
         assert isinstance(name, str)
         if snr <= 0:
@@ -34,12 +31,11 @@ class SimulatedExperimentData(ExperimentData):
         assert y.ndim == 1
         assert y.shape == y_sd.shape
         assert y_bar.shape == y.shape
-        assert theta_true.size == theta_guess.size == theta_sd.size
         assert theta_true.size == hermite_order + 3
         # check that no of the provided parameters contain NaNs or infs.
         some_is_nan = False
         some_is_inf = False
-        for arr in [y, f_true, theta_true, theta_guess, theta_sd]:
+        for arr in [y, f_true, theta_true]:
             if np.isnan(arr).any():
                 some_is_nan = True
             if np.isinf(arr).any():
@@ -64,11 +60,8 @@ class SimulatedExperimentData(ExperimentData):
         self.f_true = f_true
         self.f_ref = f_ref
         self.theta_ref = theta_true
-        self.theta_guess = theta_guess
-        self.theta_sd = theta_sd
         self.y_sd = y_sd
         self.hermite_order = hermite_order
-        self.ssps_info = ssps_info
 
 
 def save_experiment_data(data: SimulatedExperimentData, savename: str):
@@ -85,8 +78,7 @@ def save_experiment_data(data: SimulatedExperimentData, savename: str):
     def quicksave(arr, name):
         np.save(arr=arr, file=os.path.join(savename, name))
 
-    info_array = np.array([data.name, data.ssps_info])
-    quicksave(info_array, "info.npy")
+    quicksave(data.name, "name.npy")
     quicksave(np.array(data.snr), "snr.npy")
     quicksave(np.array(data.hermite_order), "hermite_order.npy")
     quicksave(data.y, "y.npy")
@@ -95,8 +87,6 @@ def save_experiment_data(data: SimulatedExperimentData, savename: str):
     quicksave(data.f_true, "f_true.npy")
     quicksave(data.f_ref, "f_ref.npy")
     quicksave(data.theta_ref, "theta_ref.npy")
-    quicksave(data.theta_sd, "theta_sd.npy")
-    quicksave(data.theta_guess, "theta_guess.npy")
     quicksave(data.mask, "mask.npy")
 
 
@@ -112,7 +102,7 @@ def load_experiment_data(savedir: str) -> SimulatedExperimentData:
         return np.load(os.path.join(savedir, fname), allow_pickle=True)
 
     # Load individual components.
-    info_array = quickload("info.npy")
+    name = str(quickload("name.npy"))
     snr = quickload("snr.npy")
     hermite_order = quickload("hermite_order.npy")
     y = quickload("y.npy")
@@ -121,13 +111,10 @@ def load_experiment_data(savedir: str) -> SimulatedExperimentData:
     f_true = quickload("f_true.npy")
     f_ref = quickload("f_ref.npy")
     theta_true = quickload("theta_ref.npy")
-    theta_sd = quickload("theta_sd.npy")
-    theta_guess = quickload("theta_guess.npy")
     mask = quickload("mask.npy")
 
     # From the loaded components, create the corresponding ExperimentData object.
-    data = SimulatedExperimentData(name=info_array[0], snr=snr, hermite_order=hermite_order, ssps_info=info_array[1],
-                                   y=y, y_sd=y_sd, y_bar=y_bar, f_true=f_true, f_ref=f_ref, theta_true=theta_true,
-                                   theta_sd=theta_sd, theta_guess=theta_guess, mask=mask)
+    data = SimulatedExperimentData(name=name, snr=snr, hermite_order=hermite_order, y=y, y_sd=y_sd,
+                                   y_bar=y_bar, f_true=f_true, f_ref=f_ref, theta_true=theta_true, mask=mask)
 
     return data

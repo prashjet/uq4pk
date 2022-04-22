@@ -11,6 +11,9 @@ from .kernel_filter import KernelFilter
 from .image_filter_function import ImageFilterFunction
 
 
+EPS = 1e-10
+
+
 class GaussianKernel2D(FilterKernel):
     """
     The two-dimensional Gaussian kernel k(x) = e^(-(x1/sqrt(2)*sigma)^2 - (x2/sqrt(2)*sigma)^2) / Z
@@ -20,6 +23,7 @@ class GaussianKernel2D(FilterKernel):
         :param sigma: Standard deviation of the Gaussian kernel. Can also be a (2,) array, where the entries correspond
             to the standard deviations in the vertical and horizontal direction.
         """
+        assert np.all(sigma >= EPS), "'sigma' must be strictly positive."
         self.dim = 2
         if isinstance(sigma, np.ndarray):
             assert sigma.shape == (2,)

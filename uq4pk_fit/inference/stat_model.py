@@ -61,7 +61,7 @@ class StatModel:
         # set regularization parameters for f
         self.beta1 = self.snr * 1e3     # rule of thumb found after hours of trial-and-error
         self.f_bar = np.zeros(self.dim_f)
-        h = np.array([4, 2])
+        h = np.array([4., 2.])
         self.P1 = OrnsteinUhlenbeck(m=self.m_f, n=self.n_f, h=h)
         # set regularization parameters for theta_v
         self.beta2 = 1.

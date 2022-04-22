@@ -98,6 +98,8 @@ class CIComputer:
         times = times_lower + times_upper
         time_avg = np.mean(np.array(times))
         assert np.all(phi_lower <= phi_upper + 1e-8)
+        # Enforce phi_upper >= phi_lower
+        phi_upper = phi_upper.clip(min=phi_lower)
         credible_interval = CredibleInterval(phi_lower=phi_lower, phi_upper=phi_upper, time_avg=time_avg)
 
         return credible_interval

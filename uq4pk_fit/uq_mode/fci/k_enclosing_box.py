@@ -2,6 +2,9 @@
 import numpy as np
 
 
+MAXITER = 100
+
+
 def alpha_enclosing_box(alpha: float, points: np.ndarray) -> np.ndarray:
     """
     Given n d-dimensional points, finds smallest box that contains ceil((1 - alpha) * n) points.
@@ -14,7 +17,7 @@ def alpha_enclosing_box(alpha: float, points: np.ndarray) -> np.ndarray:
     assert points.ndim == 2
 
     n = points.shape[0]
-    k = np.ceil((1 - alpha) * n)
+    k = np.ceil((1 - alpha) * n).astype(int)
     alpha_box = k_enclosing_box(k, points)
     return alpha_box
 
@@ -52,11 +55,17 @@ def k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
     # First, find size such that at least k points are inside box.
     size_high = 1.
     points_inside_high = points_inside
+    i = 0
     while points_inside_high.shape[0] < k:
         size_high = 2 * size_high
         scaled_box = _scale_box(box, size_high)
         points_inside_high = _points_inside_box(points, scaled_box)
+        i += 1
+        if i > MAXITER:
+            print("WARNING: Maximum number of iterations reached.")
+            break
     # Then, find ideal size through bisection.
+    i = 0
     while points_inside.shape[0] != k:
         if points_inside.shape[0] >= k:
             # To many points inside, have to make box smaller.
@@ -70,6 +79,10 @@ def k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
         scaled_box = _scale_box(box, size)
         # Determine number of points inside scaled box
         points_inside = _points_inside_box(points, scaled_box)
+        i += 1
+        if i > MAXITER:
+            print("WARNING: Maximum number of iterations reached.")
+            break
 
     # Shrink the box through min-maxing.
     box_lower = np.min(points_inside, axis=0)
@@ -82,6 +95,9 @@ def k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
     mean_inside = np.all(mean >= box_lower) and np.all(mean <= box_upper)
     if not mean_inside:
         raise Warning("Mean point not inside box.")
+
+    # Enforce box_lower <= box_upper
+    box_upper = box_upper.clip(min=box_lower)
 
     box = np.row_stack([box_lower, box_upper])
     return box

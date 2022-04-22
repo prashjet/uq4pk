@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 
 
 
-def plot_distribution_function(image, ssps = None, show=True, savefile: str = None, vmax=None, vmin=None, ):
+def plot_distribution_function(image, ssps = None, show=False, savefile: str = None, vmax=None, vmin=None, ):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.

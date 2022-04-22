@@ -1,9 +1,13 @@
 
-from math import sqrt, log
+from math import exp, sqrt, log
 import numpy as np
+from scipy.special import lambertw
 from typing import Union
 
 from .linear_model import LinearModel
+
+
+NEW_FORMULA = True  # Set true if you want to use new formula.
 
 
 class CredibleRegion:
@@ -18,7 +22,17 @@ class CredibleRegion:
         self._alpha = alpha
         self._dim = model.dim
         tau = sqrt(16 * log(3 / self._alpha) / self._dim)
-        self._k_alpha = self._dim * (tau + 1)
+        if NEW_FORMULA:
+            z = - exp(log(alpha) / self._dim - 1)
+            if z < - 1 / exp(1):
+                print("WARNING: alpha is too large.")
+            # b_alpha = log(c_alpha)
+            b_alpha = lambertw(z)
+            c_alpha = exp(b_alpha)
+            proportionality_constant = - log(c_alpha)
+        else:
+            proportionality_constant = 1. + tau
+        self._k_alpha = self._dim * proportionality_constant
         self._gamma_alpha = self._cost_map + self._k_alpha
         self._t, self._d_tilde, self._e_tilde, self._a, self._b, self._lb = self._preprocessing()
 

@@ -5,7 +5,6 @@ from typing import List, Tuple, Union, Sequence
 from uq4pk_fit.blob_detection.detect_blobs import compute_overlap, detect_blobs
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.blankets.second_order_blanket import second_order_blanket
-from uq4pk_fit.visualization import plot_blobs, plot_distribution_function
 
 from ..scale_normalized_laplacian import scale_normalized_laplacian
 from ..detect_blobs import best_blob_first, stack_to_blobs
@@ -36,13 +35,11 @@ def detect_interesting_blobs(sigma_list: SigmaList, reference: np.ndarray, regul
     # Compute blanket-blobs.
     interesting_blobs = stack_to_blobs(scale_stack=regularized_log_stack, sigma_list=sigma_list, rthresh=rthresh,
                                        max_overlap=overlap1, exclude_max_scale=True)
-    plot_blobs(image=reference, blobs=interesting_blobs, show=True)
     # Compute mapped pairs.
     mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=interesting_blobs, overlap=overlap2)
 
     # Return the mapped pairs.
     return mapped_pairs
-
 
 
 def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
@@ -82,7 +79,6 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
 
     # Translate sigma_list to scale_list
     scale_list = [0.25 * np.sum(np.square(sigma)) for sigma in sigma_list]
-
     # Identify features in reference image.
     reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap1, rthresh=rthresh1)
     # Get LoG-value of weakest blob.
@@ -95,7 +91,6 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     athresh = rthresh2 * log_thresh
     blanket_blobs = stack_to_blobs(scale_stack=blanket_laplacian_stack, sigma_list=sigma_list, athresh=athresh,
                                    max_overlap=overlap1, exclude_max_scale=False)
-    plot_blobs(image=reference, blobs=blanket_blobs, show=True)
     # Compute mapped pairs.
     mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=blanket_blobs, overlap=overlap2)
 
@@ -161,8 +156,6 @@ def _match_blobs(reference_blobs: List[GaussianBlob], blanket_blobs: List[Gaussi
 
     :param reference_blobs: The blobs in the reference image.
     :param blanket_blobs: The blobs that can be identified in the stack of t-blankets.
-    :param rthresh: Treshold used in the matching condition. A blob with LoG value `u` is counted as significant if
-        there is a matching significant blob with LoG value `v >= rthresh * u`.
     :param overlap: If the relative overlap between a reference blob and a blanket-blob is above this value, then this
         counts as a map.
     :returns: The list of mapped pair. Each mapped pair is a tuple of the form (b, c) or (b, None). In the former case,
@@ -179,9 +172,6 @@ def _match_blobs(reference_blobs: List[GaussianBlob], blanket_blobs: List[Gaussi
         # Check that blobs really have the right overlap
         if matching_blob is not None:
             overl = compute_overlap(blob, matching_blob)
-            print(f"Map blob = {blob.vector}, significant_blob = {matching_blob.vector}")
-            print(f"Overlap = {overl}")
-            print(f"MAP LoG = {blob.log}, significant LoG = {matching_blob.log}")
             assert overl >= overlap
         # Add corresponding pair to "mapped_pairs".
         mapped_pairs.append(tuple([blob, matching_blob]))

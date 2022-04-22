@@ -17,8 +17,6 @@ from .parameter_map import ParameterMap
 from .uq_result import UQResult
 from .hybrid_discretization import HybridDiscretization
 
-from uq4pk_fit.uq_mode.fci.sampling_computer import fcis_via_sampling
-
 
 class FittedModel:
     """
@@ -266,9 +264,35 @@ class FittedModel:
         upper_stack = np.array(upper_list)
         return lower_stack, upper_stack
 
-    def compute_fci_stack_sampling(self, sigma_list: Sequence[Union[float, np.ndarray]], n_samples: int):
-        lower_stack, upper_stack = fcis_via_sampling(alpha=0.05, model=self._linearized_model, im_map=self.f_map,
-                                                     sigmas=sigma_list, n_samples = n_samples)
+    def compute_fci_stack_from_samples(self, sigma_list: Sequence[Union[float, np.ndarray]], samples: np.ndarray,
+                                       options: dict = None) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Computes a stack of FCIs corresponding to the given list of sigmas.
+        WARNING: Only works in the linear case.
+
+        :param sigma_list: The list of sigma-values for which a FCI has to be computed
+        :return: lower_stack, upper_stack
+            Each stack is a sxmxn-array, where each of the s slices corresponds to a lower/upper bound of the
+            corresponding FCI.
+
+        """
+        if options is None:
+            options = {}
+        if not self._parameter_map.theta_fixed:
+            raise NotImplementedError("This method is only implemented for fixed theta.")
+        # The FCIs are stored in two lists, one for the lower and one for the upper bound.
+        lower_list = []
+        upper_list = []
+        # For each sigma, compute the corresponding FCI.
+        for sigma in sigma_list:
+            print(f"Compute FCI for sigma={sigma}.")
+            options["sigma"] = sigma
+            lower, upper = self.fci_from_samples(samples=samples, alpha=0.05, options=options)
+            lower_list.append(lower)
+            upper_list.append(upper)
+        # Turn lists into corresponding arrays
+        lower_stack = np.array(lower_list)
+        upper_stack = np.array(upper_list)
         return lower_stack, upper_stack
 
     def minimize_blobiness(self, alpha: float, sigmas: Sequence):
@@ -282,28 +306,6 @@ class FittedModel:
         f_min = blob_detection.minimize_blobiness(alpha=alpha, m=self._m_f, n=self._n_f, model=self._linearized_model,
                                                   x_map=self._f_map.flatten(), sigma_list=sigmas)
         return f_min
-
-    def interesting_blobs(self, sigmas: Sequence[float], regularized_stack: np.ndarray,
-                          reference_image: np.ndarray = None, rthresh: float = 0.01, overlap1: float = 0.1,
-                          overlap2: float = 0.5):
-        if reference_image is None:
-            reference_image = self._reshape_f(self._f_map)
-        blobs = blob_detection.detect_interesting_blobs(sigma_list=sigmas, regularized_stack=regularized_stack,
-                                                        reference=reference_image, rthresh=rthresh,
-                                                        overlap1=overlap1, overlap2=overlap2)
-        return blobs
-
-    def significant_blobs(self, sigmas: Sequence[float], lower_stack: np.ndarray, upper_stack: np.ndarray,
-                          reference_image: np.ndarray = None, rthresh1: float = 0.01, rthresh2: float = 0.1,
-                          overlap1: float = 0.1, overlap2: float = 0.5):
-        # If no reference image is provided, take MAP as reference:
-        if reference_image is None:
-            reference_image = self._reshape_f(self._f_map)
-        blobs = blob_detection.detect_significant_blobs(sigma_list=sigmas, lower_stack=lower_stack,
-                                                        upper_stack=upper_stack, reference=reference_image,
-                                                        rthresh1=rthresh1, rthresh2=rthresh2, overlap1=overlap1,
-                                                        overlap2=overlap2)
-        return blobs
 
     def _uq_dummy(self, options: dict):
         """
