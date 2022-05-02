@@ -14,7 +14,7 @@ class ECOS(Optimizer):
     def __init__(self, abstol: float = 1e-8):
         self._abstol = abstol
 
-    def optimize(self, problem: SOCP, start: np.ndarray, mode: Literal["min", "max"]) -> np.ndarray:
+    def optimize(self, problem: SOCP, start: np.ndarray, ctol: float, mode: Literal["min", "max"]) -> np.ndarray:
         # define the cvxpy program
         cp_problem, x = self._make_cp_problem(problem, mode)
         # Set starting value
@@ -22,6 +22,9 @@ class ECOS(Optimizer):
         # Solve
         cp_problem.solve(warm_start=True, verbose=False, solver=cp.ECOS, abstol=self._abstol)
         x_opt = x.value
+        constraints_satisfied, errormsg = problem.check_constraints(x_opt, ctol)
+        if not constraints_satisfied:
+            print(errormsg)
         # return value at optimum or raise exception
         if x_opt is None:
             raise Exception("Encountered infeasible optimization problem.")

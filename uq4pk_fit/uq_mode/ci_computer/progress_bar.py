@@ -3,9 +3,9 @@
 
 import asyncio
 import ray
-from ray.actor import ActorHandle
 from typing import Tuple, List
 import tqdm
+from ray.actor import ActorHandle
 
 @ray.remote
 class ProgressBarActor:

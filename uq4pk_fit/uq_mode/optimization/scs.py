@@ -13,13 +13,13 @@ class SCS(Optimizer):
     def __init__(self, scale: float = 1.):
         self._scale = scale
 
-    def optimize(self, problem: SOCP, start: np.ndarray, mode: Literal["min", "max"]) -> np.ndarray:
+    def optimize(self, problem: SOCP, start: np.ndarray, ctol: float, mode: Literal["min", "max"]) -> np.ndarray:
         # define the cvxpy program
         cp_problem, x = self._make_cp_problem(problem, mode)
         # Set starting value
         x.value = start
         # Solve
-        cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS, max_iters=100)
+        cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS)
         x_opt = x.value
         # return value at optimum or raise exception
         if x_opt is None:

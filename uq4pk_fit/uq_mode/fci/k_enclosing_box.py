@@ -65,8 +65,8 @@ def k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
             print("WARNING: Maximum number of iterations reached.")
             break
     # Then, find ideal size through bisection.
-    i = 0
-    while points_inside.shape[0] != k:
+    success = False
+    for i in range(MAXITER):
         if points_inside.shape[0] >= k:
             # To many points inside, have to make box smaller.
             size_high = size
@@ -79,10 +79,14 @@ def k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
         scaled_box = _scale_box(box, size)
         # Determine number of points inside scaled box
         points_inside = _points_inside_box(points, scaled_box)
-        i += 1
-        if i > MAXITER:
-            print("WARNING: Maximum number of iterations reached.")
+        if points_inside.shape[0] == k:
+            success = True
             break
+    if not success:
+        print("WARNING: Maximum number of iterations reached.")
+        # In case we don't find the ideal box size, take the larger one, so that at least k points are inside.
+        scaled_box = _scale_box(box, size_high)
+        points_inside = _points_inside_box(points, scaled_box)
 
     # Shrink the box through min-maxing.
     box_lower = np.min(points_inside, axis=0)
@@ -94,12 +98,16 @@ def k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
     mean = np.mean(points, axis=0)
     mean_inside = np.all(mean >= box_lower) and np.all(mean <= box_upper)
     if not mean_inside:
-        raise Warning("Mean point not inside box.")
+        raise Warning("Mean point not inside box.")#
 
     # Enforce box_lower <= box_upper
     box_upper = box_upper.clip(min=box_lower)
 
     box = np.row_stack([box_lower, box_upper])
+    # Check that there are at least k points in box
+    n_points_inside = _points_inside_box(points, box).shape[0]
+    assert n_points_inside >= k, f"There are only {n_points_inside}/{k} points inside the box."
+
     return box
 
 
@@ -109,7 +117,7 @@ def _points_inside_box(points: np.ndarray, box: np.ndarray) -> np.ndarray:
 
     :param points: Of shape (n, d), where rows correspond to points, columns correspond to coordinates.
     :param box: Of shape (2, d). The box is determined by the condition box[0] <= x <= box[1].
-    :return: The number of points inside the box.
+    :return: Of shape (m, d). The points inside the box.
     """
     n, d = points.shape
     assert box.shape == (2, d)

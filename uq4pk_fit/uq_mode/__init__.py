@@ -1,4 +1,4 @@
-from .fci import fci
+from .fci import fci, fci_stack
 from .lci import lci
 from .linear_model import LinearModel
 from .filter import *

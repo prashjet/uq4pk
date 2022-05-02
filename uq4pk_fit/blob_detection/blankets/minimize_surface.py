@@ -35,7 +35,14 @@ def minimize_surface(lb: np.ndarray, ub: np.ndarray, mode: Literal["exact", "fas
     :param g: An optional matrix with which the flattened image is multiplied.
     :return: The solution, as d-dimensional array of the same shape as 'lb' and 'ub'.
     """
-    _check_input(lb, ub, g)
+    # CHECK INPUT
+    assert lb.shape == ub.shape
+    # Check that lb <= ub
+    assert np.all(lb <= ub), "'lb <= ub' must hold exactly!"
+    d = lb.size
+    if g is not None:
+        assert g.ndim == 2
+        assert g.shape[1] == d
 
     # Compute blanket with the method of choice.
     if mode == "fast":
@@ -158,16 +165,6 @@ def _minimize_surface_fast(lb: np.ndarray, ub: np.ndarray, g: Union[np.ndarray, 
 
     # Return the solution as two-dimensional numpy array.
     return x_arr
-
-
-def _check_input(lb: np.ndarray, ub: np.ndarray, g: Union[np.ndarray, None]):
-    assert lb.shape == ub.shape
-    # Check that lb <= ub
-    assert np.all(lb <= ub), "'lb <= ub' must hold exactly!"
-    d = lb.size
-    if g is not None:
-        assert g.ndim == 2
-        assert g.shape[1] == d
 
 
 def _sanity_check(x_im: np.ndarray, lb: np.ndarray, ub: np.ndarray):

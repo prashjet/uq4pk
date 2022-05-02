@@ -5,12 +5,13 @@ from typing import List, Tuple, Union, Sequence
 from uq4pk_fit.blob_detection.detect_blobs import compute_overlap, detect_blobs
 from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.blankets.second_order_blanket import second_order_blanket
+from uq4pk_fit.visualization.plot_distribution_function import plot_distribution_function
 
 from ..scale_normalized_laplacian import scale_normalized_laplacian
 from ..detect_blobs import best_blob_first, stack_to_blobs
 
 
-SHOW_BLANKETS = True
+SHOW_BLANKETS = False
 
 
 # Make type for sigma list
@@ -44,7 +45,8 @@ def detect_interesting_blobs(sigma_list: SigmaList, reference: np.ndarray, regul
 
 def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
                              upper_stack: np.ndarray, reference: np.ndarray, rthresh1: float = 0.05,
-                             rthresh2: float = 0.1, overlap1: float = 0.5, overlap2: float = 0.5)\
+                             rthresh2: float = 0.1, overlap1: float = 0.5, overlap2: float = 0.5,
+                             exclude_max_scale: bool = False)\
         -> List:
     """
     Performs uncertainty-aware blob blob_detection with automatic scale selection.
@@ -90,7 +92,7 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     # Compute blanket-blobs.
     athresh = rthresh2 * log_thresh
     blanket_blobs = stack_to_blobs(scale_stack=blanket_laplacian_stack, sigma_list=sigma_list, athresh=athresh,
-                                   max_overlap=overlap1, exclude_max_scale=False)
+                                   max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
     # Compute mapped pairs.
     mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=blanket_blobs, overlap=overlap2)
 
@@ -119,6 +121,8 @@ def _compute_blanket_stack(lower_stack: np.ndarray, upper_stack: np.ndarray) \
     for lower, upper in zip(lower_stack, upper_stack):
         # Compute blanket at scale t.
         blanket = _compute_blanket(lower, upper)
+        if SHOW_BLANKETS:
+            plot_distribution_function(image=blanket, show=True)
         blanket_list.append(blanket)
     # Return blanket stack as array.
     blanket_stack = np.array(blanket_list)

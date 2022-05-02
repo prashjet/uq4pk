@@ -26,10 +26,7 @@ class CredibleRegion:
             z = - exp(log(alpha) / self._dim - 1)
             if z < - 1 / exp(1):
                 print("WARNING: alpha is too large.")
-            # b_alpha = log(c_alpha)
-            b_alpha = lambertw(z)
-            c_alpha = exp(b_alpha)
-            proportionality_constant = - log(c_alpha)
+            proportionality_constant = - float(lambertw(z))
         else:
             proportionality_constant = 1. + tau
         self._k_alpha = self._dim * proportionality_constant

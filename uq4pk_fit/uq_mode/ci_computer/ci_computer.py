@@ -10,8 +10,8 @@ from .progress_bar import ProgressBar
 
 
 RTOL = 0.001     # relative tolerance for the cost-constraint
-RACC = 1e-3      # relative accuracy for optimization solvers.
-DEFAULT_SOLVER = "ecos"
+RACC = 1e-2      # relative accuracy for optimization solvers.
+DEFAULT_SOLVER = "scs"
 
 
 class CIComputer:
@@ -37,7 +37,7 @@ class CIComputer:
         # Read options.
         if options is None:
             options = {}
-        self._use_ray = options.setdefault("use_ray", True)
+        self._use_ray = options.setdefault("use_ray", False)
         self._num_cpus = options.setdefault("num_cpus", 7)
         solver_name = options.setdefault("solver", DEFAULT_SOLVER)
         if solver_name == "slsqp":

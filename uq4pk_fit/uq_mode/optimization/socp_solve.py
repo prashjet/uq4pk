@@ -36,10 +36,7 @@ def socp_solve(socp: SOCP, start: np.ndarray, optimizer: Optimizer, ctol: float,
     constraints_satisfied, errormsg = socp.check_constraints(start, ctol)
     if not constraints_satisfied:
         raise Exception("The starting point is infeasible.")
-    z_opt = optimizer.optimize(problem=socp, start=start, mode=mode)
-    constraints_satisfied, errormsg = socp.check_constraints(z_opt, ctol)
-    if not constraints_satisfied:
-        raise RuntimeError("The solver was not able to find a feasible solution." + " " + errormsg)
+    z_opt = optimizer.optimize(problem=socp, start=start, mode=mode, ctol=ctol)
     t1 = time()
     # Compute return value
     return qoi(z_opt), t1 - t0

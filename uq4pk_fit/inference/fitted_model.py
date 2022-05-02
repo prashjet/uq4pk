@@ -264,6 +264,30 @@ class FittedModel:
         upper_stack = np.array(upper_list)
         return lower_stack, upper_stack
 
+    def fast_stack(self, sigma_list: Sequence[Union[float, np.ndarray]]) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Computes a stack of FCIs corresponding to the given list of sigmas.
+        WARNING: Only works in the linear case.
+
+        :return: lower_stack, upper_stack
+            Each stack is a sxmxn-array, where each of the s slices corresponds to a lower/upper bound of the
+            corresponding FCI.
+
+        """
+        if not self._parameter_map.theta_fixed:
+            raise NotImplementedError("This method is only implemented for fixed theta.")
+        # Make list of filtered functions.
+        filter_list = []
+        for sigma in sigma_list:
+            options = {"sigma": sigma}
+            filter_function, filter_f, filter_theta = self._get_filter_function(options)
+            filter_list.append(filter_f)
+
+        lower_stack, upper_stack = uq_mode.fci_stack(alpha=0.05, model=self._linearized_model, x_map=self._x_map_vec,
+                                                     ffunction_list=filter_list)
+
+        return lower_stack, upper_stack
+
     def compute_fci_stack_from_samples(self, sigma_list: Sequence[Union[float, np.ndarray]], samples: np.ndarray,
                                        options: dict = None) -> Tuple[np.ndarray, np.ndarray]:
         """
@@ -388,7 +412,7 @@ class FittedModel:
         t_list = []
         for w1, w2 in zip(w1_list, w2_list):
             options = {"sigma": sigma, "w1": w1, "w2": w2, "d1": d1, "d2": d2, "discretization": discretization_name,
-                       "solver": "ecos"}
+                       "solver": "ecos", "use_ray": True}
             if n_sample is not None:
                 options["sample"] = pixel_sample
             # Create appropriate filter
@@ -402,7 +426,7 @@ class FittedModel:
             fci_list.append(fci)
 
         # ---Compute baseline error.
-        options = {"sigma": sigma, "discretization": "trivial"}
+        options = {"sigma": sigma, "discretization": "trivial", "use_ray": False}
         if n_sample is not None: options["sample"] = pixel_sample
         discretization = self._get_discretization(options)
         filter_function, filter_f, filter_theta = self._get_filter_function(options)
