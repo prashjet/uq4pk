@@ -6,3 +6,5 @@ experiments/__pycache__/
 experiments/out/
 .idea/workspace.xml
 .idea/tasks.xml
+manuscript
+*/.ipynb_checkpoints
