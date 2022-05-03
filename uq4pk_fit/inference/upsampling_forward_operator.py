@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from ..uq_mode import rectangle_partition
+from ..uq_mode.partition import rectangle_partition
 
 from uq4pk_src import model_grids
 from uq4pk_fit.inference import ForwardOperator

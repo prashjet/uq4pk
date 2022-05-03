@@ -1,42 +1,48 @@
 
 import numpy as np
 from time import time
-from typing import Literal, Tuple
+from typing import Literal, Optional, Sequence
 
-from .socp import SOCP
+from ..evaluation import AffineEvaluationFunctional
 from .optimizer import Optimizer
+from .socp import SOCP
 
 import ray
 from ray.actor import ActorHandle
 
 
+class SolveResult:
+    def __init__(self, value: Sequence[float], time: float):
+        self.values = value
+        self.time = time
+
+
 @ray.remote
-def socp_solve_remote(socp: SOCP, start: np.ndarray, optimizer: Optimizer, ctol: float, qoi: callable,
-                      actor: ActorHandle, mode: Literal["min", "max"]):
+def socp_solve_remote(aef_list: Sequence[AffineEvaluationFunctional], socp: SOCP, mode: Literal["min", "max"],
+               optimizer: Optimizer, ctol: float, actor: Optional[ActorHandle] = None) -> SolveResult:
     """
     Remote handle for socp_solve, allowing parallelization via Ray.
     """
     # Check that starting value satisfies SOCP constraints
-    out = socp_solve(socp=socp, start=start, optimizer=optimizer, ctol=ctol, qoi=qoi,mode=mode)
-    actor.update.remote(1)
-    return out
+    return socp_solve(aef_list, socp, mode, optimizer, ctol, actor)
 
 
-def socp_solve(socp: SOCP, start: np.ndarray, optimizer: Optimizer, ctol: float, qoi: callable,
-               mode: Literal["min", "max"]) -> Tuple[np.ndarray, float]:
+def socp_solve(aef_list: Sequence[AffineEvaluationFunctional], socp: SOCP, mode: Literal["min", "max"],
+               optimizer: Optimizer, ctol: float, actor: Optional[ActorHandle] = None) -> SolveResult:
     """
-    Solves a SOCP problem using a defined optimizer.
-
-    :returns: qoi, t
-        - qoi: The quantity of interest, evaluated at the optimizer x_opt.
-        - t: The required computation time.
+    Remote handle for socp_solve, allowing parallelization via Ray.
     """
     # Check that starting value satisfies SOCP constraints
     t0 = time()
-    constraints_satisfied, errormsg = socp.check_constraints(start, ctol)
-    if not constraints_satisfied:
-        raise Exception("The starting point is infeasible.")
-    z_opt = optimizer.optimize(problem=socp, start=start, mode=mode, ctol=ctol)
+    optimizer.setup_problem(socp=socp, ctol=ctol, mode=mode)
+    out_list = []
+    for aef in aef_list:
+        optimizer.change_loss(w=aef.w)
+        z_opt = optimizer.optimize()
+        out_val = aef.phi(z_opt)
+        if actor is not None:
+            actor.update.remote(1)
+        out_list.append(out_val)
     t1 = time()
-    # Compute return value
-    return qoi(z_opt), t1 - t0
+    t_avg = (t1 - t0) / len(aef_list)
+    return SolveResult(out_list, t_avg)

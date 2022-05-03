@@ -9,10 +9,10 @@ from time import time
 import ray
 
 from ..linear_model import CredibleRegion, LinearModel
-from ..evaluation import AffineEvaluationFunctional, AffineEvaluationMap
-from ..optimization import SOCP
-from .distributed_solve import solve_local, solve_remote
+from ..evaluation import AffineEvaluationMap
+from ..optimization import SCS, ECOS, solve_distributed_remote, solve_distributed
 from .progress_bar import ProgressBar
+from .create_socp import create_socp
 
 
 NUM_CPU = 7
@@ -49,6 +49,7 @@ class StackComputer:
         # Initialize ray
         self._num_cpus = NUM_CPU
         self._use_ray = USE_RAY
+        self._Optimizer = SCS
         self._optno = 2 * self._num_scales * self._dim
         if self._use_ray:
             ray.shutdown()
@@ -65,7 +66,7 @@ class StackComputer:
         # Create first SOCP.
         aefun_0 = self._aemap_list[0].aef_list[0]
         t0 = time()
-        socp = self._create_socp(aefun_0)
+        socp = create_socp(aefun_0, self._cregion)
         t1 = time()
         print(f"Time for initializing SOCP: {t1 - t0}.")
         # Partition problems.
@@ -84,17 +85,24 @@ class StackComputer:
         for k in range(self._num_cpus):
             if self._use_ray:
                 socp_id = ray.put(socp)
-                lower_result = solve_remote.remote(socp=socp_id, aef_list_list=aef_list_for_cpu[k], actor=self._actor,
-                                                   mode="min")
-                upper_result = solve_remote.remote(socp=socp_id, aef_list_list=aef_list_for_cpu[k], actor=self._actor,
-                                                   mode="max")
+                opt1 = ray.put(self._Optimizer())
+                opt2 = ray.put(self._Optimizer())
+                lower_result = solve_distributed_remote.remote(socp=socp_id, aef_list_list=aef_list_for_cpu[k],
+                                                               optimizer=opt1, ctol=self._ctol, actor=self._actor,
+                                                               mode="min")
+                upper_result = solve_distributed_remote.remote(socp=socp_id, aef_list_list=aef_list_for_cpu[k],
+                                                               optimizer=opt2, ctol=self._ctol, actor=self._actor,
+                                                               mode="max")
                 lower_result_list.append(lower_result)
                 upper_result_list.append(upper_result)
             else:
+                opt = self._Optimizer()
                 n_pixels = len(aef_list_for_cpu[k])
                 n_scales = len(aef_list_for_cpu[k][0])
-                lower_result = solve_local(socp=socp, aef_list_list=aef_list_for_cpu[k], mode="min")
-                upper_result = solve_local(socp=socp, aef_list_list=aef_list_for_cpu[k], mode="max")
+                lower_result = solve_distributed(socp=socp, aef_list_list=aef_list_for_cpu[k], optimizer=opt,
+                                                 ctol=self._ctol, mode="min")
+                upper_result = solve_distributed(socp=socp, aef_list_list=aef_list_for_cpu[k], optimizer=opt,
+                                                 ctol=self._ctol,  mode="max")
                 assert lower_result.shape == (n_scales, n_pixels)
                 assert lower_result.shape == (n_scales, n_pixels)
                 lower_result_list.append(lower_result)
@@ -117,74 +125,3 @@ class StackComputer:
         assert np.all(lower_stack <= upper_stack + 1e-5)
 
         return lower_stack, upper_stack
-
-    # PROTECTED
-
-    def _create_socp(self, aefun: AffineEvaluationFunctional) -> SOCP:
-        """
-        Creates the SOCP for the computation of the generalized credible interval.
-        The constraints
-        ||T x - d_tilde||_2^2 <= e_tilde,
-        A x = b,
-        x >= lb
-
-        are reformulated in terms of z, where x = U z + v:
-        ||T_z z - d_z||_2^2 <= e_z,
-        A_z z = b_z,
-        z >= lb_z,
-        where
-            d_z = P_z1.T d_tilde.
-            e = e_z - ||P_z1.T d_tilde||_2^2
-            P_z [T_z; 0] is the QR decomposition of T U.
-            A_z = A U
-            b_z= b - A v
-            lb_z = [depends on affine evaluation functional]
-        """
-        w = aefun.w
-        u = aefun.u
-        v = aefun.v
-
-        # Reformulate the cone constraint for z.
-        c_z = self._cregion.t @ u
-        g = self._cregion.d_tilde - self._cregion.t @ v
-        p_z, t_z0 = np.linalg.qr(c_z, mode="complete")
-        k = aefun.zdim
-        t_z = t_z0[:k, :]
-        p_z1 = p_z[:, :k]
-        p_z2 = p_z[:, k:]
-        d_tilde_z = p_z1.T @ g
-        e_tilde_z = self._cregion.e_tilde - np.sum(np.square(p_z2.T @ g))
-
-        # Reformulate the equality constraint for z.
-        if self._cregion.a is not None:
-            a_new = self._cregion.a @ u
-            b_new = self._cregion.b - self._cregion.a @ v
-            # If equality constraint does not satisfy constraint qualification, it is removed.
-            satisfies_cq = (np.linalg.matrix_rank(a_new) >= a_new.shape[0])
-            if not satisfies_cq:
-                a_new = None
-                b_new = None
-        else:
-            a_new = None
-            b_new = None
-
-        # Reformulate the lower-bound constraint for z.
-        lb_z = aefun.lb_z(self._cregion.lb)
-
-        # Create SOCP instance
-        socp = SOCP(w=w, a=a_new, b=b_new, c=t_z, d=d_tilde_z, e=e_tilde_z, lb=lb_z)
-        return socp
-
-    def _print_status(self, i: int, j: int, t_avg, t_avg2):
-        """
-        Displays the current status of the computation.
-        """
-        # Estimated solution time.
-        n_all = self._dim
-        n_remaining = n_all - j
-        t_remaining = t_avg * n_remaining
-        print("\r", end="")
-        print(f"Computing credible interval at scale {i+1}/{self._num_scales} for pixel {j+1}/{self._dim}. "
-              f"Average time per pixel: {t_avg:.1f}s. "
-              f"Average time in solver: {t_avg2:.1f}s."
-              f"Estimated time remaining: {t_remaining:.0f} s.", end=" ")

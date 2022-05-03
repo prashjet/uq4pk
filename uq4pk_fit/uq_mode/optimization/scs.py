@@ -9,42 +9,49 @@ from .socp import SOCP
 class SCS(Optimizer):
     """
     Solves SOCP problems using SCS (via the cvxopt interface).
+
+    WARNING: SCS really doesn't like it if lb != 0.
     """
-    def __init__(self, scale: float = 1.):
-        self._scale = scale
+    def __init__(self):
+        self._wnorm = 0.
 
-    def optimize(self, problem: SOCP, start: np.ndarray, ctol: float, mode: Literal["min", "max"]) -> np.ndarray:
-        # define the cvxpy program
-        cp_problem, x = self._make_cp_problem(problem, mode)
-        # Set starting value
-        x.value = start
-        # Solve
-        cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS)
-        x_opt = x.value
-        # return value at optimum or raise exception
-        if x_opt is None:
-            raise Exception("Encountered infeasible optimization problem.")
-        return x_opt
-
-    def _make_cp_problem(self, socp: SOCP, mode: Literal["min", "max"]):
-        # define the optimization vector
-        x = cp.Variable(socp.n)
-        # add SCOP constraint (||C x - d||_2 <= sqrt(e) <=> ||C x - d||_2^2 <= e)
+    def setup_problem(self, socp: SOCP, ctol: float, mode: Literal["min", "max"]):
+        # In order for SCS to be a little bit better conditioned, we have to transform everything to u = x - lb.
+        # or equivalently, x = u + lb.
+        if socp.bound_constrained:
+            bias = socp.lb
+        else:
+            bias = np.zeros(socp.n)
+        u = cp.Variable(socp.n)
         sqrt_e = np.sqrt(socp.e)
-        constraints = [cp.SOC(sqrt_e, (socp.c @ x - socp.d))]
+        b = np.linalg.norm(socp.c @ bias - socp.d)
+        constraints = [cp.SOC(sqrt_e, (socp.c @ u + socp.c @ bias - socp.d))]
         # add equality constraint
         if socp.equality_constrained:
-            constraints += [socp.a @ x == socp.b]
+            constraints += [socp.a @ u == socp.b + socp.a @ bias]
         if socp.bound_constrained:
             # Cvxpy cannot deal with infinite values. Hence, we have to translate the vector bound x >= lb
             # to the element-wise bound x[i] >= lb[i] for all i where lb[i] > - infinity
-            lb = socp.lb
+            lb = np.zeros(socp.n)
             bounded_indices = np.where(lb > -np.inf)[0]
             if bounded_indices.size > 0:
-                constraints += [x[bounded_indices] >= lb[bounded_indices]]
-        w = socp.w.copy()
+                constraints += [u[bounded_indices] >= lb[bounded_indices]]
+        w = cp.Parameter(socp.n)
         if mode == "min":
-            problem = cp.Problem(cp.Minimize(w.T @ x), constraints)
+            cp_problem = cp.Problem(cp.Minimize(w.T @ u), constraints)
         else:
-            problem = cp.Problem(cp.Maximize(w.T @ x), constraints)
-        return problem, x
+            cp_problem = cp.Problem(cp.Maximize(w.T @ u), constraints)
+        self._cp_problem = cp_problem
+        self._u = u
+        self._bias = bias
+        self._w = w
+
+    def change_loss(self, w: np.ndarray):
+        wnorm = np.linalg.norm(w)
+        self._w.value = w / wnorm
+
+    def optimize(self) -> float:
+        self._cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS)
+        u_optimizer = self._u.value
+        x_optimizer = u_optimizer - self._bias
+        return x_optimizer

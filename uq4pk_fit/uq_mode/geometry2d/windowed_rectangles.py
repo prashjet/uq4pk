@@ -4,7 +4,7 @@ Contains function "windowed_rectangles".
 
 import numpy as np
 
-from ..discretization import rectangle_partition
+from ..partition import rectangle_partition
 from .indices_to_coords import indices_to_coords
 from .rectangle_indices import rectangle_indices
 

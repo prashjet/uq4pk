@@ -51,5 +51,5 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
     credible_box = alpha_enclosing_box(alpha=alpha, points=filtered_samples)
 
     # Create FCI object.
-    fci_obj = FCI(phi_lower_enlarged=credible_box[0], phi_upper_enlarged=credible_box[1])
+    fci_obj = FCI(lower_stack=credible_box[0].reshape(1, -1), upper_stack=credible_box[1].reshape(1, -1))
     return fci_obj

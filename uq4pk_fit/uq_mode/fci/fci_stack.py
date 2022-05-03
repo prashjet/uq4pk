@@ -5,14 +5,12 @@ from ..ci_computer.stack_computer import StackComputer
 from ..filter.filter_function import FilterFunction
 from ..linear_model import LinearModel
 from ..discretization import TrivialAdaptiveDiscretization
+from .fci_class import FCI
 from .filter_function_to_evaluation_map import filter_function_to_evaluation_map
 
 
-RTOL = 0.01
-
-
 def fci_stack(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction_list: Sequence[FilterFunction],
-              options: dict = None):
+              options: dict = None) -> FCI:
     # Check the input.
     if not 0 < alpha < 1:
         raise ValueError("'alpha' must satisfy 0 < alpha < 1.")
@@ -33,4 +31,4 @@ def fci_stack(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction_lis
     computer = StackComputer(alpha=alpha, model=model, x_map=x_map, aemap_list=aemap_list, scale=x_map.max())
     lower_stack, upper_stack = computer.compute_all()
 
-    return lower_stack, upper_stack
+    return FCI(lower_stack=lower_stack, upper_stack=upper_stack)

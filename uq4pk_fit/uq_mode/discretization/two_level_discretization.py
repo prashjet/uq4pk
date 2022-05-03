@@ -1,8 +1,7 @@
 import numpy as np
-from typing import Tuple
 
 from ..geometry2d import coords_to_indices, indices_to_coords, rectangle_indices
-from .rectangle_partition import rectangle_partition
+from uq4pk_fit.uq_mode.partition.rectangle_partition import rectangle_partition
 from .image_discretization import ImageDiscretization, AdaptiveImageDiscretization
 
 
