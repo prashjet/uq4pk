@@ -28,7 +28,7 @@ class SCS(Optimizer):
         constraints = [cp.SOC(sqrt_e, (socp.c @ u + socp.c @ bias - socp.d))]
         # add equality constraint
         if socp.equality_constrained:
-            constraints += [socp.a @ u == socp.b + socp.a @ bias]
+            constraints += [socp.a @ u == socp.b - socp.a @ bias]
         if socp.bound_constrained:
             # Cvxpy cannot deal with infinite values. Hence, we have to translate the vector bound x >= lb
             # to the element-wise bound x[i] >= lb[i] for all i where lb[i] > - infinity
@@ -53,5 +53,5 @@ class SCS(Optimizer):
     def optimize(self) -> float:
         self._cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS)
         u_optimizer = self._u.value
-        x_optimizer = u_optimizer - self._bias
+        x_optimizer = u_optimizer + self._bias
         return x_optimizer

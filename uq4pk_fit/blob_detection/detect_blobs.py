@@ -4,7 +4,7 @@ import numpy as np
 from typing import List, Sequence, Union
 from skimage import morphology
 
-from .gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
 from .scale_space_representation import scale_space_representation
 from .scale_normalized_laplacian import scale_normalized_laplacian
 from .blob_geometry import compute_overlap

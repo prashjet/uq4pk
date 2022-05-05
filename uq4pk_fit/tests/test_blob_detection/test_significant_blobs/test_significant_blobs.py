@@ -3,7 +3,7 @@ import numpy as np
 from uq4pk_fit.visualization import plot_significant_blobs
 from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _find_blob, \
     best_blob_first
-from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
 
 R_MIN = 0.5
 R_MAX = 15

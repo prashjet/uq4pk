@@ -51,7 +51,8 @@ class SOCP:
             - constraints_satisfied: bool. True if all constraints are satisfied, otherwise False.
             - message: str. An error message specifying which constraints were violated.
         """
-        soc_violation = max(0, np.sum(np.square(self.c @ x - self.d)) - self.e)
+        soc_violation = max(0, np.sum(np.square(self.c @ x - self.d)) - self.e) / self.e
+        print(f"SOC violation = {soc_violation}.")
         soc_violated = soc_violation > tol
         if self.equality_constrained:
             eqcon_violated = self._l1norm((self.a @ x - self.b)) > tol

@@ -39,13 +39,19 @@ class RectangularDownsampling(Downsampling):
         return j
 
     def enlarge(self, u: np.ndarray):
-        assert u.shape == (self.rdim, )
-        # Initialize enlarged vector.
-        x = np.zeros(self.dim)
+        """
+
+        :param u: Of shape (k, rdim).
+        :return: Of shape (k, dim).
+        """
+        assert u.shape[1] == self.rdim
+        k = u.shape[0]
+        # Initialize enlarged stack.
+        x = np.zeros((k, self.dim))
         # Now, simply loop over partition and assign back.
         for i in range(self.rdim):
             element_i = self._partition.element(i)
-            x[element_i] = u[i]
+            x[:, element_i] = u[:, i].reshape(-1, 1)
         return x
 
 

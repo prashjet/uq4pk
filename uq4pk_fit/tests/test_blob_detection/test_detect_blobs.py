@@ -4,7 +4,7 @@ from matplotlib import patches
 import numpy as np
 from skimage.feature import blob_log
 
-from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
 
 

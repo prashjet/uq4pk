@@ -55,7 +55,7 @@ class RealExperimentData(ExperimentData):
         return self._ssps
 
     @property
-    def forward_operator(self) -> ForwardOperator:
+    def forward_operator(self) -> MassWeightedForwardOperator:
         return self._fwdop
 
     def correct_forward_operator(self, continuum_distortion: np.ndarray):
@@ -65,7 +65,7 @@ class RealExperimentData(ExperimentData):
         :param continuum_distortion:
         """
         self._ssps.Xw *= (self._ssps.Xw.T * continuum_distortion).T
-        self._fwdop = ForwardOperator(ssps=self._ssps, dv=self._ssps.dv, do_log_resample=False, mask=self.mask)
+        self._fwdop = MassWeightedForwardOperator(ssps=self._ssps, dv=self._ssps.dv, do_log_resample=False, mask=self.mask)
 
     def legendre_best_fit(self) -> np.ndarray:
         """
@@ -163,7 +163,7 @@ class RealExperimentData(ExperimentData):
         ssps.dv = m54_data.dv
         ssps.speed_of_light = m54_data.speed_of_light
         # construct the forward operator
-        fwdop = ForwardOperator(ssps=ssps, dv=ssps.dv, do_log_resample=False, mask=mask)
+        fwdop = MassWeightedForwardOperator(ssps=ssps, dv=ssps.dv, do_log_resample=False, mask=mask)
         return y, y_sd, fwdop, theta_guess, theta_sd, f_gt, mask, ssps
 
     @staticmethod

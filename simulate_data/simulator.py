@@ -3,7 +3,7 @@ Contains the class "ExperimentData" and the functions "simulate_data" and "forwa
 """
 import numpy as np
 
-from uq4pk_fit.inference import *
+from uq4pk_fit.inference import MassWeightedForwardOperator, LightWeightedForwardOperator
 
 from .simulated_experiment_data import SimulatedExperimentData
 
@@ -11,8 +11,8 @@ from .simulated_experiment_data import SimulatedExperimentData
 HERMITE_ORDER = 4
 
 
-def simulate(name: str, snr: float, ssps, f_im: np.array, theta_v: np.array, dv=10, do_log_resample=True,
-             mask=None) -> SimulatedExperimentData:
+def simulate(name: str, snr: float, ssps, f_im: np.array, theta_v: np.array, light_weighted: bool, dv=10,
+             do_log_resample=True, mask=None) -> SimulatedExperimentData:
     """
     Simulates a dataset. Generates a measurement from the provided distribution function, while
     theta_v is fixed to [30, 100, 1, 0, 0, -0.05, 0.1]. Then adds artificial noise to generate the simulated
@@ -22,7 +22,11 @@ def simulate(name: str, snr: float, ssps, f_im: np.array, theta_v: np.array, dv=
         All the relevant parameters combined in an object of type "ExperimentData".
     """
     hermite_order = theta_v.size - 3
-    op = ForwardOperator(hermite_order=hermite_order, ssps=ssps, dv=dv, do_log_resample=do_log_resample, mask=mask)
+    if light_weighted:
+        op = LightWeightedForwardOperator(theta=theta_v, hermite_order=hermite_order, ssps=ssps, dv=dv,
+                                          do_log_resample=do_log_resample, mask=mask)
+    else:
+        op = MassWeightedForwardOperator(hermite_order=hermite_order, ssps=ssps, dv=dv, do_log_resample=do_log_resample, mask=mask)
     # NORMALIZE
     f_im = f_im / np.sum(f_im)
     f_true = f_im.flatten()

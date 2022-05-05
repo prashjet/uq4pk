@@ -28,7 +28,8 @@ def fci_stack(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction_lis
         affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map, weights=weights)
         aemap_list.append(affine_evaluation_map)
     # Compute the credible intervals (in phi-space)
-    computer = StackComputer(alpha=alpha, model=model, x_map=x_map, aemap_list=aemap_list, scale=x_map.max())
+    computer = StackComputer(alpha=alpha, model=model, x_map=x_map, aemap_list=aemap_list, scale=x_map.max(),
+                             options=options)
     lower_stack, upper_stack = computer.compute_all()
 
     return FCI(lower_stack=lower_stack, upper_stack=upper_stack)

@@ -2,13 +2,12 @@
 import numpy as np
 
 from .forward_operator import ForwardOperator
-from uq4pk_src.observation_operator import ObservationOperator
-from uq4pk_src.distribution_function import RandomGMM_DistributionFunction
+from .mass_weighted_forward_operator import MassWeightedForwardOperator
 
 
-class LightWeightedForwardOperator:
+class LightWeightedForwardOperator(ForwardOperator):
 
-    def __init__(self, forward_operator: ForwardOperator, y: np.ndarray, theta: np.ndarray):
+    def __init__(self, theta: np.ndarray, ssps, dv=10, do_log_resample=True, hermite_order=4, mask=None):
         """
         Creates a light-weighted forward operator G_bar based on a forward operator G, given by
         G_bar_j = G_j * sum(y) / sum(G_j),
@@ -17,29 +16,21 @@ class LightWeightedForwardOperator:
         :param forward_operator: The unnormalized forward operator G.
         :param y: The measurement.
         """
-        # Check that the dimensions of G and y match
-        assert y.shape == (forward_operator.dim_y, )
-
-        self.dim_y = y.size
-        self.dim_theta = forward_operator.dim_theta
-
-        # Load G into a matrix.
-        f0 = np.zeros(forward_operator.m_f * forward_operator.n_f)
-        g = forward_operator.jac(f0, theta)[:, :-self.dim_theta]
-
-        # Rescale the matrix.
-        column_sums = np.sum(g, axis=0)
-        assert column_sums.size == g.shape[1]
-        y_sum = np.sum(y)
-        weights = y_sum / column_sums
-        g_bar = weights * g
-
-        # Check that scaling worked.
-        new_column_sums = np.sum(g_bar, axis=0)
-        assert np.isclose(new_column_sums, y_sum, rtol=0.01).all()
-
-        self._weights = weights
-        self._g_bar = g_bar
+        # Create a normal forward operator.
+        mass_weigthed_fwdop = MassWeightedForwardOperator(ssps, dv, do_log_resample, hermite_order, mask)
+        self.dim_theta = theta.size
+        # Get the matrix representation at theta.
+        self.m_f = mass_weigthed_fwdop.m_f
+        self.n_f = mass_weigthed_fwdop.n_f
+        f_test = np.ones((mass_weigthed_fwdop.m_f, mass_weigthed_fwdop.n_f))
+        jac = mass_weigthed_fwdop.jac(f=f_test, theta=theta)
+        x = jac[:, :-self.dim_theta]
+        theta_jac = jac[:, -self.dim_theta:]
+        self._theta_jac = theta_jac
+        # normalize the sum of the columns.
+        column_sums = np.sum(x, axis=0)
+        # Divide by column sums.
+        self._x_bar = x / column_sums[np.newaxis, :]
 
     def fwd(self, f, theta):
         """
@@ -47,18 +38,8 @@ class LightWeightedForwardOperator:
         :param theta: (K,)
         :return: array_like, (M,)
         """
-        return self._g_bar @ f
+        return self._x_bar @ f
 
     def jac(self, f, theta):
-        dy_df = self._g_bar
-        dy_dtheta = np.zeros((self.dim_y, self.dim_theta))
-        dydx = np.concatenate((dy_df, dy_dtheta), axis=1)
-        return dydx
-
-    @property
-    def weights(self) -> np.ndarray:
-        """
-        The weights d. We have
-            G_bar = d * G, and f_bar = f / d.
-        """
-        return self._weights
+        jac = np.column_stack([self._x_bar, self._theta_jac])
+        return jac

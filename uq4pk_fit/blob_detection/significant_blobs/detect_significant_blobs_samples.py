@@ -5,7 +5,7 @@ import miniball
 import numpy as np
 
 from ..detect_blobs import detect_blobs
-from ..gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
 from .detect_significant_blobs import _find_blob
 
 SigmaList = Sequence[Union[float, np.ndarray]]

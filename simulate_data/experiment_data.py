@@ -1,8 +1,6 @@
 
 import numpy as np
 
-from uq4pk_fit.inference import ForwardOperator
-
 
 class ExperimentData:
     """

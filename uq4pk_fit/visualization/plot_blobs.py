@@ -4,7 +4,7 @@ from matplotlib import patches
 import numpy as np
 from typing import Sequence, Tuple, Union
 
-from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob import GaussianBlob
 
 
 def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob, Union[GaussianBlob, None]]], savefile: str = None,

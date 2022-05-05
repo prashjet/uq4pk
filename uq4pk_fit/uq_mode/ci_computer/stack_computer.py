@@ -20,7 +20,6 @@ NUM_CPU = 7
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
 RACC = 1e-2      # relative accuracy for optimization solvers.
-USE_RAY = True
 
 
 class StackComputer:
@@ -33,7 +32,7 @@ class StackComputer:
     and returns the credible interval [phi(z_min), phi(z_max)].
     """
     def __init__(self, alpha: float, model: LinearModel, x_map: np.ndarray, aemap_list: List[AffineEvaluationMap],
-                 scale: float):
+                 scale: float, options: dict):
         # precompute:
         self._alpha = alpha
         self._x_map = x_map.copy()
@@ -48,7 +47,14 @@ class StackComputer:
         self._ctol = RTOL * cost_map
         # Initialize ray
         self._num_cpus = NUM_CPU
-        self._use_ray = USE_RAY
+        self._use_ray = options.setdefault("use_ray", True)
+        optimizer = options.setdefault("optimizer", "SCS")
+        if optimizer == "SCS":
+            self._Optimizer = SCS
+        elif optimizer == "ECOS":
+            self._Optimizer = ECOS
+        else:
+            raise ValueError("Unknown value for key 'optimizer'.")
         self._Optimizer = SCS
         self._optno = 2 * self._num_scales * self._dim
         if self._use_ray:

@@ -2,9 +2,12 @@
 import numpy as np
 from typing import List, Tuple, Union, Sequence
 
+from uq4pk_fit.visualization.plot_blobs import plot_blobs
+
 from uq4pk_fit.blob_detection.detect_blobs import compute_overlap, detect_blobs
-from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.blankets.second_order_blanket import second_order_blanket
+from uq4pk_fit.blob_detection.blankets.first_order_blanket import first_order_blanket
 from uq4pk_fit.visualization.plot_distribution_function import plot_distribution_function
 
 from ..scale_normalized_laplacian import scale_normalized_laplacian
@@ -93,6 +96,7 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     athresh = rthresh2 * log_thresh
     blanket_blobs = stack_to_blobs(scale_stack=blanket_laplacian_stack, sigma_list=sigma_list, athresh=athresh,
                                    max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
+    plot_blobs(image=reference, blobs=blanket_blobs, show=True)
     # Compute mapped pairs.
     mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=blanket_blobs, overlap=overlap2)
 
@@ -146,7 +150,7 @@ def _compute_blanket(lower: np.ndarray, upper: np.ndarray)\
     assert lower.shape == upper.shape
 
     # Compute second order blanket argmin_f ||nabla delta f||_2^2 s.t. lower <= f <= upper.
-    blanket = second_order_blanket(lb=lower, ub=upper)
+    blanket = first_order_blanket(lb=lower, ub=upper)
     # Assert that blanket has the right format before returning it.
     assert blanket.shape == lower.shape
 

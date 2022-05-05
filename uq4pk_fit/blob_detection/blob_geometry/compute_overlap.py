@@ -2,7 +2,7 @@
 import shapely.affinity as aff
 import shapely.geometry as geom
 
-from ..gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
 
 
 eps = 1e-3
