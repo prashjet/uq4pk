@@ -11,12 +11,14 @@ class FilterFunction:
     A filter function maps each coordinate to a LinearFilter object.
     """
     dim: int    # The dimension of the underlying space.
+    size: int   # The number of filters.
 
     def __init__(self, dim: int, filter_list: List[LinearFilter]):
         # Check that each filter has the right dimension.
         for filter in filter_list:
             assert filter.dim == dim
         self.dim = dim
+        self.size = len(filter_list)
         self._filters = filter_list
 
     def filter(self, i: int) -> LinearFilter:
@@ -42,8 +44,8 @@ class FilterFunction:
         :param v: Must satisfy dim == :py:attr:`dim`
         :return: Of shape (:py:attr:`size`,).
         """
-        w = np.zeros(self.dim)
-        for i in range(self.dim):
+        w = np.zeros(self.size)
+        for i in range(self.size):
             filter_i = self._filters[i]
             w[i] = filter_i.evaluate(v)
         return w

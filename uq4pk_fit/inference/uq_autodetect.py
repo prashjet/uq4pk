@@ -45,9 +45,8 @@ def autodetect(m: int, n: int, x_map: np.ndarray, model: uq_mode.LinearModel, op
                                                                                         n_f=n,
                                                                                         options=fci_options)
         # compute filtered credible intervals
-        ci = uq_mode.fci(alpha=0.05, x_map=x_map, model=model,
-                           ffunction=filter_function,
-                           options=options)
+        ci = uq_mode.adaptive_fci(alpha=0.05, model=model, x_map=x_map, filter_functions=, discretization=,
+                                  options=options)
         lower = ci[:, 0]
         upper = ci[:, 1]
         # Reshape the lower and upper bound to images.

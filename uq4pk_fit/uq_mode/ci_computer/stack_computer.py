@@ -50,8 +50,10 @@ class StackComputer:
         self._use_ray = options.setdefault("use_ray", True)
         optimizer = options.setdefault("optimizer", "SCS")
         if optimizer == "SCS":
+            print("Using SCS.")
             self._Optimizer = SCS
         elif optimizer == "ECOS":
+            print("Using ECOS.")
             self._Optimizer = ECOS
         else:
             raise ValueError("Unknown value for key 'optimizer'.")

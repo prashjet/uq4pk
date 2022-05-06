@@ -19,8 +19,8 @@ def test_fci():
     filter_function = um.SimpleFilterFunction(weights=weights)
     discretization = um.TrivialAdaptiveDiscretization(dim=2)
     # compute kernel-localized credible intervals
-    fci_obj = um.fci(alpha=alpha, model=prob.model, x_map=prob.x_map, ffunction=filter_function,
-                  discretization=discretization, options={"use_ray": False})
+    fci_obj = um.adaptive_fci(alpha=alpha, model=prob.model, x_map=prob.x_map, filter_functions=,
+                              discretization=discretization, options={"use_ray": False})
     fcis = fci_obj.interval
     # Assert that the kernel functionals evaluated at the MAP estimate lie inside the credible intervals.
     y_map = filter_function.evaluate(prob.x_map)

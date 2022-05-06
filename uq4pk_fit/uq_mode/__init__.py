@@ -1,4 +1,4 @@
-from .fci import fci, fci_stack, FCI
+from .fci import adaptive_fci, fci_stack, FCI, fci
 from .lci import lci
 from .linear_model import LinearModel
 from .filter import *

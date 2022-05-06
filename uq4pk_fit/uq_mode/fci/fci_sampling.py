@@ -2,7 +2,7 @@
 import numpy as np
 
 from uq4pk_fit.uq_mode.filter import FilterFunction
-from .fci import FCI
+from .adaptive_fci import FCI
 from .k_enclosing_box import alpha_enclosing_box
 
 

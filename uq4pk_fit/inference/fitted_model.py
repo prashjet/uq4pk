@@ -259,6 +259,31 @@ class FittedModel:
         mjd_list.append(mean_jaccard_distance(fci_base, fci_base))
         return t_list, mjd_list
 
+    def marginal_credible_intervals(self, alpha: float, axis: int) \
+            -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Computes marginal (1-alpha)-credible interval for the image f along given axis.
+
+        :param alpha: Crediblity parameter.
+        :param axis: The axis over which we sum. Since f is two-dimensional, this should be either 0 or 1.
+        :return: lb, ub
+            - lb: Vector that gives the lower bounds of the credible intervals.
+            - ub: Vector that gives the upper bounds of the credible intervals.
+        """
+        # Check input.
+        assert 0 < alpha < 1.
+        assert axis in [0, 1]
+        # Set up the marginalization filter.
+        marginalization_ffunction = uq_mode.MarginalizingFilterFunction(shape=(self._m_f, self._n_f), axis=axis)
+        # Compute using uq_mode.fci.
+        options = {"optimizer": "SCS", "use_ray": True}
+        fci_obj = uq_mode.fci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
+                              filter_function=marginalization_ffunction, options=options)
+        # Postprocess the output and return.
+        lb = fci_obj.lower.flatten()
+        ub = fci_obj.upper.flatten()
+        return lb, ub
+
     # PROTECTED
 
     def _compute_fci_stack(self, alpha: float, filter_list, discretization, options) -> uq_mode.FCI:
@@ -273,9 +298,9 @@ class FittedModel:
         # Create downsampling object.
         downsampling = self._setup_downsampling(options)
         # Compute FCIs (creates an object of type `uq_mode.FCI`).
-        fci_obj = uq_mode.fci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
-                              filter_functions=filter_list, discretization=discretization, downsampling=downsampling,
-                              options=options)
+        fci_obj = uq_mode.adaptive_fci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
+                                       filter_functions=filter_list, discretization=discretization,
+                                       downsampling=downsampling, options=options)
         return fci_obj
 
     def _setup_downsampling(self, options) -> uq_mode.Downsampling:

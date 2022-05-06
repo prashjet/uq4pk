@@ -1,5 +1,4 @@
 
-import numpy as np
 from time import time
 from typing import Literal, Optional, Sequence
 

@@ -3,11 +3,12 @@ import numpy as np
 from ..discretization import AdaptiveDiscretization
 from ..evaluation import AffineEvaluationMap
 from ..filter import FilterFunction
-from .filter_functional import FilterFunctional
+from .adapted_filter_functional import AdaptedFilterFunctional
 
 
-def filter_function_to_evaluation_map(filter_function: FilterFunction, discretization: AdaptiveDiscretization,
-                                      x_map: np.ndarray, weights: np.ndarray = None) -> AffineEvaluationMap:
+def filter_and_discretization_to_evaluation_map(filter_function: FilterFunction,
+                                                discretization: AdaptiveDiscretization, x_map: np.ndarray,
+                                                weights: np.ndarray = None) -> AffineEvaluationMap:
     """
     Takes a FilterFunction object and from it creates an AffineEvaluationMap object.
 
@@ -16,7 +17,7 @@ def filter_function_to_evaluation_map(filter_function: FilterFunction, discretiz
     # For each filter in the filter function, compute the associated affine evaluation functional.
     aef_list = []
     for filter, discr in zip(filter_function.get_filter_list(), discretization.discretizations):
-        aef = FilterFunctional(filter, discr, x_map, weights)
+        aef = AdaptedFilterFunctional(filter, discr, x_map, weights)
         aef_list.append(aef)
     # Create the affine evaluation map from the list of evaluation functionals.
     aff_eval_map = AffineEvaluationMap(aef_list)

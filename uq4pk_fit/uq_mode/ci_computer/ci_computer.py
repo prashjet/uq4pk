@@ -42,7 +42,7 @@ class CIComputer:
             options = {}
         self._use_ray = options.setdefault("use_ray", True)
         self._num_cpus = options.setdefault("num_cpus", 7)
-        optimizer_name = options.setdefault("optimizer", "SCS")
+        optimizer_name = options.setdefault("optimizer", "ECOS")
         if optimizer_name == "ECOS":
             print("Using ECOS.")
             self._Optimizer = ECOS
@@ -94,7 +94,7 @@ class CIComputer:
         return lower_stack, upper_stack, time_avg
 
     def _compute_with_ray(self):
-        print("Preparing credible intervals...")
+        print("Starting computations...")
         out_lower_ids = []
         out_upper_ids = []
         for i in range(self._num_pixels):

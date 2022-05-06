@@ -6,7 +6,7 @@ from ..filter.filter_function import FilterFunction
 from ..linear_model import LinearModel
 from ..discretization import TrivialAdaptiveDiscretization
 from .fci_class import FCI
-from .filter_function_to_evaluation_map import filter_function_to_evaluation_map
+from .filter_and_discretization_to_evaluation_map import filter_and_discretization_to_evaluation_map
 
 
 def fci_stack(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction_list: Sequence[FilterFunction],
@@ -25,7 +25,8 @@ def fci_stack(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction_lis
     # Generate list of affine evaluation maps from the filter function.
     aemap_list = []
     for ffunction in ffunction_list:
-        affine_evaluation_map = filter_function_to_evaluation_map(ffunction, discretization, x_map, weights=weights)
+        affine_evaluation_map = filter_and_discretization_to_evaluation_map(ffunction, discretization, x_map,
+                                                                            weights=weights)
         aemap_list.append(affine_evaluation_map)
     # Compute the credible intervals (in phi-space)
     computer = StackComputer(alpha=alpha, model=model, x_map=x_map, aemap_list=aemap_list, scale=x_map.max(),

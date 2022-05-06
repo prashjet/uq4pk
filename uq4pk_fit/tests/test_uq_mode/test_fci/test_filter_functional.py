@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from uq4pk_fit.uq_mode.fci.filter_functional import FilterFunctional
+from uq4pk_fit.uq_mode.fci.adapted_filter_functional import AdaptedFilterFunctional
 from uq4pk_fit.uq_mode.discretization import TrivialAdaptiveDiscretization, TrivialDiscretization
 from uq4pk_fit.uq_mode.filter import IdentityFilterFunction
 
@@ -16,7 +16,7 @@ def dummy_filter_map_functional():
     filter_function = IdentityFilterFunction(dim=N)
     test_filter = filter_function.filter(0)
     dummy_map = np.arange(N)
-    test_functional = FilterFunctional(filter=test_filter, x_map=dummy_map, discretization=discretization)
+    test_functional = AdaptedFilterFunctional(filter=test_filter, x_map=dummy_map, discretization=discretization)
     return test_filter, dummy_map, test_functional
 
 

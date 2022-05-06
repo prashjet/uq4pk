@@ -29,8 +29,11 @@ class LightWeightedForwardOperator(ForwardOperator):
         self._theta_jac = theta_jac
         # normalize the sum of the columns.
         column_sums = np.sum(x, axis=0)
+        # But I don't want to change (sum f), so I make sure that the column-sums sum to 1.
+        column_sums = column_sums / np.sum(column_sums)
         # Divide by column sums.
         self._x_bar = x / column_sums[np.newaxis, :]
+        self.weights = column_sums
 
     def fwd(self, f, theta):
         """
