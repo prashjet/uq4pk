@@ -3,7 +3,7 @@ import numpy as np
 
 from uq4pk_fit.uq_mode.filter import FilterFunction
 from .adaptive_fci import FCI
-from .k_enclosing_box import alpha_enclosing_box
+from uq4pk_fit.uq_mode.k_enclosing_box.alpha_enclosing_box import alpha_enclosing_box
 
 
 RTOL = 0.1  # Relative tolerance for credibility parameter.

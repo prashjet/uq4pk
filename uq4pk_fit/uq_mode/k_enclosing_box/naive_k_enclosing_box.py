@@ -2,27 +2,10 @@
 import numpy as np
 
 
-MAXITER = 100
+MAXITER = 500
 
 
-def alpha_enclosing_box(alpha: float, points: np.ndarray) -> np.ndarray:
-    """
-    Given n d-dimensional points, finds smallest box that contains ceil((1 - alpha) * n) points.
-
-    :param alpha: A number between 0 and 1.
-    :param points: Of shape (n, d), where n is the number of points and d their dimension.
-    :return: box. An array of shape (2, d), that determines a box in R^d via the condition box[0] <= x <= box[1].
-    """
-    assert 0 <= alpha <= 1
-    assert points.ndim == 2
-
-    n = points.shape[0]
-    k = np.ceil((1 - alpha) * n).astype(int)
-    alpha_box = k_enclosing_box(k, points)
-    return alpha_box
-
-
-def k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
+def naive_k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
     """
     Finds a small (maybe not the smallest) box that contains k of n given points in R^d (k <= n).
     The box is constructed in such a way that it also contains the mean of all points!
@@ -137,5 +120,3 @@ def _scale_box(box: np.ndarray, relsize: float) -> np.ndarray:
     center = 0.5 * (box[0] + box[1])
     scaled_box = relsize * (box - center[np.newaxis, :]) + center
     return scaled_box
-
-

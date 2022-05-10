@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 import numpy as np
 
-from uq4pk_fit.uq_mode.fci.k_enclosing_box import k_enclosing_box
+from uq4pk_fit.uq_mode.k_enclosing_box.alpha_enclosing_box import naive_k_enclosing_box
 
 
 show = False
@@ -15,7 +15,7 @@ def test_box_has_right_shape():
     d = 10
     np.random.seed(0)
     test_points = np.random.randn(n, d)
-    box = k_enclosing_box(k, test_points)
+    box = naive_k_enclosing_box(k, test_points)
     # Check that output has the right shape.
     assert box.shape == (2, d)
 
@@ -26,7 +26,7 @@ def test_box_contains_k_points():
     d = 100
     np.random.seed(0)
     test_points = np.random.randn(n, d)
-    box = k_enclosing_box(k, test_points)
+    box = naive_k_enclosing_box(k, test_points)
     # Count number of points in box.
     mask = np.all(test_points >= box[0], axis=1) & np.all(test_points <= box[1], axis=1)
     points_inside = test_points[mask, :]
@@ -44,7 +44,7 @@ def test_visual():
     # Apply transformation to distort points
     A = np.array([[3, 0], [0, 1]])
     test_points = test_points @ A
-    box = k_enclosing_box(k, test_points)
+    box = naive_k_enclosing_box(k, test_points)
 
     # Visualize the box and the points.
     if show:
