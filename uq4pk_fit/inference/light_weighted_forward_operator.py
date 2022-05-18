@@ -23,17 +23,18 @@ class LightWeightedForwardOperator(ForwardOperator):
         self.m_f = mass_weigthed_fwdop.m_f
         self.n_f = mass_weigthed_fwdop.n_f
         f_test = np.ones((mass_weigthed_fwdop.m_f, mass_weigthed_fwdop.n_f))
-        jac = mass_weigthed_fwdop.jac(f=f_test, theta=theta)
-        x = jac[:, :-self.dim_theta]
-        theta_jac = jac[:, -self.dim_theta:]
+        jac_unmasked = mass_weigthed_fwdop.jac_unmasked(f=f_test, theta=theta)
+        x_um = jac_unmasked[:, :-self.dim_theta]
+        x = x_um[mask, :]
+        theta_jac = jac_unmasked[mask, -self.dim_theta:]
         self._theta_jac = theta_jac
         # normalize the sum of the columns.
         column_sums = np.sum(x, axis=0)
-        # But I don't want to change (sum f), so I make sure that the column-sums sum to 1.
-        column_sums = column_sums / np.sum(column_sums)
         # Divide by column sums.
-        self._x_bar = x / column_sums[np.newaxis, :]
+        self._x_bar_unmasked = x_um / column_sums[np.newaxis, :]
+        self._x_bar = self._x_bar_unmasked[mask, :]
         self.weights = column_sums
+        self.mask = mask
 
     def fwd(self, f, theta):
         """
@@ -46,3 +47,6 @@ class LightWeightedForwardOperator(ForwardOperator):
     def jac(self, f, theta):
         jac = np.column_stack([self._x_bar, self._theta_jac])
         return jac
+
+    def fwd_unmasked(self, f: np.ndarray, theta: np.ndarray) -> np.ndarray:
+        return self._x_bar_unmasked @ f

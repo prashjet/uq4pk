@@ -15,7 +15,7 @@ from .progress_bar import ProgressBar
 from .create_socp import create_socp
 
 
-NUM_CPU = 7
+NUM_CPU = 8
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint
@@ -48,15 +48,7 @@ class StackComputer:
         # Initialize ray
         self._num_cpus = NUM_CPU
         self._use_ray = options.setdefault("use_ray", True)
-        optimizer = options.setdefault("optimizer", "SCS")
-        if optimizer == "SCS":
-            print("Using SCS.")
-            self._Optimizer = SCS
-        elif optimizer == "ECOS":
-            print("Using ECOS.")
-            self._Optimizer = ECOS
-        else:
-            raise ValueError("Unknown value for key 'optimizer'.")
+        self._eps = options.setdefault("eps", 1e-3)
         self._Optimizer = SCS
         self._optno = 2 * self._num_scales * self._dim
         if self._use_ray:
@@ -93,8 +85,8 @@ class StackComputer:
         for k in range(self._num_cpus):
             if self._use_ray:
                 socp_id = ray.put(socp)
-                opt1 = ray.put(self._Optimizer())
-                opt2 = ray.put(self._Optimizer())
+                opt1 = ray.put(self._Optimizer(eps=self._eps))
+                opt2 = ray.put(self._Optimizer(eps=self._eps))
                 lower_result = solve_distributed_remote.remote(socp=socp_id, aef_list_list=aef_list_for_cpu[k],
                                                                optimizer=opt1, ctol=self._ctol, actor=self._actor,
                                                                mode="min")

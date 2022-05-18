@@ -18,7 +18,8 @@ def fci_stack(alpha: float, model: LinearModel, x_map: np.ndarray, ffunction_lis
     for ffunction in ffunction_list:
         assert ffunction.dim == model.dim
 
-    if options is None: options = {}
+    if options is None:
+        options = {}
     # Get the optional weights
     weights = options.setdefault("weights", None)
     discretization = TrivialAdaptiveDiscretization(dim=model.dim)

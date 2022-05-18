@@ -45,17 +45,25 @@ class MassWeightedForwardOperator(ForwardOperator):
         :param theta: (K,)
         :return: array_like, (M,)
         """
-        f_im = np.reshape(f, (self.m_f, self.n_f))
-        y = self._op.evaluate(f_im, theta)
+        y = self.fwd_unmasked(f, theta)
         y_masked = y[self.mask]
         return y_masked
 
+    def fwd_unmasked(self, f, theta):
+        f_im = np.reshape(f, (self.m_f, self.n_f))
+        y = self._op.evaluate(f_im, theta)
+        return y
+
     def jac(self, f, theta):
+        dydx = self.jac_unmasked(f, theta)
+        dy_masked = dydx[self.mask, :]
+        return dy_masked
+
+    def jac_unmasked(self, f, theta):
         dy_df = self._jac_f(f, theta)
         dy_dtheta = self._jac_theta_v(f, theta)
         dydx = np.concatenate((dy_df, dy_dtheta), axis=1)
-        dy_masked = dydx[self.mask, :]
-        return dy_masked
+        return dydx
 
     def downsample(self, f_im):
         return f_im

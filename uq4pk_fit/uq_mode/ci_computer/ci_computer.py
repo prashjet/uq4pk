@@ -12,6 +12,7 @@ from .create_socp import create_socp
 
 RTOL = 0.001     # relative tolerance for the cost-constraint
 RACC = 1e-2      # relative accuracy for optimization solvers.
+NUM_CPUS = 7
 
 
 class CIComputer:
@@ -41,8 +42,9 @@ class CIComputer:
         if options is None:
             options = {}
         self._use_ray = options.setdefault("use_ray", True)
-        self._num_cpus = options.setdefault("num_cpus", 7)
+        self._num_cpus = options.setdefault("num_cpus", NUM_CPUS)
         optimizer_name = options.setdefault("optimizer", "ECOS")
+        self._eps = options.setdefault("eps", 1e-4)
         if optimizer_name == "ECOS":
             print("Using ECOS.")
             self._Optimizer = ECOS
@@ -110,8 +112,8 @@ class CIComputer:
             socp_i2 = ray.put(socp_i)
             aef_list_i_id1 = ray.put(aef_list_i)
             aef_list_i_id2 = ray.put(aef_list_i)
-            opt1 = ray.put(self._Optimizer())
-            opt2 = ray.put(self._Optimizer())
+            opt1 = ray.put(self._Optimizer(eps=self._eps))
+            opt2 = ray.put(self._Optimizer(eps=self._eps))
             out_lower = socp_solve_remote.remote(aef_list=aef_list_i_id1, socp=socp_i1, optimizer=opt1, ctol=self._ctol,
                                           actor=self._actor, mode="min")
             out_upper = socp_solve_remote.remote(aef_list=aef_list_i_id2, socp=socp_i2, optimizer=opt2, ctol=self._ctol,

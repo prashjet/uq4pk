@@ -67,5 +67,6 @@ def create_socp(aefun: AffineEvaluationFunctional, credible_region: CredibleRegi
     lb_z = aefun.lb_z(credible_region.lb)
 
     # Create SOCP instance
-    socp = SOCP(w=w, a=a_new, b=b_new, c=t_z, d=d_tilde_z, e=e_tilde_z, lb=lb_z)
+    x_guess = credible_region.x_map
+    socp = SOCP(w=w, a=a_new, b=b_new, c=t_z, d=d_tilde_z, e=e_tilde_z, lb=lb_z, x_guess=x_guess)
     return socp

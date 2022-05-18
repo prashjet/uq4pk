@@ -11,6 +11,8 @@ class ECOS(Optimizer):
     """
     Solves SOCP problems using ECOS (via the cvxopt interface).
     """
+    def __init__(self, eps: float):
+        self.eps = eps
 
     def setup_problem(self, socp: SOCP, ctol: float, mode: Literal["min", "max"]):
         x = cp.Variable(socp.n)

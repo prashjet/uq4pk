@@ -42,8 +42,8 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
     log_stack = scale_normalized_laplacian(ssr, t_list, mode="reflect")
 
     # Determine scale-space blobs as local scale-space minima
-    blobs = stack_to_blobs(scale_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh, max_overlap=max_overlap,
-                           exclude_max_scale=exclude_max_scale)
+    blobs = stack_to_blobs(scale_stack=ssr, log_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh,
+                           max_overlap=max_overlap, exclude_max_scale=exclude_max_scale)
 
     return blobs
 
@@ -89,7 +89,7 @@ def remove_overlap(blobs: List[GaussianBlob], max_overlap: float):
     return cleaned_blobs
 
 
-def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList,
+def stack_to_blobs(scale_stack: np.ndarray, log_stack: np.ndarray, sigma_list: SigmaList,
                    max_overlap: Union[float, None], exclude_max_scale: bool, athresh: float = None,
                    rthresh: float = None)\
         -> List[GaussianBlob]:
@@ -106,7 +106,7 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList,
 
     # DETERMINE SCALE-SPACE BLOBS
     # Determine local scale-space minima
-    local_minima = morphology.local_minima(image=scale_stack, indices=True, allow_borders=True)
+    local_minima = morphology.local_minima(image=log_stack, indices=True, allow_borders=True)
     local_minima = np.array(local_minima).T
 
     n_scales = scale_stack.shape[0]
@@ -121,14 +121,16 @@ def stack_to_blobs(scale_stack: np.ndarray, sigma_list: SigmaList,
         blobs = []
         for b in local_minima:
             sigma_b = sigma_list[b[0]]
-            sslaplacian = scale_stack[b[0], b[1], b[2]]
-            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=sslaplacian)
+            t_b = 0.25 * np.sum(np.square(sigma_b))
+            intensity_b = t_b * scale_stack[b[0], b[1], b[2]]
+            log_b = log_stack[b[0], b[1], b[2]]
+            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=log_b, intensity=intensity_b)
             blobs.append(blob)
 
         # Remove all features below threshold.
         # If 'athresh' is given, it is used instead of 'rthresh'.
         if athresh is None:
-            athresh = scale_stack.min() * rthresh
+            athresh = log_stack.min() * rthresh
         n_blobs_raw = len(blobs)
         print(f"{n_blobs_raw} blobs found")
         blobs = threshold_local_minima(blobs, athresh)

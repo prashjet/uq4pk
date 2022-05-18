@@ -12,3 +12,6 @@ class ForwardOperator:
 
     def jac(self, f: np.ndarray, theta: np.ndarray) -> np.ndarray:
         raise NotImplementedError
+
+    def fwd_unmasked(self, f: np.ndarray, theta: np.ndarray) -> np.ndarray:
+        raise NotImplementedError

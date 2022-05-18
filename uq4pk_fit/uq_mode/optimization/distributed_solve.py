@@ -29,6 +29,7 @@ def solve_distributed(socp: SOCP, aef_list_list: Sequence[Sequence[AffineEvaluat
     """
     Remote handle for socp_solve, allowing parallelization via Ray.
 
+    :param scale: A scaling factor by which to multiply the target functional.
     :returns: Of shape (k, n).
     """
     # Setup optimizer.

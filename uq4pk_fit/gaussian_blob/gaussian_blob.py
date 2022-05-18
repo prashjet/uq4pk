@@ -8,7 +8,8 @@ class GaussianBlob:
     """
     Represents a two-dimensional anisotropic Gaussian blob.
     """
-    def __init__(self, x1: int, x2: int, sigma: Union[float, np.ndarray], log: float, angle: float = 0):
+    def __init__(self, x1: int, x2: int, sigma: Union[float, np.ndarray], log: float, intensity: float,
+                 angle: float = 0):
         """
         We always use the axes
         0----> x2
@@ -23,7 +24,7 @@ class GaussianBlob:
         :param sigma_x: Vertical extend (standard deviation) of the blob.
         :param sigma_y: Horizontal extend (standard deviation) of the blob.
         :param log: The value of the Laplacian-of-Gaussian at the blob.
-        :param scaleno: Internal parameter.
+        :param intensity: Scale-normalized intensity of blob.
         :param angle: The blob's angle.
         """
         self._x1 = x1
@@ -35,6 +36,7 @@ class GaussianBlob:
             self._sigma1 = sigma
             self._sigma2 = sigma
         self._log = log
+        self._intensity = intensity
         self._angle = angle
 
     @property
@@ -87,6 +89,13 @@ class GaussianBlob:
         The value of the blob's scale-space Laplacian.
         """
         return self._log
+
+    @property
+    def intensity(self) -> float:
+        """
+        The scale-normalized intensity of the blob.
+        """
+        return self._intensity
 
     @property
     def scale(self) -> float:

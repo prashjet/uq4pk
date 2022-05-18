@@ -164,7 +164,8 @@ class FittedModel:
         upper_stack = self._reshape_stack(stack=fci_obj.upper)
         return lower_stack, upper_stack
 
-    def fci_stack(self, alpha: float, sigma_list: Sequence[Union[float, np.ndarray]]) -> Tuple[np.ndarray, np.ndarray]:
+    def fci_stack(self, alpha: float, sigma_list: Sequence[Union[float, np.ndarray]], options: dict = None) \
+            -> Tuple[np.ndarray, np.ndarray]:
         """
         Computes a stack of FCIs using some additional speedups that assuming a trivial discretization.
 
@@ -175,17 +176,19 @@ class FittedModel:
             corresponding FCI.
 
         """
+        if options is None:
+            options = {}
         if not self._parameter_map.theta_fixed:
             raise NotImplementedError("This method is only implemented for fixed theta.")
         # Make list of filtered functions.
         filter_list = []
         for sigma in sigma_list:
-            options = {"sigma": sigma}
-            filter_function, filter_f, filter_theta = self._get_filter_function(options)
+            opt = {"sigma": sigma}
+            filter_function, filter_f, filter_theta = self._get_filter_function(opt)
             filter_list.append(filter_f)
 
         fci_obj = uq_mode.fci_stack(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
-                                    ffunction_list=filter_list)
+                                    ffunction_list=filter_list, options=options)
         lower_stack = self._reshape_stack(stack=fci_obj.lower)
         upper_stack = self._reshape_stack(stack=fci_obj.upper)
         return lower_stack, upper_stack

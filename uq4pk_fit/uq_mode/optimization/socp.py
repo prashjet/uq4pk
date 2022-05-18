@@ -13,7 +13,7 @@ class SOCP:
         x >= lb
     """
     def __init__(self, w: np.ndarray, a: Union[np.ndarray, None], b: Union[np.ndarray, None],
-                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None]):
+                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None], x_guess: np.ndarray):
         # check input
         self._check_input(w, a, b, c, d, e, lb)
         # check that the equality constraints satisfy constraint qualification
@@ -30,6 +30,7 @@ class SOCP:
         self.d = deepcopy(d)
         self.e = deepcopy(e)
         self.lb = deepcopy(lb)
+        self.x_guess = deepcopy(x_guess)
         if self.lb is not None:
             self.bound_constrained = True
         else:

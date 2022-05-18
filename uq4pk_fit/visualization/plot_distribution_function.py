@@ -1,9 +1,10 @@
 
 from matplotlib import pyplot as plt
+from .params import CMAP, NORM
 
 
 
-def plot_distribution_function(image, ssps = None, show=False, savefile: str = None, vmax=None, vmin=None, ):
+def plot_distribution_function(image, ssps = None, show=False, savefile: str = None, vmax=None):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.
@@ -14,10 +15,12 @@ def plot_distribution_function(image, ssps = None, show=False, savefile: str = N
     :param vmin:
     :param show: If False, the plot is not shown.
     """
-    cmap = plt.get_cmap("gnuplot")
+    cmap = plt.get_cmap(CMAP)
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
-    im = plt.imshow(image, vmax=vmax, vmin=vmin, cmap=cmap, extent=(0, 1, 0, 1), aspect="auto")
+    if vmax is None:
+        vmax = image.max()
+    im = plt.imshow(image, vmax=vmax, vmin=0., cmap=cmap, extent=(0, 1, 0, 1), aspect="auto", norm=NORM)
     cax = fig.add_axes([ax.get_position().x1 + 0.01, ax.get_position().y0, 0.02, ax.get_position().height])
     cbar = plt.colorbar(im, cax=cax)
     cbar.set_label("density")

@@ -33,7 +33,8 @@ def detect_interesting_blobs(sigma_list: SigmaList, reference: np.ndarray, regul
     # Apply scale-normalized Laplacian to regularized stack.
     regularized_log_stack = scale_normalized_laplacian(ssr=regularized_stack, scales=scale_list, mode="reflect")
     # Compute blanket-blobs.
-    interesting_blobs = stack_to_blobs(scale_stack=regularized_log_stack, sigma_list=sigma_list, rthresh=rthresh,
+    interesting_blobs = stack_to_blobs(scale_stack=regularized_stack, log_stack=regularized_log_stack,
+                                       sigma_list=sigma_list, rthresh=rthresh,
                                        max_overlap=overlap1, exclude_max_scale=True)
     # Compute mapped pairs.
     mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=interesting_blobs, overlap=overlap2)
@@ -82,16 +83,25 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     scale_list = [0.25 * np.sum(np.square(sigma)) for sigma in sigma_list]
     # Identify features in reference image.
     reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap1, rthresh=rthresh1)
+    intensities = np.array([blob.intensity for blob in reference_blobs])
     # Get LoG-value of weakest blob.
-    log_thresh = max([blob.log for blob in reference_blobs])
+    intensity_tresh = max(intensities)
+    print(f"Intensity threshold = {intensity_tresh}")
     # Compute blanket stack.
     blanket_stack = _compute_blanket_stack(lower_stack=lower_stack, upper_stack=upper_stack)
     # Apply scale-normalized Laplacian to blanket stack.
     blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, scales=scale_list, mode="reflect")
-    min_log = blanket_laplacian_stack.min()
     # Compute blanket-blobs.
-    blanket_blobs = stack_to_blobs(scale_stack=blanket_laplacian_stack, sigma_list=sigma_list, rthresh=rthresh2,
-                                   max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
+    blanket_blobs = stack_to_blobs(scale_stack=blanket_stack, log_stack=blanket_laplacian_stack, sigma_list=sigma_list,
+                                   rthresh=rthresh1, max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
+    # I want to know maximum sigma at which a blob is detected.
+    sigmas = np.array([blob._sigma2 for blob in blanket_blobs])
+    print(f"Max sigma = {sigmas.max()}")
+    # Remove blobs below threshold.
+    len0 = len(blanket_blobs)
+    blanket_blobs = [blob for blob in blanket_blobs if blob.intensity >= rthresh2 * intensity_tresh]
+    len1 = len(blanket_blobs)
+    print(f"{len0 - len1}/{len0} low-intensity blobs removed.")
     # Compute mapped pairs.
     mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=blanket_blobs, overlap=overlap2)
 

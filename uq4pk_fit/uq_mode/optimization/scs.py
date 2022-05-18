@@ -12,7 +12,8 @@ class SCS(Optimizer):
 
     WARNING: SCS really doesn't like it if lb != 0.
     """
-    def __init__(self):
+    def __init__(self, eps: float):
+        self.eps = eps
         self._wnorm = 0.
 
     def setup_problem(self, socp: SOCP, ctol: float, mode: Literal["min", "max"]):
@@ -24,7 +25,6 @@ class SCS(Optimizer):
             bias = np.zeros(socp.n)
         u = cp.Variable(socp.n)
         sqrt_e = np.sqrt(socp.e)
-        b = np.linalg.norm(socp.c @ bias - socp.d)
         constraints = [cp.SOC(sqrt_e, (socp.c @ u + socp.c @ bias - socp.d))]
         # add equality constraint
         if socp.equality_constrained:
@@ -47,11 +47,12 @@ class SCS(Optimizer):
         self._w = w
 
     def change_loss(self, w: np.ndarray):
-        wnorm = np.linalg.norm(w)
-        self._w.value = w / wnorm
+        # Rescale loss, the idea is that w @ f should be on the order 0 to 1.
+        w_scale = np.linalg.norm(w)
+        self._w.value = w / w_scale
 
     def optimize(self) -> float:
-        self._cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS)
+        self._cp_problem.solve(warm_start=True, verbose=False, solver=cp.SCS, eps=self.eps)
         u_optimizer = self._u.value
         x_optimizer = u_optimizer + self._bias
         return x_optimizer

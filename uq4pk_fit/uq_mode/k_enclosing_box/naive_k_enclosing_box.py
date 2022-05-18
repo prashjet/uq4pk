@@ -2,7 +2,7 @@
 import numpy as np
 
 
-MAXITER = 500
+MAXITER = 200
 
 
 def naive_k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
@@ -39,6 +39,7 @@ def naive_k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
     size_high = 1.
     points_inside_high = points_inside
     i = 0
+    print("Initializing search ...")
     while points_inside_high.shape[0] < k:
         size_high = 2 * size_high
         scaled_box = _scale_box(box, size_high)
@@ -50,6 +51,8 @@ def naive_k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
     # Then, find ideal size through bisection.
     success = False
     for i in range(MAXITER):
+        print("\r", end="")
+        print(f"Iteration {i+1}/{MAXITER}, size = {size}", end=" ")
         if points_inside.shape[0] >= k:
             # To many points inside, have to make box smaller.
             size_high = size
@@ -63,6 +66,7 @@ def naive_k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
         # Determine number of points inside scaled box
         points_inside = _points_inside_box(points, scaled_box)
         if points_inside.shape[0] == k:
+            print("Sucess!")
             success = True
             break
     if not success:
