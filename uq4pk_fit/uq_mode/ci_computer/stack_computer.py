@@ -15,7 +15,7 @@ from .progress_bar import ProgressBar
 from .create_socp import create_socp
 
 
-NUM_CPU = 8
+NUM_CPU = 7
 
 
 RTOL = 0.01     # relative tolerance for the cost-constraint

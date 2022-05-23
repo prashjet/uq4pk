@@ -25,7 +25,7 @@ class FittedModel:
         x >= lb, A @ x = b.
     """
     def __init__(self, x_map: List[ArrayLike], problem: cgn.Problem, parameter_map: ParameterMap, m_f, n_f, dim_theta,
-                 starting_values: List[ArrayLike]):
+                 starting_values: List[ArrayLike], scale: float):
         """
         """
         self._x_map = x_map
@@ -46,6 +46,7 @@ class FittedModel:
         self._dim_f = self._m_f * self._n_f
         self._starting_values = starting_values
         self._x_map_vec = self._x_map_vec.clip(self._linearized_model.lb)
+        self.scale = scale
 
     def costfun(self, f, theta_v):
         x = self._parameter_map.x(f, theta_v)
@@ -58,7 +59,7 @@ class FittedModel:
         Returns MAP estimate for age-metallicity distribution in the correct format!
         """
         f_map_im = np.reshape(self._f_map, (self._m_f, self._n_f))
-        return f_map_im
+        return f_map_im * self.scale
 
     @property
     def theta_map(self):
@@ -283,8 +284,8 @@ class FittedModel:
         fci_obj = uq_mode.fci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
                               filter_function=marginalization_ffunction, options=options)
         # Postprocess the output and return.
-        lb = fci_obj.lower.flatten()
-        ub = fci_obj.upper.flatten()
+        lb = self.scale * fci_obj.lower.flatten()
+        ub = self.scale * fci_obj.upper.flatten()
         return lb, ub
 
     # PROTECTED
@@ -304,6 +305,9 @@ class FittedModel:
         fci_obj = uq_mode.adaptive_fci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
                                        filter_functions=filter_list, discretization=discretization,
                                        downsampling=downsampling, options=options)
+        # Rescale
+        fci_obj.lower *= self.scale
+        fci_obj.upper *= self.scale
         return fci_obj
 
     def _setup_downsampling(self, options) -> uq_mode.Downsampling:

@@ -4,7 +4,7 @@ from typing import List, Sequence, Tuple, Union
 import miniball
 import numpy as np
 
-from ..detect_blobs import detect_blobs
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
 from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
 from .detect_significant_blobs import _find_blob
 

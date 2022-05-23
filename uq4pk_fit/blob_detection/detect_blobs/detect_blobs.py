@@ -5,12 +5,13 @@ from typing import List, Sequence, Union
 from skimage import morphology
 
 from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
-from .scale_space_representation import scale_space_representation
-from .scale_normalized_laplacian import scale_normalized_laplacian
-from .blob_geometry import compute_overlap
+from uq4pk_fit.blob_detection.scale_space_representation.scale_space_representation import scale_space_representation
+from uq4pk_fit.blob_detection.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.blob_detection.blob_geometry import compute_overlap
 
 
 SigmaList = Sequence[Union[float, np.ndarray]]
+order = "first"
 
 
 def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 0.5,
@@ -43,7 +44,7 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
 
     # Determine scale-space blobs as local scale-space minima
     blobs = stack_to_blobs(scale_stack=ssr, log_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh,
-                           max_overlap=max_overlap, exclude_max_scale=exclude_max_scale)
+                           max_overlap=max_overlap, exclude_max_scale=exclude_max_scale)#
 
     return blobs
 
@@ -131,17 +132,11 @@ def stack_to_blobs(scale_stack: np.ndarray, log_stack: np.ndarray, sigma_list: S
         # If 'athresh' is given, it is used instead of 'rthresh'.
         if athresh is None:
             athresh = log_stack.min() * rthresh
-        n_blobs_raw = len(blobs)
-        print(f"{n_blobs_raw} blobs found")
         blobs = threshold_local_minima(blobs, athresh)
-        n_blobs_threshold = len(blobs)
-        print(f"{n_blobs_raw - n_blobs_threshold} removed due to weakness.")
 
         # Remove overlap
         if max_overlap is not None:
             blobs = remove_overlap(blobs, max_overlap)
-            n_blobs_overlap = len(blobs)
-            print(f"{n_blobs_threshold - n_blobs_overlap} removed due to overlap.")
 
     return blobs
 

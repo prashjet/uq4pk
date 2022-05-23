@@ -15,6 +15,9 @@ from .forward_operator import ForwardOperator
 from .fitted_model import FittedModel
 
 
+REGFACTOR = 1e6
+
+
 class StatModel:
     """
     Abstract base class for that manages the optimization problem, regularization, and optionally also the
@@ -38,19 +41,23 @@ class StatModel:
         """
         # setup misfit handler
         self._op = forward_operator
-        self.y = y
-        self._R = DiagonalOperator(dim=y.size, s=1 / y_sd)
+        y_sum = np.sum(y)
+        y_scaled = y / y_sum
+        y_sd_scaled = y_sd / y_sum
+        self.y = y_scaled
+        self.scaling_factor = y_sum
+        self._R = DiagonalOperator(dim=y.size, s=1 / y_sd_scaled)
         # get parameter dimensions from misfit handler
         self.m_f = forward_operator.m_f
         self.n_f = forward_operator.n_f
         self.dim_f = self.m_f * self.n_f
         self.dim_y = y.size
-        self.snr = np.linalg.norm(y) / np.linalg.norm(y_sd)
+        self.snr = np.linalg.norm(y_scaled) / np.linalg.norm(y_sd_scaled)
         self.dim_theta = forward_operator.dim_theta
         # initialize parameter map
         self._parameter_map = ParameterMap(dim_f=self.dim_f, dim_theta=self.dim_theta)
         # initialize misfit handler
-        self._misfit_handler = MisfitHandler(y=y, op=forward_operator, parameter_map=self._parameter_map)
+        self._misfit_handler = MisfitHandler(y=y_scaled, op=forward_operator, parameter_map=self._parameter_map)
 
         # SET DEFAULT PARAMETERS
         self.lb_f = np.zeros(self.dim_f)
@@ -58,8 +65,8 @@ class StatModel:
 
         # SET DEFAULT REGULARIZATION PARAMETERS
         # set regularization parameters for f
-        self.beta1 = self.snr * 1e3     # rule of thumb found after hours of trial-and-error
-        self.f_bar = np.zeros(self.dim_f)
+        self.beta1 = REGFACTOR
+        self.f_bar = np.zeros(self.dim_f) / self.scaling_factor
         h = np.array([4., 2.])
         self.P1 = OrnsteinUhlenbeck(m=self.m_f, n=self.n_f, h=h)
         # set regularization parameters for theta_v
@@ -70,7 +77,7 @@ class StatModel:
 
         # SET DEFAULT STARTING VALUES FOR OPTIMIZATION
         # default starting values
-        self.f_start = np.ones(self.dim_f) / self.dim_f
+        self.f_start = (np.ones(self.dim_f) / self.dim_f) / self.scaling_factor
         self.theta_v_start = self.theta_bar
         self._eqcon = None
 
@@ -92,7 +99,7 @@ class StatModel:
         Turns normalization on.
         """
         a = np.ones((1, self.dim_f))
-        b = mass * np.ones((1,))
+        b = mass * np.ones((1,)) / self.scaling_factor
         self._set_equality_constraint_for_f(a, b)
 
     def fit(self):
@@ -137,7 +144,8 @@ class StatModel:
     def _assemble_fitted_model(self, x_map, problem) -> FittedModel:
         x_start = self._parameter_map.x(self.f_start, self.theta_v_start)
         fitted_model = FittedModel(x_map=x_map, problem=problem, parameter_map=self._parameter_map, m_f=self.m_f,
-                                   n_f=self.n_f, dim_theta=self.dim_theta, starting_values=x_start)
+                                   n_f=self.n_f, dim_theta=self.dim_theta, starting_values=x_start,
+                                   scale=self.scaling_factor)
         return fitted_model
 
     def _set_equality_constraint_for_f(self, a, b):

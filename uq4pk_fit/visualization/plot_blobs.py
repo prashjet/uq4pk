@@ -94,7 +94,7 @@ def plot_blobs(image: np.ndarray, blobs: Sequence[GaussianBlob], savefile: str =
         vmax = image.max()
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
-    im = plt.imshow(image, cmap=CMAP, aspect="auto", vmin=0., vmax=vmax, norm=NORM)
+    im = plt.imshow(image, cmap=CMAP, aspect="auto", vmin=0., vmax=vmax, norm=NORM, extent=(0, 1, 0, 1))
     cax = fig.add_axes([ax.get_position().x1 + 0.01, ax.get_position().y0, 0.02, ax.get_position().height])
     cbar = plt.colorbar(im, cax=cax)
     cbar.set_label("density")

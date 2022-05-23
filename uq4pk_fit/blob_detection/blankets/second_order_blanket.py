@@ -30,6 +30,7 @@ def second_order_blanket(lb: np.ndarray, ub: np.ndarray, mode: Literal["fast", "
     :return: The solution, as d-dimensional array of the same shape as 'lb' and 'ub'.
     """
     assert lb.shape == ub.shape
+    assert np.all(lb <= ub)
     # If ub > lb, then we can safely return the zero blanket.
     if ub.min() > lb.max():
         blanket = np.ones(lb.shape) * lb.max()

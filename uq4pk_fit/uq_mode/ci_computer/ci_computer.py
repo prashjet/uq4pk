@@ -13,6 +13,7 @@ from .create_socp import create_socp
 RTOL = 0.001     # relative tolerance for the cost-constraint
 RACC = 1e-2      # relative accuracy for optimization solvers.
 NUM_CPUS = 7
+EPS = 1e-3
 
 
 class CIComputer:
@@ -44,7 +45,8 @@ class CIComputer:
         self._use_ray = options.setdefault("use_ray", True)
         self._num_cpus = options.setdefault("num_cpus", NUM_CPUS)
         optimizer_name = options.setdefault("optimizer", "ECOS")
-        self._eps = options.setdefault("eps", 1e-4)
+        self._eps = options.setdefault("eps", EPS)
+        print(f"eps = {self._eps}")
         if optimizer_name == "ECOS":
             print("Using ECOS.")
             self._Optimizer = ECOS
@@ -133,7 +135,7 @@ class CIComputer:
     def _compute_without_ray(self):
         out_lower_list = []
         out_upper_list = []
-        optimizer = self._Optimizer()
+        optimizer = self._Optimizer(eps=self._eps)
         for i in range(self._num_pixels):
             # Create list of all affine evaluation functionals at that pixels.
             aef_list_i = [aemap.aef_list[i] for aemap in self._aemap_list]

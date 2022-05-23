@@ -52,9 +52,6 @@ def minimize_surface(lb: np.ndarray, ub: np.ndarray, mode: Literal["exact", "fas
     else:
         raise KeyError("Unknown mode.")
 
-    # Perform sanity check.
-    _sanity_check(blanket, lb, ub)
-
     return blanket
 
 
@@ -143,45 +140,30 @@ def _minimize_surface_fast(lb: np.ndarray, ub: np.ndarray, g: Union[np.ndarray, 
         """
         return nabla_g
 
-    lbvec = lb.flatten()
-    ubvec = ub.flatten()
+    # Bring to unit scale.
+    scale = ub.max()
+    lbvec = lb.flatten() / scale
+    ubvec = ub.flatten() / scale
     x0 = 0.5 * (lbvec + ubvec)
 
     # Solve problem with CGN.
     n = lbvec.size
     x = cgn.Parameter(dim=n, name="x")
     # Add very small regularization term
-    scale = np.sum(np.square(fun(ubvec)))
-    x.beta = 1e-5 * scale
+    size = np.sum(np.square(fun(x0)))
+    x.beta = 1e-5 * size
     x.lb = lbvec
     x.ub = ubvec
     problem = cgn.Problem(parameters=[x], fun=fun, jac=jac)
     solver = cgn.CGN()
+    solver.options.ctol = 1e-6
     solution = solver.solve(problem=problem, starting_values=[x0])
     x_min = solution.minimizer("x")
 
+    # Bring minimizer back to original scale.
+    x_min = scale * x_min
     # Bring minimizer into the correct format.
     x_arr = np.reshape(x_min, lb.shape)
 
     # Return the solution as two-dimensional numpy array.
     return x_arr
-
-
-def _sanity_check(x_im: np.ndarray, lb: np.ndarray, ub: np.ndarray):
-    """
-    Performs basic sanity check, i.e. the solution must satisfy the constraints.
-
-    :param x_im:
-    :param lb:
-    :param ub:
-    :raises Exception: If x is infeasible.
-    """
-    lb_error = np.max((lb - x_im).clip(min=0.))
-    ub_error = np.max((x_im - ub).clip(min=0.))
-    if lb_error > CTOL:
-        raise Warning("Unable to satisfy lower bound constraint."
-                      f"Violation is {lb_error}, but tolerance is {CTOL}")
-    if ub_error > CTOL:
-        raise Warning("Unable to satisfy upper bound constraint."
-                      f"Violation is {ub_error}, but tolerance is {CTOL}")
-    return lb

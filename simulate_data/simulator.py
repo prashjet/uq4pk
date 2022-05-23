@@ -41,7 +41,7 @@ def simulate(name: str, snr: float, ssps, f_im: np.array, theta_v: np.array, lig
     y = y_bar + noi
     y_sd = y_sd
     y = y
-    print(f"Data scale: {np.linalg.norm(y)}")
+    print(f"Data scale: {y.sum()}")
     print(f"Actual snr = {np.linalg.norm(y_bar) / np.linalg.norm(noi)}")
     print(f"||y_exact|| / ||y_sd|| = {np.linalg.norm(y_bar) / np.linalg.norm(y_sd)}")
     experiment_data = SimulatedExperimentData(name=name, snr=snr, y=y, y_sd=y_sd, y_bar=y_bar, f_true=f_true,

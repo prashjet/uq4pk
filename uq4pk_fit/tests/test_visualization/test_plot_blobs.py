@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
 from uq4pk_fit.visualization import plot_significant_blobs
 
 

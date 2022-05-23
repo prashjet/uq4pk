@@ -57,15 +57,13 @@ class SVD_MCMC:
     def whiten_X(self):
         if self.mask is None:
             sum_x_j = np.sum(self.X, 0)
-            sum_y = np.sum(self.y)
         else:
             sum_x_j = np.sum(self.X[self.mask,:], 0)
-            sum_y = np.sum(self.y[self.mask])
-        X_tmp = sum_y * self.X/sum_x_j
+        X_tmp = self.X/sum_x_j
         self.mu = np.mean(X_tmp, 1)
         self.X_tilde = (X_tmp.T - self.mu).T
-        self.D = np.diag(sum_x_j/sum_y)
-        self.Dinv = np.diag(sum_y/sum_x_j)
+        self.D = np.diag(sum_x_j)
+        self.Dinv = np.diag(1 / sum_x_j)
 
     def do_svd(self):
         U, Sig, VT = np.linalg.svd(self.X_tilde)
@@ -120,13 +118,50 @@ class SVD_MCMC:
                 return y_obs
         return eta_alpha_model
 
+    def get_consistent_eta_alpha_model(self, Sigma_beta: np.ndarray):
+        """
+        Defines priors on eta and alpha based on prior on Sigma_beta:
+        alpha ~ N(0, sum(Sigma_beta)),
+        eta ~ N(0, H Sigma_beta H.T).
+        """
+        beta_scale = np.linalg.norm(Sigma_beta)
+        self.eta_scale = np.sqrt(beta_scale)
+        sigma_alpha = np.sum(Sigma_beta)
+        sigma_eta = self.H @ Sigma_beta @ self.H.T / beta_scale
+        print(f"sigma_alpha = {sigma_alpha}")
+        print(f"||sigma_eta|| = {np.linalg.norm(sigma_eta)}")
+        if self.mask is None:
+            def eta_alpha_model(sigma_alpha=sigma_alpha,
+                                sigma_eta=sigma_eta,
+                                y_obs=None):
+                alpha = numpyro.sample("alpha", dist.Normal(1, sigma_alpha))
+                eta = numpyro.sample("eta", dist.MultivariateNormal(0, sigma_eta))
+                ybar = alpha*self.mu + self.eta_scale * jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                y_obs = numpyro.sample("y_obs", nrm, obs=self.y)
+                return y_obs
+        else:
+            def eta_alpha_model(sigma_alpha=sigma_alpha,
+                                sigma_eta=sigma_eta,
+                                y_obs=None):
+                alpha = numpyro.sample("alpha", dist.Normal(1, sigma_alpha))
+                eta = numpyro.sample("eta",
+                                     dist.MultivariateNormal(0, sigma_eta))
+                ybar = alpha*self.mu + self.eta_scale * jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                masked_nrm = nrm.mask(self.mask)
+                y_obs = numpyro.sample("y_obs", masked_nrm, obs=self.y)
+                return y_obs
+        return eta_alpha_model
+
     def get_beta_tilde_model(self,
                              eta_alpha_samples=None,
                              Sigma_beta_tilde=None):
         mu_alpha_y = np.mean(eta_alpha_samples['alpha'])
         sigma_alpha_y = np.std(eta_alpha_samples['alpha'])
-        mu_eta_y = np.mean(eta_alpha_samples['eta'], 0)
-        sigma_eta_y = np.std(eta_alpha_samples['eta'], 0)
+        eta_samples = self.eta_scale * eta_alpha_samples['eta']
+        mu_eta_y = np.mean(eta_samples, 0)
+        sigma_eta_y = np.cov(eta_samples.T)
         mu_beta_tilde = np.zeros(self.p)
         def beta_tilde_model():
             # hack for non-negativity
@@ -134,7 +169,7 @@ class SVD_MCMC:
                                         dist.TruncatedNormal(0, 10., low=0),
                                         sample_shape=(self.p,))
             # from the datafit
-            nrm = dist.Normal(mu_eta_y, sigma_eta_y)
+            nrm = dist.MultivariateNormal(mu_eta_y, sigma_eta_y)
             numpyro.factor("likelihood",
                            jnp.sum(nrm.log_prob(jnp.dot(self.H, beta_tilde))))
             alpha_nrm = dist.Normal(mu_alpha_y, sigma_alpha_y)

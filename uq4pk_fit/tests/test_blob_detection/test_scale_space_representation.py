@@ -2,7 +2,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-from uq4pk_fit.blob_detection.scale_space_representation import scale_space_representation
+from uq4pk_fit.blob_detection.scale_space_representation.scale_space_representation import scale_space_representation
 
 
 SHOW = True    # Set True if you want to see plots.

@@ -42,8 +42,11 @@ def first_order_blanket(lb: np.ndarray, ub: np.ndarray):
         """
         return delta
 
-    lbvec = lb.flatten()
-    ubvec = ub.flatten()
+    # First, rescale.
+    scale = ub.max()
+
+    lbvec = lb.flatten() / scale
+    ubvec = ub.flatten() / scale
     x0 = 0.5 * (lbvec + ubvec)
 
     # Solve problem with CGN.
@@ -57,6 +60,9 @@ def first_order_blanket(lb: np.ndarray, ub: np.ndarray):
     solver.options.set_verbosity(lvl=0)
     solution = solver.solve(problem=problem, starting_values=[x0])
     x_min = solution.minimizer("x")
+
+    # Bring minimizer back to the original scale.
+    x_min = scale * x_min
 
     # Bring minimizer into the correct format.
     blanket = np.reshape(x_min, lb.shape)

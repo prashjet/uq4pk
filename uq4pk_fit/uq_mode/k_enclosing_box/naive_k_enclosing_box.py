@@ -85,7 +85,7 @@ def naive_k_enclosing_box(k: int, points: np.ndarray) -> np.ndarray:
     mean = np.mean(points, axis=0)
     mean_inside = np.all(mean >= box_lower) and np.all(mean <= box_upper)
     if not mean_inside:
-        raise Warning("Mean point not inside box.")#
+        print("WARNING: Mean point not inside box.")
 
     # Enforce box_lower <= box_upper
     box_upper = box_upper.clip(min=box_lower)

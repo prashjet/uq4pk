@@ -1,3 +1,4 @@
-from .significant_blobs import detect_significant_blobs, detect_significant_blobs_from_samples, detect_interesting_blobs
-from .detect_blobs import detect_blobs
+
+from .significant_blobs import detect_significant_blobs
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
 from .minimize_blobiness import minimize_blobiness

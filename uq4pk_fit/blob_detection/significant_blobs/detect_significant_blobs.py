@@ -1,46 +1,22 @@
 
 import numpy as np
-from typing import List, Tuple, Union, Sequence
+from typing import List, Union, Sequence
+from matplotlib import pyplot as plt
 
-from uq4pk_fit.blob_detection.detect_blobs import compute_overlap, detect_blobs
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import compute_overlap, detect_blobs
 from uq4pk_fit.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.blankets.first_order_blanket import first_order_blanket
-from uq4pk_fit.visualization.plot_distribution_function import plot_distribution_function
-from ..scale_normalized_laplacian import scale_normalized_laplacian
-from ..detect_blobs import best_blob_first, stack_to_blobs
+from uq4pk_fit.blob_detection.blankets.second_order_blanket import second_order_blanket
+from uq4pk_fit.blob_detection.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import best_blob_first, stack_to_blobs
 
 
 SHOW_BLANKETS = False
+ORDER = 1
 
 
 # Make type for sigma list
 SigmaList = Sequence[Union[float, np.ndarray]]
-
-
-def detect_interesting_blobs(sigma_list: SigmaList, reference: np.ndarray, regularized_stack: np.ndarray,
-                             rthresh: float = 0.05, overlap1: float = 0.5, overlap2: float = 0.5):
-    # Check input for consistency.
-    assert regularized_stack.ndim == 3
-    s, m, n = regularized_stack.shape
-    assert reference.shape == (m, n)
-    assert len(sigma_list) == s
-
-    # Translate sigma_list to scale_list
-    scale_list = [0.5 * np.sum(np.square(sigma)) for sigma in sigma_list]
-
-    # Identify features in reference image.
-    reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap1, rthresh=rthresh)
-    # Apply scale-normalized Laplacian to regularized stack.
-    regularized_log_stack = scale_normalized_laplacian(ssr=regularized_stack, scales=scale_list, mode="reflect")
-    # Compute blanket-blobs.
-    interesting_blobs = stack_to_blobs(scale_stack=regularized_stack, log_stack=regularized_log_stack,
-                                       sigma_list=sigma_list, rthresh=rthresh,
-                                       max_overlap=overlap1, exclude_max_scale=True)
-    # Compute mapped pairs.
-    mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=interesting_blobs, overlap=overlap2)
-
-    # Return the mapped pairs.
-    return mapped_pairs
 
 
 def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
@@ -83,27 +59,20 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     scale_list = [0.25 * np.sum(np.square(sigma)) for sigma in sigma_list]
     # Identify features in reference image.
     reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap1, rthresh=rthresh1)
-    intensities = np.array([blob.intensity for blob in reference_blobs])
-    # Get LoG-value of weakest blob.
-    intensity_tresh = max(intensities)
-    print(f"Intensity threshold = {intensity_tresh}")
     # Compute blanket stack.
     blanket_stack = _compute_blanket_stack(lower_stack=lower_stack, upper_stack=upper_stack)
     # Apply scale-normalized Laplacian to blanket stack.
     blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, scales=scale_list, mode="reflect")
     # Compute blanket-blobs.
     blanket_blobs = stack_to_blobs(scale_stack=blanket_stack, log_stack=blanket_laplacian_stack, sigma_list=sigma_list,
-                                   rthresh=rthresh1, max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
-    # I want to know maximum sigma at which a blob is detected.
-    sigmas = np.array([blob._sigma2 for blob in blanket_blobs])
-    print(f"Max sigma = {sigmas.max()}")
-    # Remove blobs below threshold.
-    len0 = len(blanket_blobs)
-    blanket_blobs = [blob for blob in blanket_blobs if blob.intensity >= rthresh2 * intensity_tresh]
-    len1 = len(blanket_blobs)
-    print(f"{len0 - len1}/{len0} low-intensity blobs removed.")
+                                   rthresh=0., max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
+    n_sig = len(blanket_blobs)
+    print(f"{n_sig} blanket blobs detected.")
     # Compute mapped pairs.
-    mapped_pairs = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=blanket_blobs, overlap=overlap2)
+    mapped_pairs, n_mapped = _match_blobs(reference_blobs=reference_blobs, blanket_blobs=blanket_blobs, overlap=overlap2,
+                                rthresh=rthresh2)
+    n_ref = len(reference_blobs)
+    print(f"{n_mapped} blobs were detected as significant, out of {n_ref} blobs in the reference image.")
 
     # Return the mapped pairs.
     return mapped_pairs
@@ -127,11 +96,13 @@ def _compute_blanket_stack(lower_stack: np.ndarray, upper_stack: np.ndarray) \
     assert lower_stack.shape == upper_stack.shape
 
     blanket_list = []
+    i = 0
     for lower, upper in zip(lower_stack, upper_stack):
         # Compute blanket at scale t.
         blanket = _compute_blanket(lower, upper)
         if SHOW_BLANKETS:
-            plot_distribution_function(image=blanket, show=True)
+            plt.imshow(blanket, cmap="gnuplot")
+            plt.show()
         blanket_list.append(blanket)
     # Return blanket stack as array.
     blanket_stack = np.array(blanket_list)
@@ -155,15 +126,20 @@ def _compute_blanket(lower: np.ndarray, upper: np.ndarray)\
     assert lower.shape == upper.shape
 
     # Compute second order blanket argmin_f ||nabla delta f||_2^2 s.t. lower <= f <= upper.
-    blanket = first_order_blanket(lb=lower, ub=upper)
+    if ORDER == 1:
+        blanket = first_order_blanket(lb=lower, ub=upper)
+    elif ORDER == 2:
+        blanket = second_order_blanket(lb=lower, ub=upper)
+    else:
+        raise NotImplementedError
     # Assert that blanket has the right format before returning it.
     assert blanket.shape == lower.shape
 
     return blanket
 
 
-def _match_blobs(reference_blobs: List[GaussianBlob], blanket_blobs: List[GaussianBlob], overlap: float)\
-        -> List[Tuple]:
+def _match_blobs(reference_blobs: List[GaussianBlob], blanket_blobs: List[GaussianBlob], overlap: float,
+                 rthresh: float):
     """
     Given a set of reference blobs and a set of blanket-blobs, we look for matches.
 
@@ -171,6 +147,8 @@ def _match_blobs(reference_blobs: List[GaussianBlob], blanket_blobs: List[Gaussi
     :param blanket_blobs: The blobs that can be identified in the stack of t-blankets.
     :param overlap: If the relative overlap between a reference blob and a blanket-blob is above this value, then this
         counts as a map.
+    :param rthresh: In order for a significant blob to match, its intensity must be at least rthresh * intensity of the
+        reference blob.
     :returns: The list of mapped pair. Each mapped pair is a tuple of the form (b, c) or (b, None). In the former case,
         b gives the MAP blob and c the associated significant blob. In the latter case, the MAP blob was not
         found to be significant.
@@ -179,17 +157,19 @@ def _match_blobs(reference_blobs: List[GaussianBlob], blanket_blobs: List[Gaussi
 
     mapped_pairs = []
     # Iterate over the MAP features
+    n_mapped = 0
     for blob in reference_blobs:
         # Find the feature matching the map_feature
-        matching_blob = _find_blob(blob, blanket_blobs_sorted, overlap=overlap)
+        matching_blob = _find_blob(blob, blanket_blobs_sorted, overlap=overlap, rthresh=rthresh)
         # Check that blobs really have the right overlap
         if matching_blob is not None:
             overl = compute_overlap(blob, matching_blob)
+            n_mapped += 1
             assert overl >= overlap
         # Add corresponding pair to "mapped_pairs".
         mapped_pairs.append(tuple([blob, matching_blob]))
 
-    return mapped_pairs
+    return mapped_pairs, n_mapped
 
 
 def _minima_to_blobs(minima: np.ndarray, log: np.array, thresh: float, sigma: Union[float, np.ndarray]):
@@ -210,7 +190,7 @@ def _minima_to_blobs(minima: np.ndarray, log: np.array, thresh: float, sigma: Un
     return blobs
 
 
-def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float) \
+def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float, rthresh: float) \
         -> Union[GaussianBlob, None]:
     """
     Find a feature in a given collection of features.
@@ -222,7 +202,9 @@ def _find_blob(blob: GaussianBlob, blobs: List[GaussianBlob], overlap: float) \
     found = None
     for candidate in blobs:
         candidate_overlap = compute_overlap(blob, candidate)
-        if candidate_overlap >= overlap:
+        enough_overlap = (candidate_overlap >= overlap)
+        enough_log = (candidate.log <= rthresh * blob.log)
+        if enough_overlap and enough_log:
             found = candidate
             break
     return found

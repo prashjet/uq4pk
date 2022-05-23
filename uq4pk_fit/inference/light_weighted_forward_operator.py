@@ -18,6 +18,9 @@ class LightWeightedForwardOperator(ForwardOperator):
         """
         # Create a normal forward operator.
         mass_weigthed_fwdop = MassWeightedForwardOperator(ssps, dv, do_log_resample, hermite_order, mask)
+        if mask is None:
+            dim_y = mass_weigthed_fwdop.dim_y
+            mask = np.full((dim_y,), True, dtype=bool)
         self.dim_theta = theta.size
         # Get the matrix representation at theta.
         self.m_f = mass_weigthed_fwdop.m_f

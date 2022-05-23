@@ -5,7 +5,7 @@ import numpy as np
 from skimage.feature import blob_log
 
 from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
-from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
 
 
 SHOW = True    # Set True if you want to see plots.

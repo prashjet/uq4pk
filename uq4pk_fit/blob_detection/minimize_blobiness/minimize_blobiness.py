@@ -4,11 +4,8 @@ from skimage import filters
 from typing import Sequence, Union
 
 from uq4pk_fit.uq_mode.linear_model import LinearModel
-from ..detect_blobs import detect_blobs
 from .minimal_representation import minimal_representation
 from .scale_space_minimization import scale_space_minimization
-from ..significant_blobs.detect_significant_blobs import _match_blobs
-
 
 RTHRESH = 0.05
 OTHRESH = 0.5

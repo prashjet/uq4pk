@@ -3,10 +3,10 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 import numpy as np
 
-from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
-from uq4pk_fit.blob_detection.detect_blobs import stack_to_blobs
+from uq4pk_fit.blob_detection.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import stack_to_blobs
 from uq4pk_fit.blob_detection.significant_blobs.detect_significant_blobs import _match_blobs
-from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
 
 SIGMA_MIN = 1
 SIGMA_MAX = 15
