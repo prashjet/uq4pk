@@ -11,7 +11,7 @@ def rectangle_partition(m, n, a, b) -> ImagePartition:
     """
     Makes a rectangle discretization.
     Returns indices for a discretization of an image of shape (n_x, n_y) into rectangles of shape (a_x, a_y).
-    If the array is not evenly divisible, the rectangles may be larger.
+    If the array is not evenly divisible, the rectangles may be smaller..
     :param m: int
         Number of rows of the image.
     :param n: int
@@ -24,20 +24,20 @@ def rectangle_partition(m, n, a, b) -> ImagePartition:
         The i-th element of the list is a numpy array of ints, denoting the indices corresponding to the i-th superpixel.
     """
     # check input
-    assert a < m, "a must be smaller than dim_y"
-    assert b < n, "b must be smaller than dim"
+    assert a < m, "a must be smaller than m"
+    assert b < n, "b must be smaller than m"
     # create array of indices
     index_array = np.arange(m * n)
     index_array = np.reshape(index_array, (m, n))
     # compute x-split positions
     j = b
     x_split_positions = []
-    while j + b <= n:
+    while j < n:
         x_split_positions.append(j)
         j += b
     i = a
     y_split_positions = []
-    while i + a <= m:
+    while i < m:
         y_split_positions.append(i)
         i += a
     # initialize superpixel_list

@@ -4,6 +4,7 @@ from typing import Tuple
 
 from ..partition import rectangle_partition
 from .downsampling import Downsampling
+from .linear_interpolation import linear_interpolation
 
 
 class RectangularDownsampling(Downsampling):
@@ -12,7 +13,7 @@ class RectangularDownsampling(Downsampling):
     and then mapping each pixel in a given rectangle to the upper left corner pixel.
     """
 
-    def __init__(self, shape: Tuple[int], a: int, b: int):
+    def __init__(self, shape: Tuple[int, int], a: int, b: int):
         """
 
         :param shape: The shape of the image.
@@ -38,20 +39,22 @@ class RectangularDownsampling(Downsampling):
         j = self._indices[element_index]
         return j
 
+    def downsample(self, x: np.ndarray):
+        assert x.shape == (self.dim, )
+        u = x[self._indices]
+        assert u.shape == (self.rdim, )
+        return u
+
     def enlarge(self, u: np.ndarray):
         """
+        Enlarges using linear interpolation.
 
         :param u: Of shape (k, rdim).
         :return: Of shape (k, dim).
         """
         assert u.shape[1] == self.rdim
-        k = u.shape[0]
-        # Initialize enlarged stack.
-        x = np.zeros((k, self.dim))
-        # Now, simply loop over partition and assign back.
-        for i in range(self.rdim):
-            element_i = self._partition.element(i)
-            x[:, element_i] = u[:, i].reshape(-1, 1)
+        # Compute x using linear interpolation.
+        x = np.row_stack([linear_interpolation(x=u_i, shape=self.shape, indices=self.indices()) for u_i in u])
         return x
 
 

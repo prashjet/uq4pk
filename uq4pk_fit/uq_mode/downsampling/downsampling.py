@@ -26,6 +26,15 @@ class Downsampling:
         """
         raise NotImplementedError
 
+    def downsample(self, x: np.ndarray):
+        """
+        Takes an array of size self.dim and reduces it to size self.rdim by downsampling.
+
+        :param x: Of shape (dim, ).
+        :returns u: Of shape (rdim, ). The downsampled vector.
+        """
+        raise NotImplementedError
+
     def enlarge(self, u: np.ndarray):
         """
         Takes an array of size self.rdim and enlarges it to size `self.dim` by inverting the `reduce` operation.
@@ -50,6 +59,9 @@ class NoDownsampling(Downsampling):
 
     def reduce(self, i: int) -> int:
         return i
+
+    def downsample(self, x: np.ndarray):
+        return x
 
     def enlarge(self, u: np.ndarray):
         return u
