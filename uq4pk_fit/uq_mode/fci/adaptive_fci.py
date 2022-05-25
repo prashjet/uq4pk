@@ -65,5 +65,7 @@ def adaptive_fci(alpha: float, model: LinearModel, x_map: np.ndarray, filter_fun
     lower_stack_enlarged = downsampling.enlarge(lower_stack)
     upper_stack_enlarged = downsampling.enlarge(upper_stack)
 
+    assert np.all(lower_stack_enlarged <= upper_stack_enlarged)
+
     fci_obj = FCI(lower_stack=lower_stack_enlarged, upper_stack=upper_stack_enlarged, time_avg=time_avg)
     return fci_obj

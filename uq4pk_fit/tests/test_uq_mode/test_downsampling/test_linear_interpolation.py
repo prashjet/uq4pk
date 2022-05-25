@@ -22,6 +22,8 @@ def test_linear_interpolation():
     image_downsampled = np.reshape(u, (m_a, n_b))
     # Then apply linear interpolation.
     image_interpolated = downsampler.enlarge(u=u.reshape(1, -1)).reshape(m, n)
+    has_nans = np.any(np.isnan(image_interpolated))
+    assert not has_nans
     # Compare original image with interpolated one.
     fig, ax = plt.subplots(3, 1)
     ax[0].imshow(image, cmap="gnuplot")

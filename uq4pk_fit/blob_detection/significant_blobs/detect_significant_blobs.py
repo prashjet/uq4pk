@@ -6,13 +6,11 @@ from matplotlib import pyplot as plt
 from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import compute_overlap, detect_blobs
 from uq4pk_fit.gaussian_blob import GaussianBlob
 from uq4pk_fit.blob_detection.blankets.first_order_blanket import first_order_blanket
-from uq4pk_fit.blob_detection.blankets.second_order_blanket import second_order_blanket
 from uq4pk_fit.blob_detection.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
 from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import best_blob_first, stack_to_blobs
 
 
 SHOW_BLANKETS = False
-ORDER = 1
 
 
 # Make type for sigma list
@@ -125,13 +123,8 @@ def _compute_blanket(lower: np.ndarray, upper: np.ndarray)\
     assert lower.ndim == 2 == upper.ndim
     assert lower.shape == upper.shape
 
-    # Compute second order blanket argmin_f ||nabla delta f||_2^2 s.t. lower <= f <= upper.
-    if ORDER == 1:
-        blanket = first_order_blanket(lb=lower, ub=upper)
-    elif ORDER == 2:
-        blanket = second_order_blanket(lb=lower, ub=upper)
-    else:
-        raise NotImplementedError
+    # Compute blanket argmin_f ||Lap(f)||_2^2 s.t. lower <= f <= upper.
+    blanket = first_order_blanket(lb=lower, ub=upper)
     # Assert that blanket has the right format before returning it.
     assert blanket.shape == lower.shape
 
