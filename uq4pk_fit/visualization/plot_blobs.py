@@ -5,20 +5,23 @@ import numpy as np
 from typing import Sequence, Tuple, Union
 
 from uq4pk_fit.gaussian_blob import GaussianBlob
-from .params import CMAP, NORM
+from .params import CMAP, power_norm
 
 
-def plot_scaled_ellipse(ax, imshape, center, width, height, color, linestyle="-"):
+def plot_scaled_ellipse(ax, imshape, center, width, height, color, linestyle="-", flip=True):
     # Plot ellipse using normalized coordinates (a pixel is located at its center).
     vsize, hsize = imshape
-    ncenter = ((center[0] + 0.5) / hsize, (vsize - center[1] - 0.5) / vsize)
+    if flip:
+        ncenter = ((center[0] + 0.5) / hsize, (center[1] + 0.5) / vsize)
+    else:
+        ncenter = ((center[0] + 0.5) / hsize, (vsize - center[1] - 0.5) / vsize)
     nwidth = width / hsize
     nheight = height / vsize
     ax.add_patch(patches.Ellipse(ncenter, width=nwidth, height=nheight, color=color, fill=False, linestyle=linestyle))
 
 
 def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob, Union[GaussianBlob, None]]],
-                           savefile: str = None, vmax: float = None, ssps = None, show: bool = False):
+                           savefile: str = None, vmax: float = None, ssps = None, show: bool = False, flip=True):
     """
     Makes a blob-plot for given image an blobs.
 
@@ -30,12 +33,19 @@ def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob
     :param vmax: Maximum intensity shown in plot.
     :param ssps: The grid object needed for plotting.
     :param show: If False, not plot is shown.
+    :param flip: If True, the plotted image is upside down. This is True by default, since it is more correct from a
+        physical point of view.
     """
+    if flip:
+        f_im = np.flipud(image)
+    else:
+        f_im = image
     if vmax is None:
         vmax = image.max()
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
-    im = plt.imshow(image, cmap=CMAP, aspect="auto", vmin=0., vmax=vmax, norm=NORM, extent=(0, 1, 0, 1))
+    im = plt.imshow(f_im, cmap=CMAP, aspect="auto", norm=power_norm(vmin=0., vmax=vmax),
+                    extent=(0, 1, 0, 1))
     cax = fig.add_axes([ax.get_position().x1 + 0.01, ax.get_position().y0, 0.02, ax.get_position().height])
     cbar = plt.colorbar(im, cax=cax)
     cbar.set_label("density")
@@ -51,7 +61,7 @@ def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob
         if c is None:
             y, x = b.position
             plot_scaled_ellipse(ax=ax, imshape=image.shape, center=(x, y), width=b.width, height=b.height,
-                                color=insignificant_color)
+                                color=insignificant_color, flip=flip)
         else:
             # feature is significant
             y1, x1 = b.position
@@ -60,9 +70,9 @@ def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob
             # better visualization.
             factor = 1.05
             plot_scaled_ellipse(ax=ax, imshape=image.shape, center=(x1, y1), width=b.width, height=b.height,
-                                color=feature_color)
+                                color=feature_color, flip=flip)
             plot_scaled_ellipse(ax=ax, imshape=image.shape, center=(x2, y2), width=factor * c.width,
-                                height=factor * c.height, color=significant_color, linestyle="--")
+                                height=factor * c.height, color=significant_color, linestyle="--", flip=flip)
     # Currently, ticks don't work with patches.
     if ssps is not None:
         ticks = [ssps.t_ticks, ssps.z_ticks, ssps.img_t_ticks, ssps.img_z_ticks]
@@ -79,7 +89,7 @@ def plot_significant_blobs(image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob
 
 
 def plot_blobs(image: np.ndarray, blobs: Sequence[GaussianBlob], savefile: str = None, vmax: float = None, ssps = None,
-               show: bool = False):
+               show: bool = False, flip=True):
     """
     Makes a blob-plot for given image an blobs.
 
@@ -90,11 +100,15 @@ def plot_blobs(image: np.ndarray, blobs: Sequence[GaussianBlob], savefile: str =
     :param ssps: The grid object needed for plotting.
     :param show: If False, not plot is shown.
     """
+    if flip:
+        f_im = np.flipud(image)
+    else:
+        f_im = image
     if vmax is None:
         vmax = image.max()
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
-    im = plt.imshow(image, cmap=CMAP, aspect="auto", vmin=0., vmax=vmax, norm=NORM, extent=(0, 1, 0, 1))
+    im = plt.imshow(f_im, cmap=CMAP, aspect="auto", norm=power_norm(vmin=0., vmax=vmax), extent=(0, 1, 0, 1))
     cax = fig.add_axes([ax.get_position().x1 + 0.01, ax.get_position().y0, 0.02, ax.get_position().height])
     cbar = plt.colorbar(im, cax=cax)
     cbar.set_label("density")
@@ -104,7 +118,7 @@ def plot_blobs(image: np.ndarray, blobs: Sequence[GaussianBlob], savefile: str =
     for blob in blobs:
         y, x = blob.position
         plot_scaled_ellipse(ax=ax, imshape=image.shape, center=(x, y), width=blob.width, height=blob.height,
-                            color=blob_color)
+                            color=blob_color, flip=flip)
     # Currently, ticks don't work with patches.
     if ssps is not None:
         ticks = [ssps.t_ticks, ssps.z_ticks, ssps.img_t_ticks, ssps.img_z_ticks]

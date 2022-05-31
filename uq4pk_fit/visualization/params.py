@@ -3,4 +3,6 @@ from matplotlib import colors
 
 
 CMAP = "gnuplot"
-NORM = colors.PowerNorm(gamma=0.7)
+
+def power_norm(vmax, vmin=0.):
+    return colors.PowerNorm(gamma=0.7, vmin=vmin, vmax=vmax)

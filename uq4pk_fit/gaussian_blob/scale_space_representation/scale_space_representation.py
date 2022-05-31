@@ -1,10 +1,12 @@
 
 import numpy as np
-from skimage import filters
 from typing import Sequence, Union
 
+from ..bessel_filter import bessel2d
+from ..scale_to_sigma import scale_to_sigma2d
 
-def scale_space_representation(image: np.ndarray, scales: Sequence[Union[float, np.ndarray]], mode: str="constant")\
+
+def scale_space_representation(image: np.ndarray, scales: Sequence[Union[float, np.ndarray]], mode: str="reflect")\
         -> np.ndarray:
     """
     Computes the Gaussian scale-space representation of a given image. That is, for an image f(x, y), it computes
@@ -19,8 +21,8 @@ def scale_space_representation(image: np.ndarray, scales: Sequence[Union[float, 
     scaled_images = []
     for scale in scales:
         # Note that the scale parameter h corresponds to standard deviation sigma = sqrt(2 * h).
-        sigma = np.sqrt(2 * scale)
-        scaled_image = filters.gaussian(image, mode=mode, sigma=sigma)
+        sigma = scale_to_sigma2d(scale, )
+        scaled_image = bessel2d(image, mode=mode, sigma=sigma)
         scaled_images.append(scaled_image)
     ssr = np.array(scaled_images)
     return ssr

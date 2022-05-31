@@ -1,10 +1,11 @@
 
 from matplotlib import pyplot as plt
-from .params import CMAP, NORM
+import numpy as np
+from .params import CMAP, power_norm
 
 
 
-def plot_distribution_function(image, ssps = None, show=False, savefile: str = None, vmax=None):
+def plot_distribution_function(image, ssps = None, show=False, savefile: str = None, vmax=None, flip=True):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.
@@ -14,13 +15,19 @@ def plot_distribution_function(image, ssps = None, show=False, savefile: str = N
     :param vmax:
     :param vmin:
     :param show: If False, the plot is not shown.
+    :param flip: If True, the plotted image is upside down. This is True by default, since it is more correct from a
+        physical point of view.
     """
+    if flip:
+        f_im = np.flipud(image)
+    else:
+        f_im = image
     cmap = plt.get_cmap(CMAP)
     fig = plt.figure(figsize=(6, 2.5))
     ax = plt.axes()
     if vmax is None:
         vmax = image.max()
-    im = plt.imshow(image, vmax=vmax, vmin=0., cmap=cmap, extent=(0, 1, 0, 1), aspect="auto", norm=NORM)
+    im = plt.imshow(f_im, cmap=cmap, extent=(0, 1, 0, 1), aspect="auto", norm=power_norm(vmin=0., vmax=vmax))
     cax = fig.add_axes([ax.get_position().x1 + 0.01, ax.get_position().y0, 0.02, ax.get_position().height])
     cbar = plt.colorbar(im, cax=cax)
     cbar.set_label("density")

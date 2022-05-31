@@ -4,9 +4,8 @@ from typing import List, Union, Sequence
 from matplotlib import pyplot as plt
 
 from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import compute_overlap, detect_blobs
-from uq4pk_fit.gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob import GaussianBlob, scale_normalized_laplacian, sigma_to_scale2d
 from uq4pk_fit.blob_detection.blankets.first_order_blanket import first_order_blanket
-from uq4pk_fit.blob_detection.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
 from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import best_blob_first, stack_to_blobs
 
 
@@ -54,7 +53,7 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     assert len(sigma_list) == s
 
     # Translate sigma_list to scale_list
-    scale_list = [0.25 * np.sum(np.square(sigma)) for sigma in sigma_list]
+    scale_list = [sigma_to_scale2d(sigma) for sigma in sigma_list]
     # Identify features in reference image.
     reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap1, rthresh=rthresh1)
     # Compute blanket stack.

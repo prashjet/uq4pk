@@ -2,8 +2,8 @@
 import numpy as np
 
 from uq4pk_fit.uq_mode.filter import FilterFunction
+from ..simultaneous_credible_intervals import credible_intervals
 from .adaptive_fci import FCI
-from uq4pk_fit.uq_mode.k_enclosing_box.alpha_enclosing_box import alpha_enclosing_box
 
 
 RTOL = 0.1  # Relative tolerance for credibility parameter.
@@ -48,8 +48,8 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
     filtered_samples = np.row_stack(phi_list)
 
     # FIND SMALLEST BOX THAT CONTAINS (1 - alpha) OF SAMPLES.
-    credible_box = alpha_enclosing_box(alpha=alpha, points=filtered_samples)
+    lb, ub = credible_intervals(samples=samples, alpha=alpha)
 
     # Create FCI object.
-    fci_obj = FCI(lower_stack=credible_box[0].reshape(1, -1), upper_stack=credible_box[1].reshape(1, -1))
+    fci_obj = FCI(lower_stack=lb.reshape(1, -1), upper_stack=ub.reshape(1, -1))
     return fci_obj

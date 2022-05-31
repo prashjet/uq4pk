@@ -1,10 +1,10 @@
 
 import numpy as np
-import scipy.ndimage as spim
+from scipy.ndimage import laplace, generic_laplace, correlate1d
 from typing import Sequence, Union
 
 
-def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float, np.ndarray]], mode: str="nearest") \
+def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float]], mode: str="reflect") \
         -> np.ndarray:
     """
     Computes the scale-normalized Laplacian of a given scale-space representation.
@@ -22,9 +22,7 @@ def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float, np
     # For each scale h, compute h * Laplacian(ssr[i]).
     snl_list = []
     for i in range(len(scales)):
-        t_i = np.linalg.norm(scales[i]) # in case scales[i] is two-dimensional
-        delta_f_i = spim.laplace(ssr[i], mode=mode)
-        snl_i = t_i * delta_f_i
+        snl_i = laplace(input=ssr[i], mode=mode)
         snl_list.append(snl_i)
     snl = np.array(snl_list)
 
@@ -32,4 +30,21 @@ def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float, np
     assert snl.shape == ssr.shape
 
     return snl
+
+
+def scaled_laplacian(input: np.ndarray, t: np.ndarray, mode="reflect", cval=0.0) -> np.ndarray:
+    """
+    Applies the scaled Laplacian operator,
+    Delta_norm F = (t_1 \partial_1^2 + t_2 \partial_2^2) F.
+
+    The implementation is based on scipy's generic_laplace filter.
+
+    :param input: Of shape (m, n). The input image.
+    :param t: Either float or two-dimensional vector.
+    :return: Of shape (m, n).
+    """
+    def derivative_scaled(input, axis, output, mode, cval):
+        return t[axis] * correlate1d(input, [1, -2, 1], axis, output, mode, cval, 0)
+    return generic_laplace(input, derivative_scaled, mode=mode, cval=cval)
+
 

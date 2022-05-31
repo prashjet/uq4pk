@@ -2,8 +2,8 @@
 import numpy as np
 from typing import Sequence, Union
 
-from uq4pk_fit.blob_detection.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
-from uq4pk_fit.blob_detection.scale_space_representation.scale_space_representation import scale_space_representation
+from uq4pk_fit.gaussian_blob.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.gaussian_blob.scale_space_representation.scale_space_representation import scale_space_representation
 
 
 

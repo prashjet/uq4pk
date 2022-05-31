@@ -4,9 +4,7 @@ import numpy as np
 from typing import List, Sequence, Union
 from skimage import morphology
 
-from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
-from uq4pk_fit.blob_detection.scale_space_representation.scale_space_representation import scale_space_representation
-from uq4pk_fit.blob_detection.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.gaussian_blob import GaussianBlob, scale_space_representation, scale_normalized_laplacian, sigma_to_scale2d
 from uq4pk_fit.blob_detection.blob_geometry import compute_overlap
 
 
@@ -28,7 +26,7 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
         scale-space minimum of the scale-normalized Laplacian that is below ``rthresh * log_stack.min()``, where
         ``log_stack`` is the stack of Laplacian-of-Gaussians.
     :param max_overlap: If two blobs have a relative overlap larger than this number, they are considered as one.
-    :param exclude_borders: If True, the scale-space minima at the smallest and largest scale are ignored. This
+    :param exclude_max_scale: If True, the scale-space minima at the largest scale are ignored. This
         can sometimes improve the results of the blob detection.
     :return: Returns a list of GaussianBlob-objects, each representing one detected blob.
     """
@@ -36,7 +34,7 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
     assert image.ndim == 2
 
     # COMPUTE LOG-STACK
-    t_list = [0.25 * np.sum(np.square(sigma)) for sigma in sigma_list]
+    t_list = [sigma_to_scale2d(sigma) for sigma in sigma_list]
     # Compute scale-space representation.
     ssr = scale_space_representation(image=image, scales=t_list, mode="reflect")
     # Evaluate scale-normalized Laplacian
@@ -44,7 +42,7 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
 
     # Determine scale-space blobs as local scale-space minima
     blobs = stack_to_blobs(scale_stack=ssr, log_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh,
-                           max_overlap=max_overlap, exclude_max_scale=exclude_max_scale)#
+                           max_overlap=max_overlap, exclude_max_scale=exclude_max_scale)
 
     return blobs
 
@@ -98,9 +96,11 @@ def stack_to_blobs(scale_stack: np.ndarray, log_stack: np.ndarray, sigma_list: S
     Given a scale-space stack, detects blobs as scale-space minima.
 
     :param scale_stack:
+    :param log_stack:
     :param sigma_list: The list of standard deviations for each filter.
     :param rthresh:
     :param max_overlap: Maximal tolerable overlap between blobs. If None, any overlap is tolerated.
+    :param exclude_max_scale:
     :return:
     """
     assert not (rthresh is None and athresh is None)
@@ -122,10 +122,8 @@ def stack_to_blobs(scale_stack: np.ndarray, log_stack: np.ndarray, sigma_list: S
         blobs = []
         for b in local_minima:
             sigma_b = sigma_list[b[0]]
-            t_b = 0.25 * np.sum(np.square(sigma_b))
-            intensity_b = t_b * scale_stack[b[0], b[1], b[2]]
             log_b = log_stack[b[0], b[1], b[2]]
-            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=log_b, intensity=intensity_b)
+            blob = GaussianBlob(x1=b[1], x2=b[2], sigma=sigma_b, log=log_b)
             blobs.append(blob)
 
         # Remove all features below threshold.
