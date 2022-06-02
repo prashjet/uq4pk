@@ -4,7 +4,7 @@ from typing import Tuple
 
 from ..partition import rectangle_partition
 from .downsampling import Downsampling
-from .linear_interpolation import linear_interpolation
+from .linear_interpolation import linear_interpolation2d
 
 
 class RectangularDownsampling(Downsampling):
@@ -60,7 +60,7 @@ class RectangularDownsampling(Downsampling):
         # Compute x using linear interpolation.
         x_list = []
         for v_i in v:
-            x_i = linear_interpolation(image=v_i, shape=self.shape, a=self._a, b=self._b).flatten()
+            x_i = linear_interpolation2d(image=v_i, shape=self.shape, a=self._a, b=self._b).flatten()
             x_list.append(x_i)
         x = np.row_stack(x_list)
         return x

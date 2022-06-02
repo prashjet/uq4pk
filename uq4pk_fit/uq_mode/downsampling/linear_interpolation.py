@@ -1,10 +1,29 @@
 
 import numpy as np
-from scipy.interpolate import interp2d
+from scipy.interpolate import interp2d, interp1d
 from typing import Tuple
 
 
-def linear_interpolation(image: np.ndarray, shape: Tuple[int, int], a: int, b: int):
+def linear_interpolation1d(input: np.ndarray, indices: np.ndarray, n: int) -> np.ndarray:
+    """
+    Reconstructs a vector from its downsampling by linear interpolation.
+
+    :param input: (r, )-array, with r <= n.
+    :param indices: (r, )-array of ints.
+    :return: (n, )-array.
+    """
+    assert input.shape == indices.shape
+    assert input.ndim == 1
+    assert input.size <= n
+    assert np.all(input <= n)
+    all_indices = np.arange(n)
+    interpolation_function = interp1d(x=indices, y=input, fill_value="extrapolate")
+    x = interpolation_function(all_indices)
+    assert x.shape == (n, )
+    return x
+
+
+def linear_interpolation2d(image: np.ndarray, shape: Tuple[int, int], a: int, b: int):
     """
     Given an image of shape (floor(m/a), floor(n/b)), creates an image of shape (m, n) by linear interpolation.
 

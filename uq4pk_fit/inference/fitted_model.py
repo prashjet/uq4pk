@@ -25,7 +25,7 @@ class FittedModel:
         x >= lb, A @ x = b.
     """
     def __init__(self, x_map: List[ArrayLike], problem: cgn.Problem, parameter_map: ParameterMap, m_f, n_f, dim_theta,
-                 starting_values: List[ArrayLike], scale: float):
+                 starting_values: List[ArrayLike], scale: float, y_map: np.ndarray):
         """
         """
         self._x_map = x_map
@@ -37,6 +37,7 @@ class FittedModel:
         self._linearized_model = self._create_linearized_model(problem)
         cost_map = self._problem.costfun(*x_map)
         cost_lin = self._linearized_model.cost(self._x_map_vec)
+        self._y_map = y_map
         assert np.isclose(cost_map, cost_lin)
         # create f_map and theta_map by translating x_map
         self._f_map, self._theta_map = parameter_map.f_theta(x_map)
@@ -60,6 +61,13 @@ class FittedModel:
         """
         f_map_im = np.reshape(self._f_map, (self._m_f, self._n_f))
         return f_map_im * self.scale
+
+    @property
+    def y_map(self):
+        """
+        Returns the predicted data.
+        """
+        return self._y_map * self.scale
 
     @property
     def theta_map(self):
@@ -288,6 +296,37 @@ class FittedModel:
         ub = self.scale * fci_obj.upper.flatten()
         return lb, ub
 
+    def posterior_predictive_credible_intervals(self, alpha: float, d: int=1, eps: float = 1e-3) \
+            -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Computes simultaneous (1-alpha)-credible intervals for the observation y = G f.
+
+        :param alpha: The credibility level.
+        :param d: The amount of downsampling. Defaults to 1 (no downsampling).
+        :param eps: The precision used in the optimization method.
+        :return: lb, ub
+            - lb: The lower bound of the posterior predictive credible interval.
+            - ub: The upper bound.
+        """
+        assert 0 < alpha < 1
+        # Setup the correct matrix filter function.
+        fwd_mat = self._linearized_model.h
+        prediction_ffunction = uq_mode.MatrixFilterFunction(mat=fwd_mat)
+        # If d > 1, setup downsampling.
+        n = self._dim_f
+        if d > 1:
+            downsampling = uq_mode.Downsampling1D(n, d)
+        else:
+            downsampling = uq_mode.NoDownsampling(n)
+        # Compute using uq_mode.fci
+        options = {"optimizer": "SCS", "use_ray": True, "eps": eps}
+        fci_obj = uq_mode.fci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,
+                              filter_function=prediction_ffunction, downsampling=downsampling, options=options)
+        # Rescale and return
+        lb = self.scale * fci_obj.lower.flatten()
+        ub = self.scale * fci_obj.upper.flatten()
+        return lb, ub
+
     # PROTECTED
 
     def _compute_fci_stack(self, alpha: float, filter_list, discretization, options) -> uq_mode.FCI:
@@ -417,7 +456,7 @@ class FittedModel:
         lb = cnls.lb
         # Form the LinearizedModel object
         model = uq_mode.LinearModel(h=j_map,
-                                    y=-f_map + j_map @ self._x_map_vec,
+                                    y=- f_map + j_map @ self._x_map_vec,
                                     q=q,
                                     a=a,
                                     b=b,

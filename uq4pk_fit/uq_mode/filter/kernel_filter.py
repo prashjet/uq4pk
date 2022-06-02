@@ -36,5 +36,4 @@ class KernelFilter(LinearFilter):
             w = w
         else:
             raise ValueError("'boundary' has to be 'zero' or 'reflect'.")
-        self.dim = dim
-        self.weights = w
+        LinearFilter.__init__(self, weights=w)

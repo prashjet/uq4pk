@@ -3,8 +3,10 @@ import numpy as np
 from scipy.ndimage import laplace, generic_laplace, correlate1d
 from typing import Sequence, Union
 
+from ..scale_to_sigma import sigma_to_scale2d
 
-def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float]], mode: str="reflect") \
+
+def scale_normalized_laplacian(ssr: np.ndarray, sigmas: Sequence[np.ndarray], mode: str="reflect") \
         -> np.ndarray:
     """
     Computes the scale-normalized Laplacian of a given scale-space representation.
@@ -17,12 +19,13 @@ def scale_normalized_laplacian(ssr: np.ndarray, scales: Sequence[Union[float]], 
     """
     # Check the input.
     assert ssr.ndim > 1
-    assert ssr.shape[0] == len(scales)
+    assert ssr.shape[0] == len(sigmas)
 
     # For each scale h, compute h * Laplacian(ssr[i]).
     snl_list = []
-    for i in range(len(scales)):
-        snl_i = laplace(input=ssr[i], mode=mode)
+    for i in range(len(sigmas)):
+        t_i = sigma_to_scale2d(sigmas[i])
+        snl_i = t_i * laplace(input=ssr[i], mode=mode)
         snl_list.append(snl_i)
     snl = np.array(snl_list)
 

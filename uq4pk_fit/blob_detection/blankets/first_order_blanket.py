@@ -47,7 +47,7 @@ def first_order_blanket(lb: np.ndarray, ub: np.ndarray):
 
     lbvec = lb.flatten() / scale
     ubvec = ub.flatten() / scale
-    x0 = 0.5 * (lbvec + ubvec)
+    x0 = lbvec
 
     # Solve problem with CGN.
     n = lbvec.size

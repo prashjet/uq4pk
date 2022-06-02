@@ -48,7 +48,7 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
     filtered_samples = np.row_stack(phi_list)
 
     # FIND SMALLEST BOX THAT CONTAINS (1 - alpha) OF SAMPLES.
-    lb, ub = credible_intervals(samples=samples, alpha=alpha)
+    lb, ub = credible_intervals(samples=filtered_samples, alpha=alpha)
 
     # Create FCI object.
     fci_obj = FCI(lower_stack=lb.reshape(1, -1), upper_stack=ub.reshape(1, -1))

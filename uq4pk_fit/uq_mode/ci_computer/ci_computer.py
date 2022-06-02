@@ -33,7 +33,7 @@ class CIComputer:
         self._x_map = x_map.copy()
         self._dim = x_map.size
         self._num_scales = len(aemap_list)
-        self._num_pixels = len(aemap_list[0].aef_list)
+        self._num_pixels = aemap_list[0].phidim
         self._aemap_list = aemap_list
         cost_map = model.cost(x_map)
         self._ctol = RTOL * cost_map
@@ -158,4 +158,4 @@ class CIComputer:
         Displays the current status of the computation.
         """
         print("\r", end="")
-        print(f"Computing credible interval for pixel {i+1}/{self._dim}. Average time: {t:.3f} s.", end=" ")
+        print(f"Computing credible interval for pixel {i+1}/{self._num_pixels}. Average time: {t:.3f} s.", end=" ")

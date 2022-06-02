@@ -6,7 +6,7 @@ from typing import Tuple, Union
 from .bessel1d import bessel1d, Mode
 
 
-def bessel2d(image: np.ndarray, sigma: Union[float, Tuple[float]] = 1., truncate: float = 4.0,  mode: Mode = "reflect",
+def bessel2d(image: np.ndarray, sigma: np.ndarray, truncate: float = 4.0,  mode: Mode = "reflect",
              cval: float = 0):
     """
     Applies the discrete analog of the Gaussian filter to a given image.
@@ -20,11 +20,10 @@ def bessel2d(image: np.ndarray, sigma: Union[float, Tuple[float]] = 1., truncate
     """
     # Check input for consistency
     assert image.ndim == 2, "'image' must be two-dimensional array."
-    assert np.all(np.asarray(sigma)) > 0, "'sigma' must be strictly positive."
+    assert np.all(sigma) > 0, "'sigma' must be strictly positive."
     assert mode in ["constant", "reflect", "wrap", "nearest", "mirror"], "Unknown mode."
 
     # For both vertical and horizontal axis, convolve image with kernel.
-    sigma = _normalize_sequence(sigma, image.ndim)
     for axis, sig in zip(range(image.ndim), sigma):
         image = bessel1d(image, axis, sig, truncate, mode, cval)
 

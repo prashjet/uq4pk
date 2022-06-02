@@ -33,7 +33,7 @@ class MarginalizingFilter(LinearFilter):
             weight_image[:, i] = 1
         else:
             weight_image[i, 1] = 1
-        self.weights = weight_image.flatten()
+        LinearFilter.__init__(self, weights=weight_image.flatten())
 
 
 class MarginalizingFilterFunction(ImageFilterFunction):

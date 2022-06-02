@@ -52,14 +52,12 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     assert reference.shape == (m, n)
     assert len(sigma_list) == s
 
-    # Translate sigma_list to scale_list
-    scale_list = [sigma_to_scale2d(sigma) for sigma in sigma_list]
     # Identify features in reference image.
     reference_blobs = detect_blobs(image=reference, sigma_list=sigma_list, max_overlap=overlap1, rthresh=rthresh1)
     # Compute blanket stack.
     blanket_stack = _compute_blanket_stack(lower_stack=lower_stack, upper_stack=upper_stack)
     # Apply scale-normalized Laplacian to blanket stack.
-    blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, scales=scale_list, mode="reflect")
+    blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, sigmas=sigma_list, mode="reflect")
     # Compute blanket-blobs.
     blanket_blobs = stack_to_blobs(scale_stack=blanket_stack, log_stack=blanket_laplacian_stack, sigma_list=sigma_list,
                                    rthresh=0., max_overlap=overlap1, exclude_max_scale=exclude_max_scale)

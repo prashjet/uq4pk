@@ -34,11 +34,10 @@ def detect_blobs(image: np.ndarray, sigma_list: SigmaList, max_overlap: float = 
     assert image.ndim == 2
 
     # COMPUTE LOG-STACK
-    t_list = [sigma_to_scale2d(sigma) for sigma in sigma_list]
     # Compute scale-space representation.
-    ssr = scale_space_representation(image=image, scales=t_list, mode="reflect")
+    ssr = scale_space_representation(image=image, sigmas=sigma_list, mode="reflect")
     # Evaluate scale-normalized Laplacian
-    log_stack = scale_normalized_laplacian(ssr, t_list, mode="reflect")
+    log_stack = scale_normalized_laplacian(ssr, sigma_list, mode="reflect")
 
     # Determine scale-space blobs as local scale-space minima
     blobs = stack_to_blobs(scale_stack=ssr, log_stack=log_stack, sigma_list=sigma_list, rthresh=rthresh,

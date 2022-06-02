@@ -16,7 +16,7 @@ def cls_solve(cls: CLS) -> np.ndarray:
     # Bring the CLS problem in the right format.
     r, s, g, h, a, b, lb, ub = _bring_problem_in_right_form(cls)
     # Solve the problem with qpsolvers.
-    x_min = qp.solve_ls(R=r, s=s, G=g, h=h, A=a, b=b, lb=lb, ub=ub, solver="quadprog")
+    x_min = qp.solve_ls(R=r, s=s, G=g, h=h, A=a, b=b, lb=lb, ub=ub, solver="quadprog", verbose=True)
     if x_min is None:
         raise RuntimeError("Linear solver could not find a solution.")
     if cls.c is not None:
@@ -34,20 +34,20 @@ def _bring_problem_in_right_form(cls: CLS):
     r = cls.h
     s = cls.y
     if cls.inequality_constrained:
-        g = - cls.c
-        h = - cls.d
+        g = - cls.c.astype(np.float64)
+        h = - cls.d.astype(np.float64)
     else:
         g = None
         h = None
     if cls.equality_constrained:
-        a = cls.a
-        b = cls.b
+        a = cls.a.astype(np.float64)
+        b = cls.b.astype(np.float64)
     else:
         a = None
         b = None
     if cls.bound_constrained:
-        lb = cls.l
-        ub = cls.u
+        lb = cls.l.astype(np.float64)
+        ub = cls.u.astype(np.float64)
     else:
         lb = None
         ub = None

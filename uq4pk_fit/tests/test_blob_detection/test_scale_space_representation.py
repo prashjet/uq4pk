@@ -2,7 +2,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-from uq4pk_fit.gaussian_blob.scale_space_representation.scale_space_representation import scale_space_representation
+from uq4pk_fit.gaussian_blob import scale_space_representation
 
 
 SHOW = True    # Set True if you want to see plots.
@@ -16,12 +16,11 @@ def test_scale_space_representation():
     f = np.loadtxt("data/map.csv", delimiter=",")
     # Compute scale space representation
     sigma_step = (SIGMA_MAX - SIGMA_MIN) / NSCALES
-    radii = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
-    scales = [0.5 * r ** 2 for r in radii]
-    f_ssr = scale_space_representation(f, scales)
+    sigmas = [np.ones(2, ) *(SIGMA_MIN + n * sigma_step) for n in range(NSCALES)]
+    f_ssr = scale_space_representation(f, sigmas)
     # Check that scale-space representation has correct dimension
     m, n = f.shape
-    assert f_ssr.shape == (len(scales), m, n)
+    assert f_ssr.shape == (len(sigmas), m, n)
     # Check non-enhancement property of maxima, i.e. the value of the maxima must decrease with increasing scale.
     for i in range(NSCALES - 1):
         max_0 = f_ssr[i].max()
@@ -30,7 +29,7 @@ def test_scale_space_representation():
     # Finally, plot the scale-slices.
     i = 0
     for f_h in f_ssr:
-        fig = plt.figure(num=f"t = {scales[i]}", figsize=(6, 2.5))
+        fig = plt.figure(num=f"sigma = {sigmas[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
     if SHOW: plt.show()
@@ -40,12 +39,11 @@ def test_reflect():
     # Load test image.
     f = np.loadtxt("data/map.csv", delimiter=",")
     sigma_step = (SIGMA_MAX - SIGMA_MIN) / NSCALES
-    radii = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
-    scales = [0.5 * r ** 2 for r in radii]
-    f_ssr = scale_space_representation(f, scales, mode="reflect")
+    sigmas = [np.ones(2, ) *(SIGMA_MIN + n * sigma_step) for n in range(NSCALES)]
+    f_ssr = scale_space_representation(f, sigmas, mode="reflect")
     # Check that scale-space representation has correct dimension
     m, n = f.shape
-    assert f_ssr.shape == (len(scales), m, n)
+    assert f_ssr.shape == (len(sigmas), m, n)
     # Check non-enhancement property of maxima, i.e. the value of the maxima must decrease with increasing scale.
     for i in range(NSCALES - 1):
         max_0 = f_ssr[i].max()
@@ -54,7 +52,7 @@ def test_reflect():
     # Finally, plot the scale-slices.
     i = 0
     for f_h in f_ssr:
-        fig = plt.figure(num=f"t = {scales[i]}", figsize=(6, 2.5))
+        fig = plt.figure(num=f"t = {sigmas[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
     if SHOW: plt.show()
@@ -66,11 +64,11 @@ def test_with_ratio():
     f = np.loadtxt("data/map.csv", delimiter=",")
     sigma_step = (SIGMA_MAX - SIGMA_MIN) / NSCALES
     sigmas = [SIGMA_MIN + n * sigma_step for n in range(NSCALES)]
-    scales = [0.5 * np.array([s * ratio, s]) ** 2 for s in sigmas]
-    f_ssr = scale_space_representation(f, scales, mode="constant")
+    sigma_list = [np.array([ratio * sigma, sigma]) for sigma in sigmas]
+    f_ssr = scale_space_representation(f, sigma_list)
     # Check that scale-space representation has correct dimension
     m, n = f.shape
-    assert f_ssr.shape == (len(scales), m, n)
+    assert f_ssr.shape == (len(sigma_list), m, n)
     # Check non-enhancement property of maxima, i.e. the value of the maxima must decrease with increasing scale.
     for i in range(NSCALES - 1):
         max_0 = f_ssr[i].max()
@@ -79,7 +77,7 @@ def test_with_ratio():
     # Finally, plot the scale-slices.
     i = 0
     for f_h in f_ssr:
-        fig = plt.figure(num=f"t = {scales[i]}", figsize=(6, 2.5))
+        fig = plt.figure(num=f"t = {sigma_list[i]}", figsize=(6, 2.5))
         plt.imshow(f_h, cmap="gnuplot")
         i += 1
     if SHOW: plt.show()
