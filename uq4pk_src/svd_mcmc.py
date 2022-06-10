@@ -66,6 +66,7 @@ class SVD_MCMC:
         self.X_tilde = (X_tmp.T - self.mu).T
         self.D = np.diag(sum_x_j/sum_y)
         self.Dinv = np.diag(sum_y/sum_x_j)
+        self.X_lw = np.dot(self.X, self.Dinv)
 
     def do_svd(self):
         U, Sig, VT = np.linalg.svd(self.X_tilde)
@@ -119,6 +120,83 @@ class SVD_MCMC:
                 y_obs = numpyro.sample("y_obs", masked_nrm, obs=self.y)
                 return y_obs
         return eta_alpha_model
+
+    def get_beta_tilde_direct_model(self, Sigma_beta_tilde=None):
+        mu_beta_tilde = np.zeros(self.p)
+        if self.mask is None:
+            def beta_tilde_direct_model(Sigma_beta_tilde=Sigma_beta_tilde,
+                                        y_obs=None):
+                # hack for non-negativity
+                beta_tilde = numpyro.sample("beta_tilde",
+                                            dist.TruncatedNormal(0, 10., low=0),
+                                            sample_shape=(self.p,))
+                # prior
+                beta_prior = dist.MultivariateNormal(mu_beta_tilde,
+                                                     Sigma_beta_tilde)
+                numpyro.factor("regulariser", beta_prior.log_prob(beta_tilde))
+                # likelihood
+                ybar = jnp.dot(self.X_lw, beta_tilde)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                y_obs = numpyro.sample("y_obs", nrm, obs=self.y)
+                return y_obs
+        else:
+            def beta_tilde_direct_model(Sigma_beta_tilde=Sigma_beta_tilde):
+                # hack for non-negativity
+                beta_tilde = numpyro.sample("beta_tilde",
+                                            dist.TruncatedNormal(0, 10., low=0),
+                                            sample_shape=(self.p,))
+                # prior
+                beta_prior = dist.MultivariateNormal(mu_beta_tilde,
+                                                     Sigma_beta_tilde)
+                numpyro.factor("regulariser", beta_prior.log_prob(beta_tilde))
+                # likelihood
+                ybar = jnp.dot(self.X_lw, beta_tilde)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                masked_nrm = nrm.mask(self.mask)
+                y_obs = numpyro.sample("y_obs", masked_nrm, obs=self.y)
+                return y_obs
+        return beta_tilde_direct_model
+
+    def get_beta_tilde_dr_single_model(self, Sigma_beta_tilde=None):
+        mu_beta_tilde = np.zeros(self.p)
+        if self.mask is None:
+            def beta_tilde_dr_single_model(Sigma_beta_tilde=Sigma_beta_tilde,
+                                        y_obs=None):
+                # hack for non-negativity
+                beta_tilde = numpyro.sample("beta_tilde",
+                                            dist.TruncatedNormal(0, 10., low=0),
+                                            sample_shape=(self.p,))
+                # prior
+                beta_prior = dist.MultivariateNormal(mu_beta_tilde,
+                                                     Sigma_beta_tilde)
+                numpyro.factor("regulariser", beta_prior.log_prob(beta_tilde))
+                eta = jnp.dot(self.H, beta_tilde)
+                alpha = jnp.sum(beta_tilde)
+                # likelihood
+                ybar = alpha*self.mu + jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                y_obs = numpyro.sample("y_obs", nrm, obs=self.y)
+                return y_obs
+        else:
+            def beta_tilde_dr_single_model(Sigma_beta_tilde=Sigma_beta_tilde):
+                # hack for non-negativity
+                beta_tilde = numpyro.sample("beta_tilde",
+                                            dist.TruncatedNormal(0, 10., low=0),
+                                            sample_shape=(self.p,))
+                # prior
+                beta_prior = dist.MultivariateNormal(mu_beta_tilde,
+                                                     Sigma_beta_tilde)
+                numpyro.factor("regulariser", beta_prior.log_prob(beta_tilde))
+                # likelihood
+                eta = jnp.dot(self.H, beta_tilde)
+                alpha = jnp.sum(beta_tilde)
+                # likelihood
+                ybar = alpha*self.mu + jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                masked_nrm = nrm.mask(self.mask)
+                y_obs = numpyro.sample("y_obs", masked_nrm, obs=self.y)
+                return y_obs
+        return beta_tilde_dr_single_model
 
     def get_beta_tilde_model(self,
                              eta_alpha_samples=None,
