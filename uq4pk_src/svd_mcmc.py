@@ -128,8 +128,6 @@ class SVD_MCMC:
         self.eta_scale = np.sqrt(beta_scale)
         sigma_alpha = np.sum(Sigma_beta)
         sigma_eta = self.H @ Sigma_beta @ self.H.T / beta_scale
-        print(f"sigma_alpha = {sigma_alpha}")
-        print(f"||sigma_eta|| = {np.linalg.norm(sigma_eta)}")
         if self.mask is None:
             def eta_alpha_model(sigma_alpha=sigma_alpha,
                                 sigma_eta=sigma_eta,

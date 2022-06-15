@@ -53,3 +53,6 @@ class LightWeightedForwardOperator(ForwardOperator):
 
     def fwd_unmasked(self, f: np.ndarray, theta: np.ndarray) -> np.ndarray:
         return self._x_bar_unmasked @ f
+
+    def jac_unmasked(self, f: np.ndarray, theta: np.ndarray) -> np.ndarray:
+        return self._x_bar_unmasked

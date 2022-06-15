@@ -25,7 +25,7 @@ class FittedModel:
         x >= lb, A @ x = b.
     """
     def __init__(self, x_map: List[ArrayLike], problem: cgn.Problem, parameter_map: ParameterMap, m_f, n_f, dim_theta,
-                 starting_values: List[ArrayLike], scale: float, y_map: np.ndarray):
+                 starting_values: List[ArrayLike], scale: float, y_map: np.ndarray, h_unmasked: np.ndarray):
         """
         """
         self._x_map = x_map
@@ -48,6 +48,7 @@ class FittedModel:
         self._starting_values = starting_values
         self._x_map_vec = self._x_map_vec.clip(self._linearized_model.lb)
         self.scale = scale
+        self._h_um = h_unmasked
 
     def costfun(self, f, theta_v):
         x = self._parameter_map.x(f, theta_v)
@@ -296,7 +297,7 @@ class FittedModel:
         ub = self.scale * fci_obj.upper.flatten()
         return lb, ub
 
-    def posterior_predictive_credible_intervals(self, alpha: float, d: int=1, eps: float = 1e-3) \
+    def posterior_predictive_credible_intervals(self, alpha: float, d: int=1, eps: float = 1e-4) \
             -> Tuple[np.ndarray, np.ndarray]:
         """
         Computes simultaneous (1-alpha)-credible intervals for the observation y = G f.
@@ -310,14 +311,13 @@ class FittedModel:
         """
         assert 0 < alpha < 1
         # Setup the correct matrix filter function.
-        fwd_mat = self._linearized_model.h
-        prediction_ffunction = uq_mode.MatrixFilterFunction(mat=fwd_mat)
+        prediction_ffunction = uq_mode.MatrixFilterFunction(mat=self._h_um)
         # If d > 1, setup downsampling.
-        n = self._dim_f
+        m = self._h_um.shape[0]
         if d > 1:
-            downsampling = uq_mode.Downsampling1D(n, d)
+            downsampling = uq_mode.Downsampling1D(m, d)
         else:
-            downsampling = uq_mode.NoDownsampling(n)
+            downsampling = uq_mode.NoDownsampling(m)
         # Compute using uq_mode.fci
         options = {"optimizer": "SCS", "use_ray": True, "eps": eps}
         fci_obj = uq_mode.fci(alpha=alpha, model=self._linearized_model, x_map=self._x_map_vec,

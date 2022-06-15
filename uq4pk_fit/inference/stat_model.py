@@ -146,9 +146,11 @@ class StatModel:
         # Compute predicted data.
         f_map, theta_map = self._parameter_map.f_theta(x_map)
         y_map = self._op.fwd_unmasked(f_map, theta_map)
+        # Need unmasked forward operator.
+        h_unmasked = self._op.jac_unmasked(f_map, theta_map)
         fitted_model = FittedModel(x_map=x_map, problem=problem, parameter_map=self._parameter_map, m_f=self.m_f,
                                    n_f=self.n_f, dim_theta=self.dim_theta, starting_values=x_start,
-                                   scale=self.scaling_factor, y_map=y_map)
+                                   scale=self.scaling_factor, y_map=y_map, h_unmasked=h_unmasked)
         return fitted_model
 
     def _set_equality_constraint_for_f(self, a, b):
