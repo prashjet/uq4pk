@@ -1,0 +1,3 @@
+This directory contains the code for making all figures in [NAME_OF_ARTICLE].
+
+An explanation is coming soon...
