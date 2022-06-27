@@ -7,9 +7,9 @@ import numpyro
 import numpyro.distributions as dist
 from numpyro.infer import MCMC, NUTS
 
-from . observation_operator import ObservationOperator
-from . samples import Samples
-from . plotting import Plotter
+from uq4pk_src.observation_operator import ObservationOperator
+from uq4pk_src.samples import Samples
+from uq4pk_src.plotting import Plotter
 
 class SVD_MCMC:
 
