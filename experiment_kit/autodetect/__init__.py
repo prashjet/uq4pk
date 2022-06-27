@@ -1,2 +1,0 @@
-
-from .autodetect import detect
