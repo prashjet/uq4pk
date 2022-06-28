@@ -22,18 +22,12 @@ rng_key = random.PRNGKey(32743)
 def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray):
     # Define reduced settings for test mode.
     if mode == "test":
-        burnin_eta_alpha = 50
-        nsample_eta_alpha = 50
         burnin_beta_tilde = 50
         nsample_beta_tilde = 100
     elif mode == "base":
-        burnin_eta_alpha = 500
-        nsample_eta_alpha = 500
         burnin_beta_tilde = 500
         nsample_beta_tilde = 1000
     else:
-        burnin_eta_alpha = BURNIN_ETA_ALPHA
-        nsample_eta_alpha = NSAMPLE_ETA_ALPHA
         burnin_beta_tilde = BURNIN_BETA_TILDE
         nsample_beta_tilde = NSAMPLE_BETA_TILDE
 
@@ -119,15 +113,8 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray):
     beta1 = REGFACTOR * snr
     beta_tilde_prior_cov = P1.cov / beta1
     # Sample eta and alpha
-    eta_alpha_model = svd_mcmc.get_consistent_eta_alpha_model(Sigma_beta=beta_tilde_prior_cov)
-    eta_alpha_sampler = svd_mcmc.get_mcmc_sampler(eta_alpha_model, num_warmup=burnin_eta_alpha,
-                                                  num_samples=nsample_eta_alpha)
-    eta_alpha_sampler.run(rng_key)
-    eta_alpha_samples = eta_alpha_sampler.get_samples()
 
-    beta_tilde_model = svd_mcmc.get_beta_tilde_model(
-        eta_alpha_samples=eta_alpha_samples,
-        Sigma_beta_tilde=beta_tilde_prior_cov)
+    beta_tilde_model = svd_mcmc.get_beta_tilde_dr_single_model(Sigma_beta_tilde=beta_tilde_prior_cov)
     beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
                                                    num_samples=nsample_beta_tilde)
     beta_tilde_sampler.run(rng_key)

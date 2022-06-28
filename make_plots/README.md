@@ -1,4 +1,5 @@
 This directory contains the code for making all figures in [NAME_OF_ARTICLE], except figures 1 and 7.
+The programs assume that they are executed with "make_plots" as working directory.
 
 This directory is structured as follows:
 
