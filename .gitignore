@@ -8,3 +8,4 @@ experiments/out/
 .idea/tasks.xml
 *__pycache__*
 .idea
+*samples.npy
