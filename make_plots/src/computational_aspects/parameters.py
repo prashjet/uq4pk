@@ -3,7 +3,7 @@
 from pathlib import Path
 import numpy as np
 
-from ..experiment_data.experiment_parameters import LMD_MIN, LMD_MAX, DV
+from ..mock_data.experiment_parameters import LMD_MIN, LMD_MAX, DV
 
 
 scale = 5
