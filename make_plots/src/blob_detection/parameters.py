@@ -28,7 +28,7 @@ REGFACTOR = 500
 SPEEDUP_OPTIONS = {"discretization": "twolevel", "d1": 2, "d2": 4, "w1": 5, "w2": 5, "optimizer": "SCS", "a": 2,
                    "b": 2}
 # Filenames
-DATA = Path("src/experiment_data/snr1000")
+DATA = Path("src/mock_data/snr1000")
 MAP = Path("blob_detection_map.npy")
 LOWER_STACK = Path("blob_detection_lower_stack.npy")
 UPPER_STACK = Path("blob_detection_upper_stack.npy")

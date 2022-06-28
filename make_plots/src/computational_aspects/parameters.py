@@ -19,7 +19,7 @@ W1LIST = [2, 3, 4, 5, 6, 6]
 W2LIST = [2, 3, 4, 5, 6, 9]
 
 # Filenames
-DATAFILE = Path("src/experiment_data/snr100")
+DATAFILE = Path("src/mock_data/snr100")
 ERRORS_WINDOW_FILE = Path(f"errors_window.npy")
 ERRORS_TWOLEVEL_FILE = Path(f"errors_twolevel.npy")
 HEURISTIC_WINDOW_FILE1 = Path(f"heuristic_window_{N1}.npy")

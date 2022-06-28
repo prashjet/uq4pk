@@ -15,7 +15,7 @@ sigma2_list = [sqrt(2 * t) for t in SCALES]
 SIGMA_LIST = [np.array([ratio * sigma2, sigma2]) for sigma2 in sigma2_list]
 
 # FILE LOCATIONS
-DATAFILE = Path("src/experiment_data/snr2000")
+DATAFILE = Path("src/mock_data/snr2000")
 MAPFILE = Path("pci_map")
 GROUND_TRUTH = Path("pci_ground_truth")
 PCILOW = Path("pci_low")
