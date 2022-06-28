@@ -6,7 +6,7 @@ Runs all necessary computations.
 from pathlib import Path
 
 
-from simulate_data import load_experiment_data
+from ..mock import load_experiment_data
 from .parameters import DATAFILE1, DATAFILE2, DATAFILE3, OUT1, OUT2, OUT3
 from .compute_fcis_mcmc import compute_fcis_mcmc
 from .make_mcmc_samples import make_mcmc_samples

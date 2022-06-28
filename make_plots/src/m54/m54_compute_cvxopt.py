@@ -2,11 +2,10 @@
 file: m54_compute_cvxopt.py
 """
 
-from matplotlib import pyplot as plt
 import numpy as np
 from pathlib import Path
 
-from src.m54.parameters import SIGMA_LIST, MAP_FILE, LOWER_STACK_FILE, UPPER_STACK_FILE, MARGINAL, THETA_V, YMAP, MASK,\
+from .parameters import SIGMA_LIST, MAP_FILE, LOWER_STACK_FILE, UPPER_STACK_FILE, MARGINAL, THETA_V, YMAP, MASK,\
     PREDICTIVE_OPT
 from .m54_fit_model import m54_fit_model
 

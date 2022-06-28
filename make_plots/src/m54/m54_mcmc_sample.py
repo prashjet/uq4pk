@@ -10,7 +10,7 @@ from ppxf import ppxf
 
 import uq4pk_src
 from uq4pk_fit.special_operators import OrnsteinUhlenbeck
-from src.comparison.geometric_median import geometric_median
+from ..util.geometric_median import geometric_median
 from .m54_fit_model import m54_setup_operator
 from .parameters import THETA_V, BURNIN_ETA_ALPHA, BURNIN_BETA_TILDE, NSAMPLE_ETA_ALPHA, NSAMPLE_BETA_TILDE, \
     SAMPLE_FILE, REGFACTOR, MEDIAN_FILE, YMED, YSAMPLES

@@ -19,8 +19,8 @@ def compute_m54(mode: str, out: Path):
     mock1 = out / mock1_name
     mock2 = out / mock2_name
     real = out / real_name
-    #_compute_mock_data(mode=mode, out=mock1, mock_y=MOCK1, mock_sd=MOCK_SD1, mock_f=MOCK_GT)
-    #_compute_mock_data(mode=mode, out=mock2, mock_y=MOCK2, mock_sd=MOCK_SD2, mock_f=MOCK_GT)
+    _compute_mock_data(mode=mode, out=mock1, mock_y=MOCK1, mock_sd=MOCK_SD1, mock_f=MOCK_GT)
+    _compute_mock_data(mode=mode, out=mock2, mock_y=MOCK2, mock_sd=MOCK_SD2, mock_f=MOCK_GT)
     _compute_real_data(mode=mode, out=real)
 
 
@@ -52,8 +52,8 @@ def _compute_real_data(mode: str, out: Path):
 
     # First, compute FCIs via sampling.
     t0 = time()
-    #m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real)
-    #m54_samples_to_fcis(out=out)
+    m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real)
+    m54_samples_to_fcis(out=out)
     t1 = time()
     time_mcmc = t1 - t0
     print(f"---------- MCMC TOOK {time_mcmc} seconds.")

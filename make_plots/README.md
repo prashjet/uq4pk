@@ -16,8 +16,8 @@ This directory is structured as follows:
     - comparison: Source code for figures 15 and 16.
     - computational_aspects: Source code for figures 8 and 9.
     - demo_marginalization: Deprecated.
-    - experiment_data: Contains various mock datasets.
     - fci: Source code for figures 3 and 4.
     - m54: Source code for figures 11, 12, 13 and 14.
     - mock: Source code for generating the mock datasets.
+    - mock_data: Contains various mock datasets.
     - util: Contains auxiliary functions.

@@ -8,8 +8,8 @@ from pathlib import Path
 
 from uq4pk_fit.inference import StatModel, MassWeightedForwardOperator
 import uq4pk_src
-from simulate_data import load_experiment_data
-from src.fci.parameters import DATAFILE, MAPFILE, GROUND_TRUTH, PCILOW, PCIUPP, LMD_MAX, LMD_MIN, DV
+from ..mock import load_experiment_data
+from .parameters import DATAFILE, MAPFILE, GROUND_TRUTH, PCILOW, PCIUPP, LMD_MAX, LMD_MIN, DV
 
 
 def compute_pixelwise_credible_intervals(mode: str, out: Path):

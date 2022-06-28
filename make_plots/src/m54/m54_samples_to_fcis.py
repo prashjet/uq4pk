@@ -1,6 +1,3 @@
-"""
-
-"""
 
 
 import numpy as np
@@ -8,7 +5,7 @@ from pathlib import Path
 
 from uq4pk_fit.inference import fcis_from_samples2d, marginal_ci_from_samples
 from uq4pk_fit.uq_mode import credible_intervals
-from src.m54.parameters import LOWER_STACK_MCMC, UPPER_STACK_MCMC, SAMPLE_FILE, SIGMA_LIST, MARGINAL_MCMC, YSAMPLES, \
+from .parameters import LOWER_STACK_MCMC, UPPER_STACK_MCMC, SAMPLE_FILE, SIGMA_LIST, MARGINAL_MCMC, YSAMPLES, \
     PREDICTIVE_MCMC
 
 

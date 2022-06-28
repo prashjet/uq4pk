@@ -6,8 +6,8 @@ Creates experiment data.
 from pathlib import Path
 
 import uq4pk_src
-from simulate_data import simulate, get_f, save_experiment_data
-from src.experiment_data.experiment_parameters import THETA_V, LMD_MAX, LMD_MIN, DV, FUNCTION_NO
+from ..mock import simulate, get_f, save_experiment_data
+from .experiment_parameters import THETA_V, LMD_MAX, LMD_MIN, DV, FUNCTION_NO
 
 
 TESTFUNCTION_DIR = Path("test_functions")

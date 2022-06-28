@@ -8,9 +8,9 @@ import numpy as np
 from pathlib import Path
 
 import uq4pk_src
-from uq4pk_fit.visualization import plot_significant_blobs, plot_distribution_function
 from uq4pk_fit.blob_detection import detect_significant_blobs
-from src.comparison.parameters import SIGMA_LIST, MEDIANFILE, MAPFILE, LOWER_STACK_OPT, UPPER_STACK_OPT, \
+from uq4pk_fit.visualization import plot_significant_blobs, plot_distribution_function
+from .parameters import SIGMA_LIST, MEDIANFILE, MAPFILE, LOWER_STACK_OPT, UPPER_STACK_OPT, \
     LOWER_STACK_MCMC, UPPER_STACK_MCMC, RTHRESH1, RTHRESH2, OVERLAP1, OVERLAP2, LMD_MIN, LMD_MAX, DV, OUT1, OUT2, \
     OUT3, TRUTHFILE
 

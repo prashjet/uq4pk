@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 
 from uq4pk_fit.visualization import plot_distribution_function
-from src.blob_detection.parameters import LOWER_STACK, UPPER_STACK
+from .parameters import LOWER_STACK, UPPER_STACK
 
 
 src = Path("../../out_test")

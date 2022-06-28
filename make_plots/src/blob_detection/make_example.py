@@ -1,7 +1,7 @@
 
 import numpy as np
 from uq4pk_fit.uq_mode.filter import GaussianFilterFunction2D
-from src.blob_detection.parameters import SIGMA_INDEX, SIGMA_LIST
+from .parameters import SIGMA_INDEX, SIGMA_LIST
 
 
 lower_stack = np.load("out/lower_stack_example.npy")

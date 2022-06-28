@@ -2,7 +2,7 @@
 import numpy as np
 from pathlib import Path
 
-from src.experiment_data.experiment_parameters import LMD_MIN, LMD_MAX, DV
+from ..experiment_data.experiment_parameters import LMD_MIN, LMD_MAX, DV
 
 # Parameters for visualization.
 RATIO = 0.5

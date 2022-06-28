@@ -2,16 +2,14 @@
 file: comparison/make_mcmc_samples.py
 """
 
-
+from jax import random
 import numpy as np
 from pathlib import Path
 
-import uq4pk_src.model_grids
+import uq4pk_src.model_grids, uq4pk_src.svd_mcmc
 from uq4pk_fit.special_operators import OrnsteinUhlenbeck
-from simulate_data import SimulatedExperimentData
-from uq4pk_src import svd_mcmc
-from jax import random
-from src.comparison.parameters import LMD_MIN, LMD_MAX, DV, NSAMPLE_ETA_ALPHA, NSAMPLE_BETA_TILDE, BURNIN_ETA_ALPHA, \
+from ..mock import SimulatedExperimentData
+from .parameters import LMD_MIN, LMD_MAX, DV, NSAMPLE_ETA_ALPHA, NSAMPLE_BETA_TILDE, BURNIN_ETA_ALPHA, \
     BURNIN_BETA_TILDE, Q, SIGMA_ALPHA, SIGMA_ETA, SAMPLEFILE, REGFACTOR
 
 

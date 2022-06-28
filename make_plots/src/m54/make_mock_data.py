@@ -2,9 +2,9 @@ import numpy as np
 from pathlib import Path
 
 import uq4pk_src
-from simulate_data import get_f
-from src.m54.m54_fit_model import m54_setup_operator, m54_fit_model
-from src.m54.parameters import THETA_V, MOCK1_FILE, MOCK_SD1_FILE, MOCK2_FILE, MOCK_SD2_FILE, MOCK_GT_FILE
+from ..mock import get_f
+from .m54_fit_model import m54_setup_operator, m54_fit_model
+from .parameters import THETA_V, MOCK1_FILE, MOCK_SD1_FILE, MOCK2_FILE, MOCK_SD2_FILE, MOCK_GT_FILE
 from uq4pk_fit.visualization import plot_distribution_function
 
 
@@ -46,6 +46,7 @@ def make_mock_data(snr: float, theta_v: np.ndarray, y_file: Path, y_sd_file: Pat
     fitted_model = m54_model.fitted_model
     f_map = fitted_model.f_map.clip(min=0.)
     vmax = ground_truth.max()
+    raise NotImplementedError("These have to be updated.")
     plot_distribution_function(image=ground_truth, show=True, vmax=vmax)
     plot_distribution_function(image=f_map, show=True, vmax=vmax)
 

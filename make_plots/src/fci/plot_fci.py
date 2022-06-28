@@ -4,8 +4,7 @@ from pathlib import Path
 
 from uq4pk_fit.visualization import plot_distribution_function
 import uq4pk_src
-from src.fci.parameters import MAPFILE, GROUND_TRUTH, PCILOW, PCIUPP, FCILOW, FCIUPP, FILTERED_TRUTH, FILTERED_MAP, \
-    DV, SCALES
+from .parameters import MAPFILE, GROUND_TRUTH, PCILOW, PCIUPP, FCILOW, FCIUPP, DV
 
 from ..util import add_colorbar_to_plot, add_colorbar_to_axis
 

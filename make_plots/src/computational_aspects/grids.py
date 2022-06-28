@@ -3,12 +3,12 @@ Visualizes the ideas behind window-localization and two-level localization.
 """
 
 
-import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.collections import LineCollection
 import numpy as np
 
 from uq4pk_fit.uq_mode.geometry2d import rectangle_indices, indices_to_coords
+
 
 m = 24
 n = 24

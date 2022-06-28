@@ -6,10 +6,10 @@ file: computational_aspects/computational_aspects_compute.py
 import numpy as np
 from pathlib import Path
 
-from simulate_data import load_experiment_data
 import uq4pk_src
 from uq4pk_fit.inference import StatModel, LightWeightedForwardOperator
-from src.computational_aspects.parameters import DATAFILE, SIGMA, N1, N2, CLIST, DLIST, D1, D2, W1LIST, \
+from ..mock import load_experiment_data
+from .parameters import DATAFILE, SIGMA, N1, N2, CLIST, DLIST, D1, D2, W1LIST, \
     W2LIST, ERRORS_WINDOW_FILE, ERRORS_TWOLEVEL_FILE, HEURISTIC_TWOLEVEL_FILE1, HEURISTIC_TWOLEVEL_FILE2, \
     HEURISTIC_WINDOW_FILE1, HEURISTIC_WINDOW_FILE2, LMD_MIN, LMD_MAX, DV
 

@@ -27,8 +27,8 @@ m54_predictive_name = "m54_predictive.png"
 def plot_m54(src: Path, out: Path):
     _m54_real_data_plot(src, out)
     _m54_mock_data_plot(src, out)
-    #_m54_age_marginals_plot(src, out)
-    #_m54_predictive_plot(src, out)
+    _m54_age_marginals_plot(src, out)
+    _m54_predictive_plot(src, out)
 
 
 def _m54_real_data_plot(src, out):

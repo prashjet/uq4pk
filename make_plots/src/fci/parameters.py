@@ -4,7 +4,7 @@ from math import sqrt
 import numpy as np
 from pathlib import Path
 
-from src.experiment_data.experiment_parameters import LMD_MIN, LMD_MAX, DV
+from ..mock_data.experiment_parameters import LMD_MIN, LMD_MAX, DV
 
 
 SCALES = [1., 5., 20.]

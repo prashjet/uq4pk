@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 
 from uq4pk_fit.blob_detection.blankets.first_order_blanket import first_order_blanket
-from src.blob_detection.parameters import EXAMPLE_MAP, EXAMPLE_LOWER, EXAMPLE_UPPER, SLICE_INDEX
+from .parameters import EXAMPLE_MAP, EXAMPLE_LOWER, EXAMPLE_UPPER, SLICE_INDEX
 
 
 loc = Path(__file__).parent

@@ -5,7 +5,7 @@ from ppxf import ppxf
 
 import uq4pk_src
 from uq4pk_fit.inference import StatModel, FittedModel, LightWeightedForwardOperator
-from src.m54.parameters import REGFACTOR, THETA_V
+from .parameters import REGFACTOR, THETA_V
 
 
 @dataclass

@@ -11,8 +11,8 @@ from time import time
 from uq4pk_fit.inference import StatModel
 from uq4pk_fit.inference import LightWeightedForwardOperator
 import uq4pk_src
-from simulate_data import load_experiment_data
-from src.blob_detection.parameters import SIGMA_LIST, DATA, LOWER_STACK, UPPER_STACK, DV, LMD_MIN, LMD_MAX, MAP, \
+from ..mock import load_experiment_data
+from .parameters import SIGMA_LIST, DATA, LOWER_STACK, UPPER_STACK, DV, LMD_MIN, LMD_MAX, MAP, \
     SPEEDUP_OPTIONS, LOWER_STACK_SPEEDUP, UPPER_STACK_SPEEDUP, TIMES, REGFACTOR
 
 

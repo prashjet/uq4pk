@@ -8,8 +8,8 @@ from pathlib import Path
 
 from uq4pk_fit.inference import LightWeightedForwardOperator, StatModel
 import uq4pk_src
-from simulate_data import ExperimentData
-from src.comparison.parameters import LMD_MAX, LMD_MIN, DV, SIGMA_LIST, MAPFILE, TRUTHFILE, LOWER_STACK_OPT, \
+from ..mock import ExperimentData
+from .parameters import LMD_MAX, LMD_MIN, DV, SIGMA_LIST, MAPFILE, TRUTHFILE, LOWER_STACK_OPT, \
     UPPER_STACK_OPT, REGFACTOR
 
 

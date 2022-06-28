@@ -7,11 +7,11 @@ from pathlib import Path
 import uq4pk_src
 from uq4pk_fit.visualization import plot_significant_blobs, plot_blobs
 from uq4pk_fit.blob_detection import detect_blobs, detect_significant_blobs
-from src.blob_detection.parameters import SIGMA_LIST, MAP, LOWER_STACK, UPPER_STACK, RTHRESH1, RTHRESH2,\
+from .parameters import SIGMA_LIST, MAP, LOWER_STACK, UPPER_STACK, RTHRESH1, RTHRESH2,\
     OVERLAP1, OVERLAP2, LOWER_STACK_SPEEDUP, UPPER_STACK_SPEEDUP
-from src.blob_detection.one_dimensional_example import one_dimensional_example
+from .one_dimensional_example import one_dimensional_example
 
-from ..util import add_colorbar_to_axis, add_colorbar_to_plot
+from ..util import add_colorbar_to_axis
 
 
 LABEL_LINES = False     # Decide whether you want to label the lines directly in the one-dimensional example.

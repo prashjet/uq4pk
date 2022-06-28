@@ -7,10 +7,10 @@ import numpy as np
 from pathlib import Path
 
 from uq4pk_fit.inference import fcis_from_samples2d
-from simulate_data import ExperimentData
-from src.comparison.parameters import SIGMA_LIST, SAMPLEFILE, LOWER_STACK_MCMC, \
+from ..mock import ExperimentData
+from ..util.geometric_median import geometric_median
+from .parameters import SIGMA_LIST, SAMPLEFILE, LOWER_STACK_MCMC, \
     UPPER_STACK_MCMC, MEDIANFILE
-from src.comparison.geometric_median import geometric_median
 
 
 def compute_fcis_mcmc(data: ExperimentData, out: Path):

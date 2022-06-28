@@ -9,9 +9,9 @@ from pathlib import Path
 
 import uq4pk_src
 from uq4pk_fit.inference import StatModel, MassWeightedForwardOperator
-from simulate_data import load_experiment_data
 from uq4pk_fit.inference.make_filter_function import make_filter_function
-from src.fci.parameters import DATAFILE, FCILOW, FCIUPP, SIGMA_LIST, LMD_MIN, LMD_MAX, \
+from ..mock import load_experiment_data
+from .parameters import DATAFILE, FCILOW, FCIUPP, SIGMA_LIST, LMD_MIN, LMD_MAX, \
     DV, FILTERED_TRUTH, FILTERED_MAP
 
 

@@ -6,7 +6,8 @@ file: geometric_median.py
 import numpy as np
 from scipy.spatial.distance import cdist, euclidean
 
-MAXITER = 5000
+
+MAXITER = 5000      # Maximum number of iterations until we give up.
 
 
 def geometric_median(X: np.ndarray, eps: float = 1e-5) -> np.ndarray:
