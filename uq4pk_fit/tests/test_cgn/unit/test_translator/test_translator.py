@@ -13,7 +13,7 @@ def test_translate(three_parameter_problem):
     translator = Translator(three_parameter_problem)
     # Translate dummy problem
     dummy_cnls = translator.translate()
-    assert dummy_cnls.dim == three_parameter_problem.n
+    assert dummy_cnls.dim == three_parameter_problem.dim
     assert isinstance(dummy_cnls, CNLS)
 
 

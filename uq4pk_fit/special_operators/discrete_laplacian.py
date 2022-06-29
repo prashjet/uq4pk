@@ -3,7 +3,6 @@ Contains class 'DiscreteLaplacian'.
 """
 
 import numpy as np
-import cv2
 import scipy.ndimage as spim
 
 from typing import Sequence
@@ -13,12 +12,12 @@ from ..cgn import RegularizationOperator
 
 class DiscreteLaplacian(RegularizationOperator):
     """
-    Implements the discrete Laplace operator for n-dimensional input.
+    Implements the discrete Laplace operator for dim-dimensional input.
     """
     def __init__(self, shape: Sequence[int], mode="reflect", cval=0.0):
         """
 
-        :param shape: The shape of the input. E.g. (m, n) for an image of shape (m, n).
+        :param shape: The shape of the input. E.g. (m, dim) for an image of shape (m, dim).
         :param mode: Determines how the boundaries are handled. For possible options, see
             https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.laplace.html.
         :param cval: See https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.laplace.html.
@@ -49,6 +48,13 @@ class DiscreteLaplacian(RegularizationOperator):
         :return:
         """
         return self._mat.T @ v
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        """
+        Compute inverse via least-squares method (since I'm worried about stability).
+        """
+        v = np.linalg.lstsq(self._mat, w)
+        return v
 
     # PRIVATE
 

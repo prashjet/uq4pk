@@ -2,8 +2,8 @@
 import numpy as np
 from typing import Sequence, Union
 
-from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
-from uq4pk_fit.blob_detection.scale_space_representation import scale_space_representation
+from uq4pk_fit.gaussian_blob.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.gaussian_blob.scale_space_representation.scale_space_representation import scale_space_representation
 
 
 
@@ -17,7 +17,7 @@ def blob_operator(scales: Sequence[Union[float, np.ndarray]], m: int, n: int) ->
     :param m: Number of image rows.
     :param n: Number of image columns.
     :param ratio: The height/width ratio for the Gaussian filter.
-    :return: Array of shape (s*m*n, m * n), where s = len(scales).
+    :return: Array of shape (s*m*dim, m * dim), where s = len(scales).
     """
     # Assemble the discretization of :math:`\\nabla \\Delta_x^h G_h` by applying the operator to each basis element of
     # R^{mn}.
@@ -26,7 +26,7 @@ def blob_operator(scales: Sequence[Union[float, np.ndarray]], m: int, n: int) ->
     for basis_vector in basis:
         basis_image = np.reshape(basis_vector, (m, n))
         # Compute scale-space representation of basis image.
-        f_x_h = scale_space_representation(basis_image, scales, mode="constant")
+        f_x_h = scale_space_representation(basis_image, scales, mode="reflect")
         out = scale_normalized_laplacian(ssr=f_x_h, scales=scales, mode="reflect").flatten()
         out_list.append(out)
     shape_operator = np.column_stack(out_list)

@@ -33,7 +33,7 @@ class Problem:
             For example, if ``parameters = [x, y, z]``, then ``fun(u, v, w)`` should be defined, where e.g. v would
              be a numpy array of shape (y.dim,). The output of ``fun(u, v, w)`` should be a numpy array of shape (m,).
         :param jac: The Jacobian corresponding to `fun`. It should accept the same argument as `fun`, and the output
-            should be a numpy array with shape (m, n), where n is the sum of the dimensions of the parameters.
+            should be a numpy array with shape (m, dim), where dim is the sum of the dimensions of the parameters.
         :param q: The regularization of the misfit term. Typically, this will be a square root of the noise precision
             matrix. Can either be a numpy array or a :py:class:`RegularizationOperator`.
         :param scale: The scale of the cost function. This only matters for the optimization.
@@ -111,7 +111,7 @@ class Problem:
             \\beta_1 R_1^\\top R_1 (x_1 - m_1) + \\ldots + \\beta_p R_p^\\top R_p (x_p - m_p).
 
         :param args: The number of args should be equal to :py:attr:`~nparams`.
-        :returns: :math:`\\nabla \\phi`, of shape (n,).
+        :returns: :math:`\\nabla \\phi`, of shape (dim,).
         """
         misfit_grad = (self.q.fwd(self.jac(*args))).T @ self.q.fwd(self.fun(*args))
         reg_grad_list = []

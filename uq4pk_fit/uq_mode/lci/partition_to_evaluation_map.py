@@ -2,7 +2,7 @@
 import numpy as np
 
 from ..evaluation import AffineEvaluationMap
-from ..discretization import Partition
+from ..partition import Partition
 from .lci_evaluation_functional import LCIEvaluationFunctional
 
 

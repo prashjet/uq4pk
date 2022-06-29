@@ -1,8 +1,7 @@
 import numpy as np
-from typing import Tuple
 
 from ..geometry2d import coords_to_indices, indices_to_coords, rectangle_indices
-from .rectangle_partition import rectangle_partition
+from uq4pk_fit.uq_mode.partition.rectangle_partition import rectangle_partition
 from .image_discretization import ImageDiscretization, AdaptiveImageDiscretization
 
 
@@ -16,12 +15,12 @@ class TwoLevelDiscretization(ImageDiscretization):
 
         :param im_ref: Reference image.
         :param d1: The vertical resolution of the discretization. For example, if d1=2 and d2=3, the image is
-            discretized into 2x3-rectangles (or smaller, if m and n are not divisible by d1 and d2).
+            discretized into 2x3-rectangles (or smaller, if m and dim are not divisible by d1 and d2).
         :param d2: The horizontal resolution of the discretization.
         :param w1: The vertical radius of the window, IN MULTIPLES OF d1. For example, if d1=2 and w1=3, then the window
             will have height 2 * w1 * d1 + 1 = 13.
         :param w2: The horizontal radius of the window, IN MULTIPLES OF d2 (see w1).
-        :param center: An array of the form (i, j), 0 <= i < m and 0 <= j < n, denoting the pixel at which the window
+        :param center: An array of the form (i, j), 0 <= i < m and 0 <= j < dim, denoting the pixel at which the window
             is centered.
         """
         # Check input for sensibleness.
@@ -109,7 +108,7 @@ class AdaptiveTwoLevelDiscretization(AdaptiveImageDiscretization):
         """
         :param im_ref: The reference image.
         :param d1: The vertical resolution of the discretization.
-            For example, if d1=2 and d2=3, the image is discretized into 2x3-rectangles (or smaller, if m and n are not
+            For example, if d1=2 and d2=3, the image is discretized into 2x3-rectangles (or smaller, if m and dim are not
             divisible by d1 and d2).
         :param d2: The horizontal resolution of the discretization.
         :param w1: The vertical radius of the window, IN MULTIPLES OF d1. For example, if d1=2 and w1=3, then the window

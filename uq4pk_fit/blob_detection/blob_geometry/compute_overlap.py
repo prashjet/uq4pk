@@ -2,7 +2,10 @@
 import shapely.affinity as aff
 import shapely.geometry as geom
 
-from ..gaussian_blob import GaussianBlob
+from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
+
+
+eps = 1e-3
 
 
 def compute_overlap(blob1: GaussianBlob, blob2: GaussianBlob) -> float:
@@ -32,7 +35,8 @@ def compute_overlap(blob1: GaussianBlob, blob2: GaussianBlob) -> float:
     relative_overlap = a_intersection / min(a1, a2)
 
     # Return relative overlap
-    assert 0. <= relative_overlap <= 1.
+    if not 0. - eps <= relative_overlap <= 1. + eps:
+        raise RuntimeError(f"Relative overlap = {relative_overlap}")
     return relative_overlap
 
 

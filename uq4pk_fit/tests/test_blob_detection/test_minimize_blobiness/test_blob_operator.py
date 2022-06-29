@@ -5,12 +5,12 @@ import numpy as np
 from uq4pk_fit.blob_detection.minimize_blobiness.blob_operator import blob_operator
 
 
-SHOW = False    # Set True if you want to see plots.
+SHOW = True    # Set True if you want to see plots.
 
 
 def test_blob_operator():
     # Load test image.
-    f = np.loadtxt("data/map.csv", delimiter=",")
+    f = np.loadtxt("../data/map.csv", delimiter=",")
     num_sigma = 10
     sigma_min = 1
     sigma_max = 20

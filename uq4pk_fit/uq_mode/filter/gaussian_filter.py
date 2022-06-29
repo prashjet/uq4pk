@@ -1,6 +1,4 @@
 
-from math import sqrt
-
 import numpy as np
 from scipy.stats import norm
 from typing import Literal, Union
@@ -9,6 +7,9 @@ from ..geometry2d import indices_to_coords
 from .filter_kernel import FilterKernel
 from .kernel_filter import KernelFilter
 from .image_filter_function import ImageFilterFunction
+
+
+EPS = 1e-10
 
 
 class GaussianKernel2D(FilterKernel):
@@ -20,6 +21,7 @@ class GaussianKernel2D(FilterKernel):
         :param sigma: Standard deviation of the Gaussian kernel. Can also be a (2,) array, where the entries correspond
             to the standard deviations in the vertical and horizontal direction.
         """
+        assert np.all(sigma >= EPS), "'sigma' must be strictly positive."
         self.dim = 2
         if isinstance(sigma, np.ndarray):
             assert sigma.shape == (2,)
@@ -31,8 +33,8 @@ class GaussianKernel2D(FilterKernel):
 
     def weighting(self, x: np.ndarray) -> float:
         """
-        :param x: Of shape (2, n).
-        :return: Vector of shape (n, )
+        :param x: Of shape (2, dim).
+        :return: Vector of shape (dim, )
         """
         p1 = norm.pdf(x=x[0, :], scale=self._sigma1)
         p2 = norm.pdf(x=x[1, :], scale=self._sigma2)

@@ -30,6 +30,13 @@ class DiscreteGradient(RegularizationOperator):
         w = self._mat @ v
         return w
 
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        """
+        In this case, R^(-1) is the pseudo-inverse.
+        """
+        v = np.linalg.lstsq(self._mat, w)
+        return v
+
     # PRIVATE
 
     def _compute_mat(self):
@@ -47,8 +54,8 @@ class DiscreteGradient(RegularizationOperator):
         Computes discrete gradient of an N-dimensional array.
 
         :param arr: The array.
-        :return: A vector of size np.prod(np.array(arr.shape)). For example, if ``arr`` has shape (m, n, l), then
-            the returned gradient is a vector of size m * n * l.
+        :return: A vector of size np.prod(np.array(arr.shape)). For example, if ``arr`` has shape (m, dim, l), then
+            the returned gradient is a vector of size m * dim * l.
         """
         gradients = mygradient(arr, mode=self._mode)
         flattened_gradient = [grad.flatten() for grad in gradients]

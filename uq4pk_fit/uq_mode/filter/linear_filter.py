@@ -1,14 +1,15 @@
 
 import numpy as np
-import numpy.typing as npt
 
 
 class LinearFilter:
     """
     A LINEAR filter is just a linear map vector -> value, defined by weights.
     """
-    dim: int               # the dimension of the filter domain
-    weights: np.ndarray    # Array containing the filter weights.
+    def __init__(self, weights: np.ndarray):
+        assert weights.ndim == 1
+        self.weights = weights
+        self.dim = weights.size
 
     def evaluate(self, v: np.ndarray) -> float:
         """

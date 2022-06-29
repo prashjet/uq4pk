@@ -1,2 +1,4 @@
+
 from .significant_blobs import detect_significant_blobs
-from .gaussian_blob import GaussianBlob
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
+from .minimize_blobiness import minimize_blobiness

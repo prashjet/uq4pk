@@ -6,10 +6,10 @@ EPS = np.finfo(float).eps
 
 def mean_jaccard_distance(interval1: np.ndarray, interval2: np.ndarray) -> float:
     """
-    Computes the mean Jaccard distance of two multidimensional intervals [a, b], [c, d] \subset R^n:
+    Computes the mean Jaccard distance of two multidimensional intervals [a, b], [c, d] \subset R^dim:
     d_J([a, b], [c, d]) = 1 - vol(intersection([a, b], [c, d])) / vol(union([a, b], [c, d])).
 
-    :param interval1: Numpy array of shape (n, 2), where the first column corresponds to the lower bound a and the
+    :param interval1: Numpy array of shape (dim, 2), where the first column corresponds to the lower bound a and the
         second column corresponds to the upper bound b.
     :param interval2: Array of the same shape as `interval1`, corresponding to [c, d].
     :return: A number between 0 and 1, where 0 corresponds to identity and 1 corresponds to disjointness.
@@ -20,7 +20,7 @@ def mean_jaccard_distance(interval1: np.ndarray, interval2: np.ndarray) -> float
     if interval1.ndim != 2:
         raise Exception("Expecting two dimensional intervals.")
     if interval1.shape[1] != 2:
-        raise Exception("Intervals must be of the form (n,2).")
+        raise Exception("Intervals must be of the form (dim,2).")
 
     # Compute the volume of the intersection:
     #  Determine the intersection [a_i, b_i] = [max(a, c), min(b, d)].

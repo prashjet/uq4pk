@@ -16,7 +16,7 @@ prob = get_problem()
 alpha = 0.05
 part = Partition(dim=2, elements=[np.array([0, 1])])
 ffunction = IdentityFilterFunction(dim=2)
-pixelwise_credible = fci(alpha=alpha, x_map=prob.x_map, model=prob.model, ffunction=ffunction)
+pixelwise_credible = adaptive_fci(alpha=alpha, model=prob.model, x_map=prob.x_map, filter_functions=, discretization=)
 local_credible = lci(alpha=alpha, model=prob.model, x_map=prob.x_map, partition=part)
 # visualize lci-points
 x_lci = get_points(local_credible, prob.x_map)

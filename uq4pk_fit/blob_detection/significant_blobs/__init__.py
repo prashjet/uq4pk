@@ -1,2 +1,3 @@
 
 from .detect_significant_blobs import detect_significant_blobs
+from .detect_significant_blobs_samples import detect_significant_blobs_from_samples

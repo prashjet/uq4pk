@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..geometry2d import coords_to_indices, indices_to_coords, rectangle_indices
+from ..geometry2d import indices_to_coords, rectangle_indices
 from .image_discretization import AdaptiveImageDiscretization, ImageDiscretization
 
 
@@ -13,8 +13,8 @@ class Window(ImageDiscretization):
     def __init__(self, im_ref: np.ndarray, center: np.ndarray, w1: int, w2: int):
         """
 
-        :param im_ref: The reference image of shape (m, n).
-        :param center: Array of the form (i, j), with 0 <= i < m and 0 <= j < n, describing the center pixel.
+        :param im_ref: The reference image of shape (m, dim).
+        :param center: Array of the form (i, j), with 0 <= i < m and 0 <= j < dim, describing the center pixel.
         :param w1: The vertical radius of the window, i.e. the window has a height of 2 * w1 + 1.
         :param w2: The horizontal radius of the window, i.e. the window has a width of 2 * w2 + 1.
         """
@@ -74,7 +74,7 @@ class LocalizationWindows(AdaptiveImageDiscretization):
     def __init__(self, im_ref: np.ndarray, w1: int, w2: int):
         """
 
-        :param im_ref: The reference image of shape (m, n).
+        :param im_ref: The reference image of shape (m, dim).
         :param w1: The vertical radius of the window, i.e. the window has a height of 2 * w1 + 1.
         :param w2: The horizontal radius of the window, i.e. the window has a width of 2 * w2 + 1.
         """

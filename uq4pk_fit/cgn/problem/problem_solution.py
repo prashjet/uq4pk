@@ -29,7 +29,7 @@ class ProblemSolution:
     @property
     def precision(self) -> np.ndarray:
         """
-        The posterior precision matrix. Of shape (n,n), where n is the overall parameter dimension.
+        The posterior precision matrix. Of shape (dim,dim), where dim is the overall parameter dimension.
         """
         return self._precision
 

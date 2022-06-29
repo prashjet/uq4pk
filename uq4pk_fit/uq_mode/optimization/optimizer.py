@@ -6,5 +6,15 @@ from .socp import SOCP
 
 
 class Optimizer:
-    def optimize(self, problem: SOCP, start: np.ndarray, mode: Literal["min", "max"]) -> np.ndarray:
+
+    def setup_problem(self, socp: SOCP, ctol: float, mode: Literal["min", "max"]):
+        raise NotImplementedError
+
+    def optimize(self) -> np.ndarray:
+        """
+        Solves the SOCP and returns the optimizer.
+        """
+        raise NotImplementedError
+
+    def change_loss(self, w: np.ndarray):
         raise NotImplementedError

@@ -1,28 +1,36 @@
 
 from matplotlib import pyplot as plt
+from matplotlib.axes import Axes
+import numpy as np
+from .params import CMAP, power_norm
 
 
-
-def plot_distribution_function(image, ssps = None, show=True, savefile: str = None, vmax=None, vmin=None, ):
+def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=True, xlabel=True, ylabel=False):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.
+    :param ax: A matplotlib.axes.Axes object.
     :param image: The age-metallicity distribution as 2-dimensional numpy array.
-    :param ticks:
-    :param savefile: If provided, stores plot in given location.
-    :param vmax:
-    :param vmin:
-    :param show: If False, the plot is not shown.
+    :param ssps: The SSPS grid.
+    :param vmax: The maximum intensity.
+    :param flip: If True, the plotted image is upside down. This is True by default, since it is more correct from a
+        physical point of view.
+    :param xlabel: If True, adds label to x-axis.
     """
-    cmap = plt.get_cmap("gnuplot")
-    fig = plt.figure(figsize=(6, 2.5))
-    ax = plt.axes()
-    im = plt.imshow(image, vmax=vmax, vmin=vmin, cmap=cmap, extent=(0, 1, 0, 1), aspect="auto")
-    cax = fig.add_axes([ax.get_position().x1 + 0.01, ax.get_position().y0, 0.02, ax.get_position().height])
-    cbar = plt.colorbar(im, cax=cax)
-    cbar.set_label("density")
-    ax.set_xlabel("Age [Gyr]")
-    ax.set_ylabel("Metallicity [Z/H]")
+    if flip:
+        f_im = np.flipud(image)
+    else:
+        f_im = image
+    cmap = plt.get_cmap(CMAP)
+    if vmax is None:
+        vmax = image.max()
+    # I want fixed aspect ratio to 6:2.5.
+    aspect = 2.5 / 6.
+    immap = ax.imshow(f_im, cmap=cmap, extent=(0, 1, 0, 1), aspect=aspect, norm=power_norm(vmin=0., vmax=vmax))
+    if xlabel:
+        ax.set_xlabel("Age [Gyr]")
+    if ylabel:
+        ax.set_ylabel("Metallicity [Z/H]")
     if ssps is not None:
         ticks = [ssps.t_ticks, ssps.z_ticks, ssps.img_t_ticks, ssps.img_z_ticks]
         t_ticks, z_ticks, img_t_ticks, img_z_ticks = ticks
@@ -30,8 +38,6 @@ def plot_distribution_function(image, ssps = None, show=True, savefile: str = No
         ax.set_xticklabels(t_ticks)
         ax.set_yticks(img_z_ticks)
         ax.set_yticklabels(z_ticks)
-    # if savename is provided, save .csv and image
-    if savefile is not None:
-        plt.savefig(savefile, bbox_inches='tight')
-    if show: plt.show()
-    plt.close()
+
+    # Return "mappable" (allows colorbar creation).
+    return immap

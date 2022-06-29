@@ -127,7 +127,7 @@ class WaechterBiegler:
         Implements the actual line search iteration.
         :param state: current state
         :param p: proposed direction
-        :param cost_gradient: (n,) array
+        :param cost_gradient: (dim,) array
             Gradient of cost function at current position.
         :return: next position w_next, computed with optimal steplength.
         """

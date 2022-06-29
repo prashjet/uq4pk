@@ -13,7 +13,7 @@ class SOCP:
         x >= lb
     """
     def __init__(self, w: np.ndarray, a: Union[np.ndarray, None], b: Union[np.ndarray, None],
-                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None]):
+                 c: np.ndarray, d: np.ndarray, e: float, lb: Union[np.ndarray, None], x_guess: np.ndarray):
         # check input
         self._check_input(w, a, b, c, d, e, lb)
         # check that the equality constraints satisfy constraint qualification
@@ -30,6 +30,7 @@ class SOCP:
         self.d = deepcopy(d)
         self.e = deepcopy(e)
         self.lb = deepcopy(lb)
+        self.x_guess = deepcopy(x_guess)
         if self.lb is not None:
             self.bound_constrained = True
         else:
@@ -51,7 +52,8 @@ class SOCP:
             - constraints_satisfied: bool. True if all constraints are satisfied, otherwise False.
             - message: str. An error message specifying which constraints were violated.
         """
-        soc_violation = max(0, np.sum(np.square(self.c @ x - self.d)) - self.e)
+        soc_violation = max(0, np.sum(np.square(self.c @ x - self.d)) - self.e) / self.e
+        print(f"SOC violation = {soc_violation}.")
         soc_violated = soc_violation > tol
         if self.equality_constrained:
             eqcon_violated = self._l1norm((self.a @ x - self.b)) > tol

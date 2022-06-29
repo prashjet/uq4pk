@@ -14,7 +14,7 @@ def test_lci():
     # compute Cui's locally credible intervals
     alpha = 0.05
     # make discretization consisting of one element
-    partition = uq_mode.partition.Partition(dim=2, elements=[np.array([0, 1])])
+    partition = uq4pk_fit.uq_mode.partition.partition.Partition(dim=2, elements=[np.array([0, 1])])
     # compute localized credible intervals
     lci = uq_mode.lci(alpha=alpha, model=prob.model, x_map=prob.x_map, partition=partition, options={"use_ray": False})
     # Assert that lower bound is less than upper bound

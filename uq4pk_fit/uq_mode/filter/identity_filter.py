@@ -16,10 +16,9 @@ class EvaluationFilter(LinearFilter):
         :param dim: Dimension of underlying space.
         :param i: Index of evaluation.
         """
-        self.dim = dim
         weights = np.zeros(dim)
         weights[i] = 1.
-        self.weights = weights
+        LinearFilter.__init__(self, weights)
 
 
 class IdentityFilterFunction(FilterFunction):

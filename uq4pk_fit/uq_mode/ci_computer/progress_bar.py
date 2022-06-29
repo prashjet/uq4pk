@@ -3,9 +3,9 @@
 
 import asyncio
 import ray
-from ray.actor import ActorHandle
 from typing import Tuple, List
 import tqdm
+from ray.actor import ActorHandle
 
 @ray.remote
 class ProgressBarActor:
@@ -80,7 +80,7 @@ class ProgressBar:
         passed the actor handle. Each of them calls `update` on the actor.
         When the progress meter reaches 100%, this method returns.
         """
-        pbar = tqdm.tqdm(desc=self.description, total=self.total)
+        pbar = tqdm.tqdm(desc=self.description, total=self.total, smoothing=0.2)
         while True:
             delta, counter = ray.get(self.actor.wait_for_update.remote())
             pbar.update(delta)

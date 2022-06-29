@@ -22,3 +22,7 @@ class MatrixOperator(RegularizationOperator):
         See :py:attr:`RegularizationOperator.fwd`.
         """
         return self._mat @ v
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        v = np.linalg.solve(self._mat, w)
+        return v

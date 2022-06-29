@@ -7,7 +7,7 @@ import numpy as np
 
 def indices_to_coords(m, n, indices):
     """
-    Returns the x- and y-coordinates of the i-th pixel in a (m,n)-image
+    Returns the x- and y-coordinates of the i-th pixel in a (m,dim)-image
     :param m: int
         Number of rows of the image.
     :param n: int

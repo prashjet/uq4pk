@@ -31,6 +31,8 @@ class Logger:
         self.verbosity = verbosity
         self.filename = filename
         self._logger = logging.getLogger()
+        if verbosity == 0:
+            self._logger.disabled = True
         if verbosity == 1 or verbosity == 3:
             file_log_handler = logging.FileHandler(filename)
             self._logger.addHandler(file_log_handler)

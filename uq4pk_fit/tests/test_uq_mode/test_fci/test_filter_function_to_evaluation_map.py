@@ -3,7 +3,7 @@ import numpy as np
 
 from uq4pk_fit.uq_mode.filter import GaussianFilterFunction2D
 from uq4pk_fit.uq_mode.discretization import TrivialAdaptiveDiscretization
-from uq4pk_fit.uq_mode.fci.filter_function_to_evaluation_map import filter_function_to_evaluation_map
+from uq4pk_fit.uq_mode.fci.filter_and_discretization_to_evaluation_map import filter_and_discretization_to_evaluation_map
 
 
 def test_filter_to_evaluation_map():
@@ -13,8 +13,8 @@ def test_filter_to_evaluation_map():
     x_map = np.ones((n1 * n2, ))
     ffunction = GaussianFilterFunction2D(m=n1, n=n2, sigma=1., boundary="zero")
     discretization = TrivialAdaptiveDiscretization(dim=n1 * n2)
-    evaluation_map = filter_function_to_evaluation_map(filter_function=ffunction, discretization=discretization,
-                                                       x_map=x_map)
+    evaluation_map = filter_and_discretization_to_evaluation_map(filter_function=ffunction,
+                                                                 discretization=discretization, x_map=x_map)
 
     assert evaluation_map.dim == ffunction.dim
     # finally, compare individual filters

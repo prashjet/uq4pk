@@ -49,3 +49,10 @@ class DiagonalOperator(RegularizationOperator):
             else:
                 u = self._s[:, np.newaxis] * v
         return u
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        """
+        R = s Id => R^(-1) = s^(-1) Id.
+        """
+        v = np.divide(w, self._s)
+        return v

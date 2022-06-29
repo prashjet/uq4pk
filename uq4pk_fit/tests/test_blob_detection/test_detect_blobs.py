@@ -4,17 +4,17 @@ from matplotlib import patches
 import numpy as np
 from skimage.feature import blob_log
 
-from uq4pk_fit.blob_detection.gaussian_blob import GaussianBlob
-from uq4pk_fit.blob_detection.detect_blobs import detect_blobs
+from uq4pk_fit.gaussian_blob.gaussian_blob import GaussianBlob
+from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
 
 
-SHOW = False    # Set True if you want to see plots.
+SHOW = True    # Set True if you want to see plots.
 SIGMA_MIN = 1.
 SIGMA_MAX = 25.
 NUM_SIGMA = 10
 
 sigma_step = (SIGMA_MAX - SIGMA_MIN) / (NUM_SIGMA + 1)
-sigma_list = [SIGMA_MIN + n * sigma_step for n in range(NUM_SIGMA + 2)]
+sigma_list = [(SIGMA_MIN + n * sigma_step) * np.ones(2, ) for n in range(NUM_SIGMA + 2)]
 
 
 def test_output_has_right_format():
@@ -45,8 +45,7 @@ def test_compare_with_skimage():
     overlap = 0.5
     rthresh = 0.01
     test_img = np.loadtxt("data/map.csv", delimiter=",")
-    blobs = detect_blobs(image=test_img, sigma_list=sigma_list, max_overlap=overlap, rthresh=rthresh,
-                         mode="constant")
+    blobs = detect_blobs(image=test_img, sigma_list=sigma_list, max_overlap=overlap, rthresh=rthresh)
     sigma_min = SIGMA_MIN
     sigma_max = SIGMA_MAX
     features_skimage = blob_log(test_img, min_sigma=sigma_min, max_sigma=sigma_max, num_sigma=n_r, overlap=overlap,

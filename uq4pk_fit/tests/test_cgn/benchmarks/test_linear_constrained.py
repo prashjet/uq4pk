@@ -17,7 +17,7 @@ class LinearConstrainedProblem(LinearProblem):
     def __init__(self):
         LinearProblem.__init__(self)
         # Add sum-to-one constraint
-        n = self._problem.n
+        n = self._problem.dim
         a = np.ones((1, n))
         b = a @ self._minimizer
         # make sure that initial guess satisfies constraint

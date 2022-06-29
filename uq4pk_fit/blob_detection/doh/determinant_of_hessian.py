@@ -11,7 +11,7 @@ def determinant_of_hessian(ssr: np.ndarray, scales: Sequence[float]) -> np.ndarr
     .. math::
         \\det H_{norm} L(x, t) = t^2 (\\partial_{xx} \\partial_{yy} - \\partial_{xy}^2) L(x, t).
 
-    :param ssr: The 3-dimensional scale-space representation :math:`L=L(x,t)` as array of shape (k, m, n),
+    :param ssr: The 3-dimensional scale-space representation :math:`L=L(x,t)` as array of shape (k, m, dim),
         where k is the number of scales.
     :param scales: The scale-discretization. Must satisfy :code:`len(scales) == ssr.shape[0]`.
     :return: An array of the same shape as ``ssr``.
@@ -62,8 +62,8 @@ def image_hessian(im: np.ndarray) -> np.ndarray:
     """
     Computes image Hessian.
 
-    :param im: Of shape (m, n).
-    :return: Of shape (2, 2, m, n).
+    :param im: Of shape (m, dim).
+    :return: Of shape (2, 2, m, dim).
     """
     gradients = np.gradient(im)
     hessian_rows = []

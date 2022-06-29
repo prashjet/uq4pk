@@ -2,11 +2,11 @@
 from matplotlib import pyplot as plt
 import numpy as np
 
-from uq4pk_fit.blob_detection.scale_space_representation import scale_space_representation
-from uq4pk_fit.blob_detection.scale_normalized_laplacian import scale_normalized_laplacian
+from uq4pk_fit.gaussian_blob.scale_space_representation.scale_space_representation import scale_space_representation
+from uq4pk_fit.gaussian_blob.scale_space_representation.scale_normalized_laplacian import scale_normalized_laplacian
 
 
-SHOW = False    # Set True if you want to see plots
+SHOW = True    # Set True if you want to see plots
 NSCALES = 12
 R_MIN = 1
 R_MAX = 15
@@ -21,7 +21,7 @@ def test_normalized_laplacian():
     radii = [R_MIN + n * r_step for n in range(NSCALES)]
     scales = [0.5 * r ** 2 for r in radii]
     # Compute scale space representation
-    ssr = scale_space_representation(testim, scales=scales, mode="reflect")
+    ssr = scale_space_representation(testim, scales=scales, mode="constant")
 
     # Apply scale-normalized Laplacian
     snl = scale_normalized_laplacian(ssr, scales, mode="reflect")
@@ -30,7 +30,9 @@ def test_normalized_laplacian():
     i = 0
     vmin = snl.min()
     vmax = snl.max()
-    for snl_i in snl:
+    for snl_i, ssr_i in zip(snl, ssr):
+        fig = plt.figure(num=f"gaussian, t = {scales[i]}", figsize=(6, 2.5))
+        plt.imshow(ssr_i, cmap="gnuplot", vmin=vmin, vmax=vmax)
         fig = plt.figure(num=f"t = {scales[i]}", figsize=(6, 2.5))
         plt.imshow(snl_i, cmap="gnuplot", vmin=vmin, vmax=vmax)
         i += 1

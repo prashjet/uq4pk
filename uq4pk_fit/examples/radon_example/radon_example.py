@@ -40,14 +40,14 @@ lci = uq_mode.lci.lci(alpha=alpha, cost=cost_dict, x_map=x_map, partition=two_by
 # Make local mean-filter function. We use a localization frame of width 2 in vertical and horizontal direction.
 c = 2
 d = 2
-local_means = uq_mode.fci.ImageLocalMeans(m, n, a, b, c, d)
+local_means = uq_mode.adaptive_fci.ImageLocalMeans(m, n, a, b, c, d)
 print(" ")
-lmci = uq_mode.fci.fci(alpha=alpha, cost=cost_dict, x_map=x_map, ffunction=local_means)
+lmci = uq_mode.adaptive_fci.adaptive_fci(alpha=alpha, model=, x_map=x_map, filter_functions=, discretization=)
 
 # NEXT, COMPUTE FILTERED CREDIBLE INTERVALS WITH EXPONENTIAL KERNEL
-exponential_filter = uq_mode.fci.ExponentialFilterFunction(m, n)
+exponential_filter = uq_mode.adaptive_fci.ExponentialFilterFunction(m, n)
 print(" ")
-fci = uq_mode.fci.fci(alpha=alpha, cost=cost_dict, x_map=x_map, ffunction=exponential_filter)
+fci = uq_mode.adaptive_fci.adaptive_fci(alpha=alpha, model=, x_map=x_map, filter_functions=, discretization=)
 
 # VISUALIZE
 # Plot ground truth and MAP estimate.

@@ -9,16 +9,16 @@ from uq4pk_fit.cgn.problem.parameter import Parameter
 class LinearConstraint(Constraint):
     """
     Represents a linear constraint. Either an equality constraint :math:`Ax = b`, or an inequality constraint
-    :math:`Ax \\geq b`, where :math:`A \\in \\mathbb{R}^{c \\times n}.
+    :math:`Ax \\geq b`, where :math:`A \\idim \\mathbb{R}^{c \\times dim}.
     """
     def __init__(self, parameters: List[Parameter], a: np.ndarray, b: np.ndarray, ctype: Literal["eq", "ineq"]):
         """
         Represents a linear constraint. Either an equality constraint :math:`Ax = b`, or an inequality constraint
-        :math:`Ax \geq b`, where :math:`A \in \mathbb{R}^{c \times n}.
+        :math:`Ax \geq b`, where :math:`A \idim \mathbb{R}^{c \times dim}.
 
         :param parameters: A list of the parameters involved in the constraint. If the list contains more than one
             element, the constraint will be defined with respect to the concatenated parameter vector.
-        :param a: Of shape (c, n). The constraint matrix. The number of columns `n` must be equal to the dimension of
+        :param a: Of shape (c, dim). The constraint matrix. The number of columns `dim` must be equal to the dimension of
             the concatenated parameter vector.
         :param b: The right hand side of the constraint. Must have shape (c,).
         :param ctype: The type of the constraint.

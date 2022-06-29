@@ -152,25 +152,24 @@ class MilesSSPs:
         c1 = (self.age_lim is None) and (self.z_lim is None)
         c2 = (self.thin_age==1) and (self.thin_z==1)
         allspecfile = self.data_dir + self.mod_dir + 'all_spectra.npy'
-        if c1 and c2:
-            if os.path.isfile(allspecfile):
-                self.X = np.load(allspecfile)
-            else:
-                s0 = self.read_spectrum(z=self.z_unq[0], t=self.t_unq[0])
-                if len(s0)!=len(self.lmd):
-                    raise ValueError('len(wavelength array) != len(spectrum)')
-                n = len(s0)
-                p = self.nz * self.nt
-                X = np.zeros((n,p))
-                cnt = 0
-                for z0 in self.z_unq:
-                    for t0 in self.t_unq:
-                        s0 = self.read_spectrum(z=z0, t=t0)
-                        X[:, cnt] = s0
-                        cnt += 1
-                self.X = X
-        if c1 and c2 and not os.path.isfile(allspecfile):
-            np.save(allspecfile, self.X)
+        if c1 and c2 and os.path.isfile(allspecfile):
+            self.X = np.load(allspecfile)
+        else:
+            s0 = self.read_spectrum(z=self.z_unq[0], t=self.t_unq[0])
+            if len(s0)!=len(self.lmd):
+                raise ValueError('len(wavelength array) != len(spectrum)')
+            n = len(s0)
+            p = self.nz * self.nt
+            X = np.zeros((n,p))
+            cnt = 0
+            for z0 in self.z_unq:
+                for t0 in self.t_unq:
+                    s0 = self.read_spectrum(z=z0, t=t0)
+                    X[:, cnt] = s0
+                    cnt += 1
+            self.X = X
+            if c1 and c2 and not os.path.isfile(allspecfile):
+                np.save(allspecfile, self.X)
 
     def get_lmd(self):
         if self.mod_dir == 'MILES_BASTI_CH_baseFe/':

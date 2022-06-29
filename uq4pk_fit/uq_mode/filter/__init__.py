@@ -5,3 +5,5 @@ from .identity_filter import IdentityFilterFunction
 from .image_filter_function import ImageFilterFunction
 from .gaussian_filter import GaussianFilterFunction2D
 from .simple_filter_function import SimpleFilterFunction
+from .marginalizing_filter import MarginalizingFilterFunction
+from .matrix_filter_function import MatrixFilterFunction

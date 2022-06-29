@@ -44,26 +44,37 @@ class BlockOperator(RegularizationOperator):
             w = self._mat @ v
         return w
 
-    def adj(self, v: np.ndarray) -> np.ndarray:
+    def adj(self, w: np.ndarray) -> np.ndarray:
         """
         See :py:attr:`RegularizationOperator.adj`.
         """
-        if v.ndim == 1:
+        if w.ndim == 1:
             # vector case
-            v_list = np.split(v, self._r_split_positions, axis=0)
-            res_list = []
-            for op, vec in zip(self._operators, v_list):
+            w_list = np.split(w, self._r_split_positions, axis=0)
+            v_list = []
+            for op, vec in zip(self._operators, w_list):
                 u = vec
                 sol = op.adj(u)
-                res_list.append(sol)
-            w = np.concatenate(res_list)
+                v_list.append(sol)
+            v = np.concatenate(v_list)
         else:
             # matrix case
-            w = self._mat.T @ v
-        return w
+            v = self._mat.T @ w
+        return v
+
+    def inv(self, w: np.ndarray) -> np.ndarray:
+        """
+        R^(-1)(w_1,...,w_l) = (R_1^(-1)w_1, ..., R_l^(-1) w_l).
+        """
+        w_list = np.split(w, self._r_split_positions, axis=0)
+        v_list = []
+        for op, w_i in zip(self._operators, w_list):
+            v_i = op.inv(w_i)
+            v_list.append(v_i)
+        v = np.concatenate(v_list)
+        return v
 
     # PROTECTED
-
     @staticmethod
     def _all_ops_in_list_null(operator_list: List[RegularizationOperator]) -> bool:
         """"

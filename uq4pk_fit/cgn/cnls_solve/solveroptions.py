@@ -11,13 +11,13 @@ class Solveroptions:
         Default timeout is 60 minutes.
     :ivar logfile: Specifies the name of the logfile for the solver output.
     :ivar ctol: The tolerance for the constraint violation. The solver will only try to satisfy the constraint up to
-        a tolerance specified by `ctol`. The default value is 1e-15.
+        a tolerance specified by `ctol`. The default value is 1e-10.
     """
     def __init__(self):
         self.maxiter = 100
         self.tol = 1e-10
         self.timeout = 60
-        self._verbose = 1
+        self._verbose = 0
         self.logfile = "cgn.log"
         self.ctol = 1e-10
 

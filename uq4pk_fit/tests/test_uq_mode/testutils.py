@@ -40,7 +40,7 @@ def get_points(ci_array, x_map):
 
 def circle_points(center=(0, 0), r=1., n=100):
     """
-    Generates 'n' points that are uniformly distributed on a circle with center 'center'
+    Generates 'dim' points that are uniformly distributed on a circle with center 'center'
     and radius 'r'.
     """
     points = [

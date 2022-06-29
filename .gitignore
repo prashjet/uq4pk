@@ -8,3 +8,6 @@ experiments/out/
 .idea/tasks.xml
 manuscript
 */.ipynb_checkpoints
+*__pycache__*
+.idea
+*samples.npy

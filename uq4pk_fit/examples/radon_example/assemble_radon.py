@@ -13,7 +13,7 @@ from .params import SCALING
 def assemble_radon(scaling_factor):
     """
     Assembles the matrix representation of a linear operator given by a function.
-    :return: (m, n)-ndarray
+    :return: (m, dim)-ndarray
         The matrix A representing the operator.
     """
     image = rescale(shepp_logan_phantom(), scale=scaling_factor, mode='reflect', multichannel=False)
