@@ -10,26 +10,53 @@ from ppxf import ppxf
 
 import uq4pk_src
 from uq4pk_fit.special_operators import OrnsteinUhlenbeck
-from ..util.geometric_median import geometric_median
 from .m54_fit_model import m54_setup_operator
-from .parameters import THETA_V, BURNIN_ETA_ALPHA, BURNIN_BETA_TILDE, NSAMPLE_ETA_ALPHA, NSAMPLE_BETA_TILDE, \
-    SAMPLE_FILE, REGFACTOR, MEDIAN_FILE, YMED, YSAMPLES
+from .parameters import THETA_V, SVDMCMC_BURNIN, SVDMCMC_NSAMPLES, SAMPLES_SVDMCMC, REGFACTOR, MEAN_SVDMCMC, YMEAN_SVDMCMC, \
+    YSAMPLES_SVDMCMC, HMC_NSAMPLES, HMC_BURNIN, SAMPLES_HMC, YSAMPLES_HMC, YMEAN_HMC, MEAN_HMC
 
 
 rng_key = random.PRNGKey(32743)
 
 
-def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray):
+def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampling: str):
+
+    # Distinguish setups depending on sampler.
+    if sampling == "svdmcmc":
+        test_burnin = 50
+        test_nsamples = 100
+        base_burnin = 500
+        base_nsamples = 500
+        final_burnin = SVDMCMC_BURNIN
+        final_nsamples = SVDMCMC_NSAMPLES
+        mean_file = MEAN_SVDMCMC
+        ymean_file = YMEAN_SVDMCMC
+        sample_file = SAMPLES_SVDMCMC
+        ysample_file = YSAMPLES_SVDMCMC
+    elif sampling == "hmc":
+        test_burnin = 50
+        test_nsamples = 100
+        base_burnin = 500
+        base_nsamples = 500
+        final_burnin = HMC_BURNIN
+        final_nsamples = HMC_NSAMPLES
+        mean_file = MEAN_HMC
+        ymean_file = YMEAN_HMC
+        sample_file = SAMPLES_HMC
+        ysample_file = YSAMPLES_HMC
+    else:
+        raise NotImplementedError("Unknown sampler.")
+
     # Define reduced settings for test mode.
     if mode == "test":
-        burnin_beta_tilde = 50
-        nsample_beta_tilde = 100
+        sampling = "svdmcmc"    # Cannot test full HMC.
+        burnin_beta_tilde = test_burnin
+        nsample_beta_tilde = test_nsamples
     elif mode == "base":
-        burnin_beta_tilde = 500
-        nsample_beta_tilde = 1000
+        burnin_beta_tilde = base_burnin
+        nsample_beta_tilde = base_nsamples
     else:
-        burnin_beta_tilde = BURNIN_BETA_TILDE
-        nsample_beta_tilde = NSAMPLE_BETA_TILDE
+        burnin_beta_tilde = final_burnin
+        nsample_beta_tilde = final_nsamples
 
     m54_data = uq4pk_src.data.M54()
     m54_data.logarithmically_resample(dv=50.)
@@ -112,11 +139,20 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray):
     snr = np.linalg.norm(y_loc) / np.linalg.norm(sigma_y)
     beta1 = REGFACTOR * snr
     beta_tilde_prior_cov = P1.cov / beta1
-    # Sample eta and alpha
 
-    beta_tilde_model = svd_mcmc.get_beta_tilde_dr_single_model(Sigma_beta_tilde=beta_tilde_prior_cov)
-    beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
+    # Prepare samples.
+    if sampling == "svdmcmc":
+        beta_tilde_model = svd_mcmc.get_beta_tilde_dr_single_model(Sigma_beta_tilde=beta_tilde_prior_cov)
+        beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
                                                    num_samples=nsample_beta_tilde)
+    elif sampling == "hmc":
+        beta_tilde_model = svd_mcmc.get_beta_tilde_direct_model(Sigma_beta_tilde=beta_tilde_prior_cov)
+        beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
+                                                       num_samples=nsample_beta_tilde)
+    else:
+        raise NotImplementedError("Unknown sampler.")
+
+    # Run.
     beta_tilde_sampler.run(rng_key)
     light_weighed_samples = beta_tilde_sampler.get_samples()["beta_tilde"].reshape(-1, 12, 53)
 
@@ -124,21 +160,21 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray):
     light_weighed_samples = y_sum * light_weighed_samples
 
     # Compute posterior median.
-    posterior_median = geometric_median(X=light_weighed_samples)
-    print(f"MCMC scale: {posterior_median.max()}")
-
-    # Compute median prediction.
-    observation_operator = m54_setup_operator()
-    y_med = observation_operator.fwd_unmasked(posterior_median.flatten(), THETA_V)
+    posterior_mean = np.mean(light_weighed_samples, axis=0)
+    print(f"MCMC scale: {posterior_mean.max()}")
 
     # Compute y-samples.
+    observation_operator = m54_setup_operator()
     y_sample_list = [observation_operator.fwd_unmasked(f.flatten(), THETA_V) for f in light_weighed_samples]
     y_samples = np.array(y_sample_list)
 
-    np.save(str(out / MEDIAN_FILE), posterior_median)
-    np.save(str(out / YMED), y_med)
-    np.save(str(out / SAMPLE_FILE), light_weighed_samples)
-    np.save(str(out / YSAMPLES), y_samples)
+    # Compute mean prediction.
+    y_mean = np.mean(y_samples, axis=0)
+
+    np.save(str(out / mean_file), posterior_mean)
+    np.save(str(out / ymean_file), y_mean)
+    np.save(str(out / sample_file), light_weighed_samples)
+    np.save(str(out / ysample_file), y_samples)
 
 
 

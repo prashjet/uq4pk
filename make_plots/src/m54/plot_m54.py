@@ -11,8 +11,9 @@ import uq4pk_src
 from uq4pk_fit.visualization import plot_distribution_function, plot_significant_blobs
 from uq4pk_fit.blob_detection import detect_significant_blobs
 from .parameters import MAP_FILE, LOWER_STACK_FILE, UPPER_STACK_FILE, RTHRESH1, RTHRESH2, \
-    OVERLAP1, OVERLAP2, SIGMA_LIST, MEDIAN_FILE, LOWER_STACK_MCMC, UPPER_STACK_MCMC, MARGINAL, MARGINAL_MCMC, \
-    GROUND_TRUTH, PPXF, DATA, YMAP, YMED, MASK, PREDICTIVE_OPT, PREDICTIVE_MCMC
+    OVERLAP1, OVERLAP2, SIGMA_LIST, MEAN_SVDMCMC, LOWER_STACK_SVDMCMC, UPPER_STACK_SVDMCMC, MARGINAL_HMC, \
+    MARGINAL_SVDMCMC, GROUND_TRUTH, PPXF, DATA, YMAP, YMEAN_SVDMCMC, MASK, PREDICTIVE_OPT, PREDICTIVE_SVDMCMC, MEAN_HMC,\
+    YMEAN_HMC, LOWER_STACK_HMC, UPPER_STACK_HMC, MARGINAL_OPT, PREDICTIVE_HMC
 
 from ..util import add_colorbar_to_axis, add_colorbar_to_plot
 
@@ -26,7 +27,7 @@ m54_predictive_name = "m54_predictive.png"
 
 def plot_m54(src: Path, out: Path):
     _m54_real_data_plot(src, out)
-    _m54_mock_data_plot(src, out)
+    #_m54_mock_data_plot(src, out)
     _m54_age_marginals_plot(src, out)
     _m54_predictive_plot(src, out)
 
@@ -44,9 +45,10 @@ def _m54_real_data_plot(src, out):
     ppxf = np.load(str(real / PPXF))
     # Get MAP and median.
     f_map = np.load(str(real / MAP_FILE))
-    f_median = np.load(str(real / MEDIAN_FILE))
+    f_mean_svdmcmc = np.load(str(real / MEAN_SVDMCMC))
+    f_mean_hmc = np.load(str(real / MEAN_HMC))
     # Get vmax
-    vmax = max(f_map.max(), f_median.max())
+    vmax = max(f_map.max(), f_mean_hmc.max(), f_mean_svdmcmc.max())
     # Need correct SSPS grid.
     ssps = uq4pk_src.model_grids.MilesSSP(
         miles_mod_directory='EMILES_BASTI_BASE_BI_FITS',
@@ -55,20 +57,26 @@ def _m54_real_data_plot(src, out):
         lmd_max=None,
     )
 
-    significant_blobs_mcmc, significant_blobs_opt = _get_blobs(src=real, median=f_median, map=f_map)
+    significant_blobs_svdmcmc, significant_blobs_opt, significant_blobs_hmc = \
+        _get_blobs(src=real, mean_svdmcmc=f_mean_svdmcmc, map=f_map, mean_hmc=f_mean_hmc)
 
     # Create plot.
-    fig, ax = plt.subplots(2, 2, figsize=(10, 6))
-    # Plot ground truth over both upper windows.
-    # Since it is on an unknown scale, we don't use the same vmax as for the reconstructions.
-    plot_distribution_function(ax[0, 0], image=ground_truth, ssps=ssps, xlabel=False, ylabel=True)
-    plot_distribution_function(ax[0, 1], image=ppxf, ssps=ssps, xlabel=False, ylabel=False)
-    plot_significant_blobs(ax=ax[1, 0], image=f_median, blobs=significant_blobs_mcmc, ssps=ssps, vmax=vmax, xlabel=True,
-                           ylabel=True)
-    im = plot_significant_blobs(ax=ax[1, 1], image=f_map, blobs=significant_blobs_opt, ssps=ssps, vmax=vmax, xlabel=True,
-                                   ylabel=False)
-    # Add colorbar. to first image.
-    add_colorbar_to_plot(fig, ax, im)
+    fig = plt.figure(figsize=(10, 6))
+    ax1 = plt.subplot2grid(shape=(2, 6), loc=(0, 1), colspan=2)
+    plot_distribution_function(ax1, image=ground_truth, ssps=ssps, xlabel=False, ylabel=True)
+    ax2 = plt.subplot2grid(shape=(2, 6), loc=(0, 3), colspan=2)
+    plot_distribution_function(ax2, image=ppxf, ssps=ssps, xlabel=False, ylabel=False)
+    ax3 = plt.subplot2grid(shape=(2, 6), loc=(1, 0), colspan=2)
+    plot_significant_blobs(ax=ax3, image=f_mean_svdmcmc, blobs=significant_blobs_svdmcmc, ssps=ssps, vmax=vmax,
+                           xlabel=True, ylabel=True)
+    ax4 = plt.subplot2grid(shape=(2, 6), loc=(1, 2), colspan=2)
+    im = plot_significant_blobs(ax=ax4, image=f_map, blobs=significant_blobs_opt, ssps=ssps, vmax=vmax,
+                                xlabel=True, ylabel=False)
+    ax5 = plt.subplot2grid(shape=(2, 6), loc=(1, 4), colspan=2)
+    plot_significant_blobs(ax=ax5, image=f_mean_hmc, blobs=significant_blobs_hmc, ssps=ssps, vmax=vmax,
+                           xlabel=True, ylabel=False)
+    # Add colorbar to second image.
+    add_colorbar_to_axis(fig, ax=ax2, im=im)
     plt.savefig(str(out / m54_real_data_name), bbox_inches="tight")
     plt.show()
 
@@ -84,9 +92,11 @@ def _m54_mock_data_plot(src, out):
     ground_truth = np.load(str(mock1 / GROUND_TRUTH))
     # Get MAP and median.
     f_map1 = np.load(str(mock1 / MAP_FILE))
-    f_median1 = np.load(str(mock1 / MEDIAN_FILE))
+    f_mean_svdmcmc1 = np.load(str(mock1 / MEAN_SVDMCMC))
+    f_mean_hmc1 = np.load(str(mock1 / MEAN_HMC))
     f_map2 = np.load(str(mock2 / MAP_FILE))
-    f_median2 = np.load(str(mock2 / MEDIAN_FILE))
+    f_mean_svdmcmc2 = np.load(str(mock2 / MEAN_SVDMCMC))
+    f_mean_hmc2 = np.load(str(mock2 / MEAN_HMC))
     # Get vmax
     vmax = ground_truth.max()
     # Need correct SSPS grid.
@@ -97,30 +107,43 @@ def _m54_mock_data_plot(src, out):
         lmd_max=None,
     )
 
-    significant_blobs_mcmc1, significant_blobs_opt1 = _get_blobs(src=mock1, median=f_median1, map=f_map1)
-    significant_blobs_mcmc2, significant_blobs_opt2 = _get_blobs(src=mock2, median=f_median2, map=f_map2)
+    significant_blobs_svdmcmc1, significant_blobs_opt1, significant_blobs_hmc1 = \
+        _get_blobs(src=mock1, mean_svdmcmc=f_mean_svdmcmc1, map=f_map1, mean_hmc=f_mean_hmc1)
+    significant_blobs_svdmcmc2, significant_blobs_opt2, significant_blobs_hmc2 \
+        = _get_blobs(src=mock2, mean_svdmcmc=f_mean_svdmcmc2, map=f_map2, mean_hmc=f_mean_hmc2)
 
     # Create plot.
-    gs = gridspec.GridSpec(3, 2)
+    gs = gridspec.GridSpec(3, 3)
     fig = plt.figure(figsize=(10., 8.))
     # Plot ground truth over both upper windows.
     # Since it is on an unknown scale, we don't use the same vmax as for the reconstructions.
     ax1 = fig.add_subplot(gs[0, :])
     plot_distribution_function(ax1, image=ground_truth, ssps=ssps, xlabel=True, ylabel=True)
+    # Plot results for high SNR.
     ax2 = fig.add_subplot(gs[1, 0])
-    plot_significant_blobs(ax=ax2, image=f_median1, blobs=significant_blobs_mcmc1, ssps=ssps, vmax=vmax, xlabel=False,
+    plot_significant_blobs(ax=ax2, image=f_mean_svdmcmc1, blobs=significant_blobs_svdmcmc1, ssps=ssps, vmax=vmax,
+                           xlabel=False,
                            ylabel=True)
     ax3 = fig.add_subplot(gs[1, 1])
     plot_significant_blobs(ax=ax3, image=f_map1, blobs=significant_blobs_opt1, ssps=ssps, vmax=vmax, xlabel=False,
                            ylabel=False)
-    ax2 = fig.add_subplot(gs[2, 0])
-    plot_significant_blobs(ax=ax2, image=f_median2, blobs=significant_blobs_mcmc2, ssps=ssps, vmax=vmax, xlabel=True,
-                           ylabel=True)
-    ax3 = fig.add_subplot(gs[2, 1])
-    immap = plot_significant_blobs(ax=ax3, image=f_map2, blobs=significant_blobs_opt2, ssps=ssps, vmax=vmax, xlabel=True,
+    ax4 = fig.add_subplot(gs[1, 2])
+    plot_significant_blobs(ax=ax4, image=f_mean_hmc1, blobs=significant_blobs_hmc1, ssps=ssps, vmax=vmax,
+                           xlabel=False,
+                           ylabel=False)
+    # Plot results for low SNR.
+    ax5 = fig.add_subplot(gs[2, 0])
+    plot_significant_blobs(ax=ax5, image=f_mean_svdmcmc2, blobs=significant_blobs_svdmcmc2, ssps=ssps, vmax=vmax,
+                           xlabel=True, ylabel=True)
+    ax6 = fig.add_subplot(gs[2, 1])
+    immap = plot_significant_blobs(ax=ax6, image=f_map2, blobs=significant_blobs_opt2, ssps=ssps, vmax=vmax, xlabel=True,
                                    ylabel=False)
+    ax7 = fig.add_subplot(gs[2, 2])
+    plot_significant_blobs(ax=ax7, image=f_mean_hmc2, blobs=significant_blobs_hmc2, ssps=ssps, vmax=vmax,
+                           xlabel=True, ylabel=False)
     # Add colorbar to first image.
     add_colorbar_to_axis(fig, ax1, immap)
+    # Save and show.
     plt.savefig(str(out / m54_mock_data_name), bbox_inches="tight")
     plt.show()
 
@@ -132,13 +155,15 @@ def _m54_age_marginals_plot(src, out):
     # Get results for real data.
     real = src / "m54_real"
     f_map = np.load(str(real / MAP_FILE))
-    f_median = np.load(str(real / MEDIAN_FILE))
-    age_marginal_opt = np.load(str(real / MARGINAL))
-    age_marginal_mcmc = np.load(str(real / MARGINAL_MCMC))
+    f_mean_svdmcmc = np.load(str(real / MEAN_SVDMCMC))
+    f_mean_hmc = np.load(str(real / MEAN_HMC))
+    age_marginal_opt = np.load(str(real / MARGINAL_OPT))
+    age_marginal_svdmcmc = np.load(str(real / MARGINAL_SVDMCMC))
+    age_marginal_hmc = np.load(str(real / MARGINAL_HMC))
 
-    estimates = [f_median, f_map]
-    estimate_names = ["Posterior median", "MAP estimate"]
-    marginals = [age_marginal_mcmc, age_marginal_opt]
+    estimates = [f_mean_svdmcmc, f_map, f_mean_hmc]
+    estimate_names = ["Posterior mean", "MAP estimate", "Posterior mean"]
+    marginals = [age_marginal_svdmcmc, age_marginal_opt, age_marginal_hmc]
     uppers = [marginal[0].max() for marginal in marginals]
     vmax = max(uppers)
     ssps = uq4pk_src.model_grids.MilesSSP(
@@ -149,7 +174,7 @@ def _m54_age_marginals_plot(src, out):
     )
 
     # Create plot.
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    fig, axes = plt.subplots(1, 3, figsize=(10, 4))
     for estimate, estimate_name, marginal, ax in zip(estimates, estimate_names, marginals, axes):
         upper, lower = marginal
         # Marginalize estimate
@@ -187,16 +212,20 @@ def _m54_predictive_plot(src, out):
     y[-1] = y[-2]  # Last value is NaN, substitute with second-to-last.
     y_map = np.load(str(real / YMAP))
     ci_opt = np.load(str(real / PREDICTIVE_OPT))
-    y_med = np.load(str(real / YMED))
-    ci_mcmc = np.load(str(real / PREDICTIVE_MCMC))
+    y_mean_svdmcmc = np.load(str(real / YMEAN_SVDMCMC))
+    ci_svdmcmc = np.load(str(real / PREDICTIVE_SVDMCMC))
+    y_mean_hmc = np.load(str(real / YMEAN_HMC))
+    ci_hmc = np.load(str(real / PREDICTIVE_HMC))
     mask = np.load(str(real / MASK))
 
     # Make plots.
-    fig, axes = plt.subplots(2, 2, figsize=(20, 10), gridspec_kw={"height_ratios": [1, 1]})
-    # Posterior predictive plot for MCMC.
-    _posterior_predictive_plot(ax1=axes[0, 0], ax2=axes[1, 0], y=y, y_est=y_med, mask=mask, ci=ci_mcmc)
+    fig, axes = plt.subplots(2, 3, figsize=(20, 10), gridspec_kw={"height_ratios": [1, 1]})
+    # Posterior predictive plot for SVD-MCMC.
+    _posterior_predictive_plot(ax1=axes[0, 0], ax2=axes[1, 0], y=y, y_est=y_mean_svdmcmc, mask=mask, ci=ci_svdmcmc)
     # Posterior predictive plot for optimization-based approach.
     _posterior_predictive_plot(ax1=axes[0, 1], ax2=axes[1, 1], y = y, y_est = y_map, mask = mask, ci = ci_opt)
+    # Posterior predictive plot for HMC.
+    _posterior_predictive_plot(ax1=axes[0, 2], ax2=axes[1, 2], y=y, y_est=y_mean_hmc, mask=mask, ci=ci_hmc)
     # Set axis labels and ticks.
     axes[0, 0].set_ylabel("Flux")
     axes[1, 0].set_ylabel("Residual [%]")
@@ -253,18 +282,18 @@ def _posterior_predictive_plot(ax1, ax2, y: np.ndarray, y_est: np.ndarray, mask:
     ax2.set_xlabel("Wavelength [nm]")
 
 
-def _get_blobs(src, median, map):
+def _get_blobs(src, mean_svdmcmc, map, mean_hmc):
     # Perform ULoG based on MCMC.
-    lower_stack_mcmc = np.load(str(src / LOWER_STACK_MCMC))
-    upper_stack_mcmc = np.load(str(src / UPPER_STACK_MCMC))
-    significant_blobs_mcmc = detect_significant_blobs(reference=median,
-                                                      sigma_list=SIGMA_LIST,
-                                                      lower_stack=lower_stack_mcmc,
-                                                      upper_stack=upper_stack_mcmc,
-                                                      rthresh1=RTHRESH1,
-                                                      rthresh2=RTHRESH2,
-                                                      overlap1=OVERLAP1,
-                                                      overlap2=OVERLAP2)
+    lower_stack_svdmcmc = np.load(str(src / LOWER_STACK_SVDMCMC))
+    upper_stack_svdmcmc = np.load(str(src / UPPER_STACK_SVDMCMC))
+    significant_blobs_svdmcmc = detect_significant_blobs(reference=mean_svdmcmc,
+                                                         sigma_list=SIGMA_LIST,
+                                                         lower_stack=lower_stack_svdmcmc,
+                                                         upper_stack=upper_stack_svdmcmc,
+                                                         rthresh1=RTHRESH1,
+                                                         rthresh2=RTHRESH2,
+                                                         overlap1=OVERLAP1,
+                                                         overlap2=OVERLAP2)
 
     # Perform ULoG based on optimization.
     lower_stack_opt = np.load(str(src / LOWER_STACK_FILE))
@@ -277,4 +306,17 @@ def _get_blobs(src, median, map):
                                                      rthresh2=RTHRESH2,
                                                      overlap1=OVERLAP1,
                                                      overlap2=OVERLAP2)
-    return significant_blobs_mcmc, significant_blobs_opt
+
+    # Perform ULoG based on full HMC.
+    lower_stack_hmc = np.load(str(src / LOWER_STACK_HMC))
+    upper_stack_hmc = np.load(str(src / UPPER_STACK_HMC))
+    significant_blobs_hmc = detect_significant_blobs(reference=mean_hmc,
+                                                         sigma_list=SIGMA_LIST,
+                                                         lower_stack=lower_stack_hmc,
+                                                         upper_stack=upper_stack_hmc,
+                                                         rthresh1=RTHRESH1,
+                                                         rthresh2=RTHRESH2,
+                                                         overlap1=OVERLAP1,
+                                                         overlap2=OVERLAP2)
+
+    return significant_blobs_svdmcmc, significant_blobs_opt, significant_blobs_hmc

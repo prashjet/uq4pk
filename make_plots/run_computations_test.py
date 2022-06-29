@@ -17,16 +17,16 @@ OUT_TEST = Path("out_test")
 
 
 print("---------- TESTING: BLOB DETECTION ----------")
-compute_blob_detection(out=OUT_TEST, mode="test")
+#compute_blob_detection(out=OUT_TEST, mode="test")
 
 print("---------- TESTING: COMPARISON ----------")
-compute_comparison(mode="test", out=OUT_TEST)
+#compute_comparison(mode="test", out=OUT_TEST)
 
 print("---------- TESTING: COMPUTATIONAL ASPECTS ----------")
-compute_computational_aspects(mode="test", out=OUT_TEST)
+#compute_computational_aspects(mode="test", out=OUT_TEST)
 
 print("---------- TESTING: FCI----------")
-compute_fci(mode="test", out=OUT_TEST)
+#compute_fci(mode="test", out=OUT_TEST)
 
 print("---------- TESTING: M54----------")
 compute_m54(mode="test", out=OUT_TEST)

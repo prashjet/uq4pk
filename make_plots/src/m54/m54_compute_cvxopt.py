@@ -5,7 +5,7 @@ file: m54_compute_cvxopt.py
 import numpy as np
 from pathlib import Path
 
-from .parameters import SIGMA_LIST, MAP_FILE, LOWER_STACK_FILE, UPPER_STACK_FILE, MARGINAL, THETA_V, YMAP, MASK,\
+from .parameters import SIGMA_LIST, MAP_FILE, LOWER_STACK_FILE, UPPER_STACK_FILE, MARGINAL_OPT, THETA_V, YMAP, MASK, \
     PREDICTIVE_OPT
 from .m54_fit_model import m54_fit_model
 
@@ -60,9 +60,9 @@ def m54_compute_cvxopt(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray):
     np.save(str(out / LOWER_STACK_FILE), lower_stack)
     np.save(str(out / UPPER_STACK_FILE), upper_stack)
     np.save(str(out / MAP_FILE), f_map)
-    np.save(str(out / MARGINAL), age_ci)
+    np.save(str(out / MARGINAL_OPT), age_ci)
     np.save(str(out / PREDICTIVE_OPT), y_ci)
 
-    # Also store mask
+    # Also store mask.
     mask = m54_model.forward_operator.mask
     np.save(str(out / MASK), mask)

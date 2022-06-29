@@ -33,10 +33,13 @@ def _compute_mock_data(mode: str, out: Path, mock_y: Path, mock_sd: Path, mock_f
     ground_truth = np.load(str(mock_f))
     np.save(str(out / GROUND_TRUTH), ground_truth)
     # First, compute FCIs via sampling.
-    m54_mcmc_sample(mode=mode, out=out, y=y_mock, y_sd=y_mock_sd)
-    m54_samples_to_fcis(out=out)
+    m54_mcmc_sample(mode=mode, out=out, y=y_mock, y_sd=y_mock_sd, sampling="svdmcmc")
+    m54_samples_to_fcis(out=out, sampling="svdmcmc")
     # Then, compute FCIs via optimization.
     m54_compute_cvxopt(mode=mode, out=out, y=y_mock, y_sd=y_mock_sd)
+    # Finally, compute FCIs via full HMC.
+    m54_mcmc_sample(mode=mode, out=out, y=y_mock, y_sd=y_mock_sd, sampling="hmc")
+    m54_samples_to_fcis(out=out, sampling="hmc")
 
 
 def _compute_real_data(mode: str, out: Path):
@@ -54,16 +57,23 @@ def _compute_real_data(mode: str, out: Path):
     np.save(str(out / PPXF), ppxf)
     # First, compute FCIs via sampling.
     t0 = time()
-    m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real)
-    m54_samples_to_fcis(out=out)
+    m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="svdmcmc")
+    m54_samples_to_fcis(out=out, sampling="svdmcmc")
     t1 = time()
-    time_mcmc = t1 - t0
-    print(f"---------- MCMC TOOK {time_mcmc} seconds.")
+    time_svdmcmc = t1 - t0
+    print(f"---------- SVD-MCMC TOOK {time_svdmcmc} seconds.")
     # Then, compute FCIs via optimization.
     m54_compute_cvxopt(mode=mode, out=out, y=y_real, y_sd=y_sd_real)
     t2 = time()
     time_opt = t2 - t1
     print(f"---------- OPTIMIZATION TOOK {time_opt} seconds.")
-    times = np.array([time_mcmc, time_opt]).reshape(1, 2)
-    times_frame = pandas.DataFrame(data=times, columns=["MCMC", "optimization"])
+    # Finally, compute with full HMC.
+    t2 = time()
+    m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="hmc")
+    m54_samples_to_fcis(out=out, sampling="hmc")
+    t3 = time()
+    time_hmc = t3 - t2
+    print(f"---------- FULL HMC TOOK {time_hmc} seconds.")
+    times = np.array([time_svdmcmc, time_opt, time_hmc]).reshape(1, 3)
+    times_frame = pandas.DataFrame(data=times, columns=["SVDMCMC", "optimization", "HMC"])
     times_frame.to_csv(out / TIMES)

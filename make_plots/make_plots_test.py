@@ -17,8 +17,8 @@ OUT_TEST =  Path("out_test")
 PLOTS_TEST = Path("plots_test")
 
 
-plot_blob_detection(src=OUT_TEST, out=PLOTS_TEST)
-plot_comparison(src=OUT_TEST, out=PLOTS_TEST)
-plot_computational_aspects(src=OUT_TEST, out=PLOTS_TEST)
-plot_fci(src=OUT_TEST, out=PLOTS_TEST)
+#plot_blob_detection(src=OUT_TEST, out=PLOTS_TEST)
+#plot_comparison(src=OUT_TEST, out=PLOTS_TEST)
+#plot_computational_aspects(src=OUT_TEST, out=PLOTS_TEST)
+#plot_fci(src=OUT_TEST, out=PLOTS_TEST)
 plot_m54(src=OUT_TEST, out=PLOTS_TEST)
