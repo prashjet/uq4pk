@@ -26,10 +26,10 @@ ssps = uq4pk_src.model_grids.MilesSSP()
 
 
 def plot_blob_detection(src: Path, out: Path):
-    #_log_demo(src, out)             # Creates figure 2
+    _log_demo(src, out)             # Creates figure 2
     _one_dimensional(src, out)      # Creates figure 5
-    #_ulog_demo(src, out)            # Creates figure 6
-    #_speedup_comparison(src, out)   # Creates figure 10
+    _ulog_demo(src, out)            # Creates figure 6
+    _speedup_comparison(src, out)   # Creates figure 10
 
 
 def _log_demo(src: Path, out: Path):
@@ -70,7 +70,9 @@ def _one_dimensional(src: Path, out: Path):
     ax.plot(x_span, lower1d, color="b", linestyle="--", label=r"$L_t^\mathrm{low}$")
     ax.plot(x_span, upper1d, color="b", linestyle="-.", label=r"$L_t^\mathrm{upp}$")
     plt.plot(x_span, map1d, label=r"$f^\mathrm{MAP}_t$", color="r")
-    ax.plot(x_span, second_order_string, label=r"$\bar H_t$", color="g")
+    ax.plot(x_span, second_order_string, label=r"$\bar B_t$", color="g")
+    plt.xlabel("x")
+    plt.ylabel("density")
     if LABEL_LINES:
         labelLines(ax.get_lines(), zorder=2.5, align=False, fontsize=15)
     else:
@@ -105,9 +107,9 @@ def _speedup_comparison(src: Path, out: Path):
     """
     fig, ax = plt.subplots(1, 2, figsize=(10, 6))
     # Plot blob detection without speedup
-    _plot_blobs_from_stack(ax[0], src=src, speed_up=False)
+    _plot_blobs_from_stack(ax[0], src=src, speed_up=False, xlabel=True, ylabel=True)
     # Plot blob detection WITH speedup
-    im = _plot_blobs_from_stack(ax[1], src=src, speed_up=True)
+    im = _plot_blobs_from_stack(ax[1], src=src, speed_up=True, xlabel=True, ylabel=False)
     # Add colorbar.
     add_colorbar_to_axis(fig, ax[1], im)
 
@@ -115,7 +117,7 @@ def _speedup_comparison(src: Path, out: Path):
     plt.show()
 
 
-def _plot_blobs_from_stack(ax, src: Path, speed_up: bool):
+def _plot_blobs_from_stack(ax, src: Path, speed_up: bool, xlabel=True, ylabel=True):
 
     if speed_up:
         lower_stack_path = LOWER_STACK_SPEEDUP
@@ -141,6 +143,7 @@ def _plot_blobs_from_stack(ax, src: Path, speed_up: bool):
                                                  exclude_max_scale=False)
 
     # Create plot.
-    im = plot_significant_blobs(ax=ax, image=f_map, blobs=significant_blobs, ssps=ssps, flip=False)
+    im = plot_significant_blobs(ax=ax, image=f_map, blobs=significant_blobs, ssps=ssps, flip=False, xlabel=xlabel,
+                                ylabel=ylabel)
     return im
 

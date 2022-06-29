@@ -21,7 +21,7 @@ def plot_scaled_ellipse(ax, imshape, center, width, height, color, linestyle="-"
 
 
 def plot_significant_blobs(ax: Axes, image: np.ndarray, blobs: Sequence[Tuple[GaussianBlob, Union[GaussianBlob, None]]],
-                           vmax: float = None, ssps = None, flip=True):
+                           vmax: float = None, ssps = None, flip=True, xlabel=True, ylabel=True):
     """
     Makes a blob-plot for given image an blobs.
 
@@ -34,7 +34,8 @@ def plot_significant_blobs(ax: Axes, image: np.ndarray, blobs: Sequence[Tuple[Ga
         physical point of view.
     """
     # Plot distribution function.
-    immap = plot_distribution_function(ax=ax, image=image, ssps=ssps, vmax=vmax, flip=flip)
+    immap = plot_distribution_function(ax=ax, image=image, ssps=ssps, vmax=vmax, flip=flip, xlabel=xlabel,
+                                       ylabel=ylabel)
 
     # Plot blobs
     insignificant_color = "red"  # color for insignificant features
@@ -62,17 +63,17 @@ def plot_significant_blobs(ax: Axes, image: np.ndarray, blobs: Sequence[Tuple[Ga
     return immap
 
 
-def plot_blobs(ax: Axes, image: np.ndarray, blobs: Sequence[GaussianBlob], vmax: float = None, ssps = None, flip=True):
+def plot_blobs(ax: Axes, image: np.ndarray, blobs: Sequence[GaussianBlob], vmax: float = None, ssps = None, flip=True,
+               xlabel=True, ylabel=True):
     """
     Makes a blob-plot for given image an blobs.
     """
     # First, plot distribution function.
-    immap = plot_distribution_function(ax=ax, image=image, vmax=vmax, ssps=ssps, flip=flip)
+    immap = plot_distribution_function(ax=ax, image=image, vmax=vmax, ssps=ssps, flip=flip, xlabel=xlabel,
+                                       ylabel=ylabel)
 
     # Then, plot blobs.
-    ax.set_xlabel("Age [Gyr]")
-    ax.set_ylabel("Metallicity [Z/H]")
-    blob_color = "lime"
+    blob_color = "red"
     for blob in blobs:
         y, x = blob.position
         plot_scaled_ellipse(ax=ax, imshape=image.shape, center=(x, y), width=blob.width, height=blob.height,

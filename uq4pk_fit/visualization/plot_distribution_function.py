@@ -5,7 +5,7 @@ import numpy as np
 from .params import CMAP, power_norm
 
 
-def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=True):
+def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=True, xlabel=True, ylabel=False):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.
@@ -15,6 +15,7 @@ def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=Tru
     :param vmax: The maximum intensity.
     :param flip: If True, the plotted image is upside down. This is True by default, since it is more correct from a
         physical point of view.
+    :param xlabel: If True, adds label to x-axis.
     """
     if flip:
         f_im = np.flipud(image)
@@ -26,8 +27,10 @@ def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=Tru
     # I want fixed aspect ratio to 6:2.5.
     aspect = 2.5 / 6.
     immap = ax.imshow(f_im, cmap=cmap, extent=(0, 1, 0, 1), aspect=aspect, norm=power_norm(vmin=0., vmax=vmax))
-    ax.set_xlabel("Age [Gyr]")
-    ax.set_ylabel("Metallicity [Z/H]")
+    if xlabel:
+        ax.set_xlabel("Age [Gyr]")
+    if ylabel:
+        ax.set_ylabel("Metallicity [Z/H]")
     if ssps is not None:
         ticks = [ssps.t_ticks, ssps.z_ticks, ssps.img_t_ticks, ssps.img_z_ticks]
         t_ticks, z_ticks, img_t_ticks, img_z_ticks = ticks

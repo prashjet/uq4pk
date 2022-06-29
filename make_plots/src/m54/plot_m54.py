@@ -12,9 +12,9 @@ from uq4pk_fit.visualization import plot_distribution_function, plot_significant
 from uq4pk_fit.blob_detection import detect_significant_blobs
 from .parameters import MAP_FILE, LOWER_STACK_FILE, UPPER_STACK_FILE, RTHRESH1, RTHRESH2, \
     OVERLAP1, OVERLAP2, SIGMA_LIST, MEDIAN_FILE, LOWER_STACK_MCMC, UPPER_STACK_MCMC, MARGINAL, MARGINAL_MCMC, \
-    GROUND_TRUTH, DATA, YMAP, YMED, MASK, PREDICTIVE_OPT, PREDICTIVE_MCMC
+    GROUND_TRUTH, PPXF, DATA, YMAP, YMED, MASK, PREDICTIVE_OPT, PREDICTIVE_MCMC
 
-from ..util import add_colorbar_to_axis
+from ..util import add_colorbar_to_axis, add_colorbar_to_plot
 
 
 # Define plot names.
@@ -40,6 +40,8 @@ def _m54_real_data_plot(src, out):
     real = src / "m54_real"
     # Get ground truth.
     ground_truth = np.load(str(real / GROUND_TRUTH))
+    # Get ppxf fit.
+    ppxf = np.load(str(real / PPXF))
     # Get MAP and median.
     f_map = np.load(str(real / MAP_FILE))
     f_median = np.load(str(real / MEDIAN_FILE))
@@ -56,18 +58,17 @@ def _m54_real_data_plot(src, out):
     significant_blobs_mcmc, significant_blobs_opt = _get_blobs(src=real, median=f_median, map=f_map)
 
     # Create plot.
-    gs = gridspec.GridSpec(2, 2)
-    fig = plt.figure(figsize=(10., 7.))
+    fig, ax = plt.subplots(2, 2, figsize=(10, 6))
     # Plot ground truth over both upper windows.
     # Since it is on an unknown scale, we don't use the same vmax as for the reconstructions.
-    ax1 = fig.add_subplot(gs[0, :])
-    plot_distribution_function(ax1, image=ground_truth, ssps=ssps)
-    ax2 = fig.add_subplot(gs[1, 0])
-    plot_significant_blobs(ax=ax2, image=f_median, blobs=significant_blobs_mcmc, ssps=ssps, vmax=vmax)
-    ax3 = fig.add_subplot(gs[1, 1])
-    immap = plot_significant_blobs(ax=ax3, image=f_map, blobs=significant_blobs_opt, ssps=ssps, vmax=vmax)
-    # Add colorbar to first image.
-    add_colorbar_to_axis(fig, ax1, immap)
+    plot_distribution_function(ax[0, 0], image=ground_truth, ssps=ssps, xlabel=False, ylabel=True)
+    plot_distribution_function(ax[0, 1], image=ppxf, ssps=ssps, xlabel=False, ylabel=False)
+    plot_significant_blobs(ax=ax[1, 0], image=f_median, blobs=significant_blobs_mcmc, ssps=ssps, vmax=vmax, xlabel=True,
+                           ylabel=True)
+    im = plot_significant_blobs(ax=ax[1, 1], image=f_map, blobs=significant_blobs_opt, ssps=ssps, vmax=vmax, xlabel=True,
+                                   ylabel=False)
+    # Add colorbar. to first image.
+    add_colorbar_to_plot(fig, ax, im)
     plt.savefig(str(out / m54_real_data_name), bbox_inches="tight")
     plt.show()
 
@@ -105,15 +106,19 @@ def _m54_mock_data_plot(src, out):
     # Plot ground truth over both upper windows.
     # Since it is on an unknown scale, we don't use the same vmax as for the reconstructions.
     ax1 = fig.add_subplot(gs[0, :])
-    plot_distribution_function(ax1, image=ground_truth, ssps=ssps)
+    plot_distribution_function(ax1, image=ground_truth, ssps=ssps, xlabel=True, ylabel=True)
     ax2 = fig.add_subplot(gs[1, 0])
-    plot_significant_blobs(ax=ax2, image=f_median1, blobs=significant_blobs_mcmc1, ssps=ssps, vmax=vmax)
+    plot_significant_blobs(ax=ax2, image=f_median1, blobs=significant_blobs_mcmc1, ssps=ssps, vmax=vmax, xlabel=False,
+                           ylabel=True)
     ax3 = fig.add_subplot(gs[1, 1])
-    plot_significant_blobs(ax=ax3, image=f_map1, blobs=significant_blobs_opt1, ssps=ssps, vmax=vmax)
+    plot_significant_blobs(ax=ax3, image=f_map1, blobs=significant_blobs_opt1, ssps=ssps, vmax=vmax, xlabel=False,
+                           ylabel=False)
     ax2 = fig.add_subplot(gs[2, 0])
-    plot_significant_blobs(ax=ax2, image=f_median2, blobs=significant_blobs_mcmc2, ssps=ssps, vmax=vmax)
+    plot_significant_blobs(ax=ax2, image=f_median2, blobs=significant_blobs_mcmc2, ssps=ssps, vmax=vmax, xlabel=True,
+                           ylabel=True)
     ax3 = fig.add_subplot(gs[2, 1])
-    immap = plot_significant_blobs(ax=ax3, image=f_map2, blobs=significant_blobs_opt2, ssps=ssps, vmax=vmax)
+    immap = plot_significant_blobs(ax=ax3, image=f_map2, blobs=significant_blobs_opt2, ssps=ssps, vmax=vmax, xlabel=True,
+                                   ylabel=False)
     # Add colorbar to first image.
     add_colorbar_to_axis(fig, ax1, immap)
     plt.savefig(str(out / m54_mock_data_name), bbox_inches="tight")

@@ -14,7 +14,7 @@ from src.m54 import compute_m54
 
 
 OUT = Path("out")
-mode = "final"   # "final" for final computations.
+mode = "base"   # "final" for final computations.
 
 
 print("---------- COMPUTING: BLOB DETECTION ----------")
@@ -30,4 +30,4 @@ print("---------- COMPUTING: FCI----------")
 #compute_fci(mode=mode, out=OUT)
 
 print("---------- COMPUTING: M54----------")
-#compute_m54(mode=mode, out=OUT)
+compute_m54(mode=mode, out=OUT)

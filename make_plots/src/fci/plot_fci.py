@@ -38,10 +38,11 @@ def _plot_pci(src: Path, out: Path):
     vmax = pci_upp.max()
     # Start plotting.
     fig, ax = plt.subplots(2, 2, figsize=(10, 6))
-    plot_distribution_function(ax[0, 0], image=f_true, ssps=ssps, vmax=vmax, flip=False)
-    plot_distribution_function(ax[1, 0], image=f_map, ssps=ssps, vmax=vmax, flip=False)
-    plot_distribution_function(ax[0, 1], image=pci_upp, ssps=ssps, vmax=vmax, flip=False)
-    im = plot_distribution_function(ax[1, 1], image=pci_low, ssps=ssps, vmax=vmax, flip=False)
+    plot_distribution_function(ax[0, 0], image=f_true, ssps=ssps, vmax=vmax, flip=False, xlabel=False, ylabel=True)
+    plot_distribution_function(ax[1, 0], image=f_map, ssps=ssps, vmax=vmax, flip=False, xlabel=True, ylabel=True)
+    plot_distribution_function(ax[0, 1], image=pci_upp, ssps=ssps, vmax=vmax, flip=False, xlabel=False, ylabel=False)
+    im = plot_distribution_function(ax[1, 1], image=pci_low, ssps=ssps, vmax=vmax, flip=False, xlabel=True,
+                                    ylabel=False)
     # Add colorbar.
     add_colorbar_to_plot(fig, ax, im)
 
@@ -66,10 +67,16 @@ def _plot_fcis(src: Path, out: Path):
     i = 0
     for fci_low, fci_upp in zip(fci_low_list, fci_upp_list):
         vmax_t = fci_upp.max()
+        if i == 2:
+            xlabel = True
+        else:
+            xlabel = False
         # Plot lower bound.
-        plot_distribution_function(ax[i, 0], image=fci_low, vmax=vmax_t, ssps=ssps, flip=False)
+        plot_distribution_function(ax[i, 0], image=fci_low, vmax=vmax_t, ssps=ssps, flip=False, xlabel=xlabel,
+                                   ylabel=True)
         # Plot upper bound.
-        im = plot_distribution_function(ax[i, 1], image=fci_upp, vmax=vmax_t, ssps=ssps, flip=False)
+        im = plot_distribution_function(ax[i, 1], image=fci_upp, vmax=vmax_t, ssps=ssps, flip=False, xlabel=xlabel,
+                                        ylabel=False)
         # Add colorbar to right image.
         add_colorbar_to_axis(fig, ax[i, 1,], im)
         i += 1
