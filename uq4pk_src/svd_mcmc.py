@@ -200,7 +200,8 @@ class SVD_MCMC:
 
     def get_hierarchical_model(self,
                                unscaled_prior_cov=None,
-                               regpar_scale=None):
+                               regpar_scale=None,
+                               truncate_hyperprior=False):
         mu_beta_tilde = np.zeros(self.p)
         if self.mask is None:
             def hierarchical_model(unscaled_prior_cov=unscaled_prior_cov,
@@ -208,6 +209,10 @@ class SVD_MCMC:
                                    y_obs=None):
                 # hyperprior
                 inv_regpar_prior = dist.Exponential(rate=1./regpar_scale)
+                if truncate_hyperprior:
+                    inv_regpar_prior = TruncatedDistribution(
+                        inv_regpar_prior,
+                        hi=2./regpar_scale)
                 inv_regpar = numpyro.sample("inv_regpar", inv_regpar_prior)
                 Sigma_beta_tilde = unscaled_prior_cov * inv_regpar
                 # hack for non-negativity
@@ -230,6 +235,10 @@ class SVD_MCMC:
                                    y_obs=None):
                 # hyperprior
                 inv_regpar_prior = dist.Exponential(rate=1./regpar_scale)
+                if truncate_hyperprior:
+                    inv_regpar_prior = TruncatedDistribution(
+                        inv_regpar_prior,
+                        hi=2./regpar_scale)
                 inv_regpar = numpyro.sample("inv_regpar", inv_regpar_prior)
                 Sigma_beta_tilde = unscaled_prior_cov * inv_regpar
                 # hack for non-negativity
