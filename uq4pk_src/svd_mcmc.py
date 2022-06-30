@@ -199,7 +199,7 @@ class SVD_MCMC:
         return beta_tilde_dr_single_model
 
     def get_hierarchical_model(self,
-                               unscaled_prior_cov=None,,
+                               unscaled_prior_cov=None,
                                regpar_scale=None):
         mu_beta_tilde = np.zeros(self.p)
         if self.mask is None:
