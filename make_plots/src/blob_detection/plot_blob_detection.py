@@ -10,7 +10,7 @@ from uq4pk_fit.visualization import plot_significant_blobs, plot_blobs
 from uq4pk_fit.blob_detection import detect_blobs, detect_significant_blobs
 from ..plot_params import CW
 from .parameters import SIGMA_LIST, MAP, LOWER_STACK, UPPER_STACK, RTHRESH1, RTHRESH2,\
-    OVERLAP1, OVERLAP2, LOWER_STACK_SPEEDUP, UPPER_STACK_SPEEDUP
+    OVERLAP1, OVERLAP2
 from .one_dimensional_example import one_dimensional_example
 
 from ..util import add_colorbar_to_axis
@@ -92,21 +92,17 @@ def _ulog_demo(src: Path, out: Path):
     fig = plt.figure(figsize=(CW, 0.8 * CW))
     ax = plt.axes()
     # Plot blob detection (without speedup, with colorbar).
-    im = _plot_blobs_from_stack(ax, src=src, speed_up=False)
+    im = _plot_blobs_from_stack(ax, src=src)
     # Add colorbar.
     add_colorbar_to_axis(fig, ax, im)
 
     plt.savefig(str(out / name_ulog_demo), bbox_inches="tight")
 
 
-def _plot_blobs_from_stack(ax, src: Path, speed_up: bool, xlabel=True, ylabel=True):
+def _plot_blobs_from_stack(ax, src: Path, xlabel=True, ylabel=True):
 
-    if speed_up:
-        lower_stack_path = LOWER_STACK_SPEEDUP
-        upper_stack_path = UPPER_STACK_SPEEDUP
-    else:
-        lower_stack_path = LOWER_STACK
-        upper_stack_path = UPPER_STACK
+    lower_stack_path = LOWER_STACK
+    upper_stack_path = UPPER_STACK
 
     # Load precomputed arrays
     f_map = np.load(str(src / MAP))

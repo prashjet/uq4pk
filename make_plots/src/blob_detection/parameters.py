@@ -23,17 +23,11 @@ OVERLAP1 = 0.5
 OVERLAP2 = 0.5
 REGFACTOR = 500
 
-# Run options for speedup. Note that these options lead to a reduction factor >= 10 in overall computation time on
-# my PC, but YMMV depending on the parameter settings and used hardware.
-SPEEDUP_OPTIONS = {"discretization": "twolevel", "d1": 2, "d2": 4, "w1": 5, "w2": 5, "optimizer": "SCS", "a": 2,
-                   "b": 2}
 # Filenames
 DATA = Path("src/mock_data/snr1000")
 MAP = Path("blob_detection_map.npy")
 LOWER_STACK = Path("blob_detection_lower_stack.npy")
 UPPER_STACK = Path("blob_detection_upper_stack.npy")
-LOWER_STACK_SPEEDUP = Path("blob_detection_lower_stack_speedup.npy")
-UPPER_STACK_SPEEDUP = Path("blob_detection_upper_stack_speedup.npy")
 EXAMPLE_MAP = Path("data/filtered_map.npy")
 EXAMPLE_LOWER = Path("data/lb.npy")
 EXAMPLE_UPPER = Path("data/ub.npy")
