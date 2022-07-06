@@ -7,8 +7,6 @@ Plots are saved in "plots".
 from pathlib import Path
 
 from src.blob_detection import plot_blob_detection
-from src.comparison import plot_comparison
-from src.computational_aspects import plot_computational_aspects
 from src.fci import plot_fci
 from src.m54 import plot_m54
 
