@@ -24,8 +24,8 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
     if sampling == "svdmcmc":
         test_burnin = 50
         test_nsamples = 100
-        base_burnin = 500
-        base_nsamples = 500
+        base_burnin = 1000
+        base_nsamples = 1000
         final_burnin = SVDMCMC_BURNIN
         final_nsamples = SVDMCMC_NSAMPLES
         mean_file = MEAN_SVDMCMC
@@ -66,12 +66,15 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
         imf_string='Ebi1.30',
         lmd_min=None,
         lmd_max=None,
+        age_lim=(0.1, 14)
     )
     ssps.resample_spectra(m54_data.lmd)
     # normalise the SSP templates to be light-weighted rather than mass-weighted,
     ssps.Xw /= np.sum(ssps.Xw, 0)
     ssps.dv = m54_data.dv
     ssps.speed_of_light = m54_data.speed_of_light
+    m_f = 12
+    n_f = 46
 
     npix_buffer_mask = 20
     m54_data.mask[:npix_buffer_mask] = False
@@ -134,7 +137,7 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
 
     svd_mcmc.set_q(15)
 
-    P1 = OrnsteinUhlenbeck(m=12, n=53, h=np.array([2., 1.]))
+    P1 = OrnsteinUhlenbeck(m=m_f, n=n_f, h=np.array([2., 1.]))
     # Adjust regularization parameter.
     snr = np.linalg.norm(y_loc) / np.linalg.norm(sigma_y)
     beta1 = REGFACTOR * snr
@@ -142,9 +145,10 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
 
     # Prepare samples.
     if sampling == "svdmcmc":
+        #beta_tilde_model = svd_mcmc.get_beta_tilde_dr_single_model(Sigma_beta_tilde=beta_tilde_prior_cov)
         beta_tilde_model = svd_mcmc.get_beta_tilde_dr_single_model(Sigma_beta_tilde=beta_tilde_prior_cov)
         beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
-                                                   num_samples=nsample_beta_tilde)
+                                                       num_samples=nsample_beta_tilde)
     elif sampling == "hmc":
         beta_tilde_model = svd_mcmc.get_beta_tilde_direct_model(Sigma_beta_tilde=beta_tilde_prior_cov)
         beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
@@ -154,7 +158,8 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
 
     # Run.
     beta_tilde_sampler.run(rng_key)
-    light_weighed_samples = beta_tilde_sampler.get_samples()["beta_tilde"].reshape(-1, 12, 53)
+    beta_tilde_sampler.print_summary()
+    light_weighed_samples = beta_tilde_sampler.get_samples()["beta_tilde"].reshape(-1, m_f, n_f)
 
     # Bring samples to the same scale as the MAP.
     light_weighed_samples = y_sum * light_weighed_samples

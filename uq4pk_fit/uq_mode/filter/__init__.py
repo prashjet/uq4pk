@@ -1,3 +1,4 @@
+from .bessel_filter import BesselFilterFunction2D
 from .direct_sum import direct_sum
 from .linear_filter import LinearFilter
 from .filter_function import FilterFunction

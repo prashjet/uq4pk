@@ -26,6 +26,7 @@ def m54_setup_operator():
         imf_string='Ebi1.30',
         lmd_min=None,
         lmd_max=None,
+        age_lim=(0.1, 14)
     )
     ssps.resample_spectra(m54_data.lmd)
     # normalise the SSP templates to be light-weighted rather than mass-weighted,

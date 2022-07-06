@@ -3,6 +3,7 @@ file: comparison_plot.py
 """
 
 from matplotlib import pyplot as plt
+plt.style.use("src/uq4pk.mplstyle")
 from matplotlib import gridspec
 import numpy as np
 from pathlib import Path
@@ -10,6 +11,7 @@ from pathlib import Path
 import uq4pk_src
 from uq4pk_fit.blob_detection import detect_significant_blobs
 from uq4pk_fit.visualization import plot_significant_blobs, plot_distribution_function
+from ..plot_params import CW
 from .parameters import SIGMA_LIST, MEDIANFILE, MAPFILE, LOWER_STACK_OPT, UPPER_STACK_OPT, \
     LOWER_STACK_MCMC, UPPER_STACK_MCMC, RTHRESH1, RTHRESH2, OVERLAP1, OVERLAP2, LMD_MIN, LMD_MAX, DV, OUT1, OUT2, \
     OUT3, TRUTHFILE
@@ -54,7 +56,7 @@ def _compare_fci(src: Path, out: Path):
     fci_low_opt = lower_stack[demo_sigma]
     fci_upp_opt = upper_stack[demo_sigma]
     # And plot.
-    fig, axes = plt.subplots(2, 2, figsize=(10, 5))
+    fig, axes = plt.subplots(2, 2, figsize=(CW, 0.5 * CW))
     vmax = max(fci_upp_opt.max(), fci_upp_mcmc.max())
     im = plot_distribution_function(ax=axes[0, 0], image=fci_upp_mcmc, vmax=vmax, ssps=ssps, flip=False, xlabel=False,
                                     ylabel=True)
@@ -69,7 +71,6 @@ def _compare_fci(src: Path, out: Path):
     add_colorbar_to_plot(fig, axes, im)
 
     plt.savefig(str(out / fci_name), bbox_inches="tight")
-    plt.show()
 
 
 def _compare_blobs(src: Path, out: Path):
@@ -81,7 +82,7 @@ def _compare_blobs(src: Path, out: Path):
 
     # Create plot.
     gs = gridspec.GridSpec(4, 2)
-    fig = plt.figure(figsize=(10., 12.))
+    fig = plt.figure(figsize=(CW, CW))
     # Plot ground truth, with colorbar.
     vmax = f_true.max()
     ax1 = fig.add_subplot(gs[0, :])
@@ -130,4 +131,3 @@ def _compare_blobs(src: Path, out: Path):
                                xlabel=xlabel)
 
     plt.savefig(str(out / blob_name), bbox_inches="tight")
-    plt.show()

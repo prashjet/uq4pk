@@ -3,13 +3,15 @@ import numpy as np
 
 from uq4pk_fit.uq_mode.filter import FilterFunction
 from ..simultaneous_credible_intervals import credible_intervals
+from ..k_enclosing_box import alpha_enclosing_box
 from .adaptive_fci import FCI
 
 
 RTOL = 0.1  # Relative tolerance for credibility parameter.
 
 
-def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.ndarray = None) -> FCI:
+def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.ndarray = None,
+                 return_samples: bool = False, mode="classic"):
     """
     Computes a filtered credible interval from samples. That is, it computes vectors lb and ub such that 1-alpha of
     the samples satisfy lb <= ffunction(sample) <= ub. Note that this is different from requiring the samples to
@@ -23,6 +25,8 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
         uq4pk_fit.uq_mode.filter.FilterFunction.
     :param weights: Of shape (d, ). If provided, the uncertainty quantification is performed with respect to the
         rescaled parameter u = weights * x (pointwise multiplication).
+    :param return_samples: If True, the samples (not the filtered samples!) whose filtered values are inside the FCI,
+        are also returned.
     :return: An :py:class:'FCI' object.
     """
     # Check the input for consistency.
@@ -48,8 +52,22 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
     filtered_samples = np.row_stack(phi_list)
 
     # FIND SMALLEST BOX THAT CONTAINS (1 - alpha) OF SAMPLES.
-    lb, ub = credible_intervals(samples=filtered_samples, alpha=alpha)
+    if mode == "classic":
+        lb, ub = alpha_enclosing_box(alpha, points=filtered_samples)
+    else:
+        lb, ub = credible_intervals(samples=filtered_samples, alpha=alpha)
 
     # Create FCI object.
     fci_obj = FCI(lower_stack=lb.reshape(1, -1), upper_stack=ub.reshape(1, -1))
-    return fci_obj
+
+    # Get samples that are inside the box.
+    def filter(x):
+        return ffunction.evaluate(x)
+    samples_inside = [x for x in samples if np.all(filter(x) >= lb) and np.all(filter(x) <= ub)]
+    ratio_inside = len(samples_inside) / samples.shape[0]
+    print(f"Ratio inside = {ratio_inside}")
+
+    if return_samples:
+        return fci_obj, samples_inside
+    else:
+        return fci_obj

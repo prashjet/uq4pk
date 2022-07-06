@@ -2,6 +2,7 @@
 import numpy as np
 from pathlib import Path
 
+from uq4pk_fit.special_operators import DiscreteGradient, DiscreteLaplacian
 from uq4pk_fit.blob_detection.blankets.first_order_blanket import first_order_blanket
 from .parameters import EXAMPLE_MAP, EXAMPLE_LOWER, EXAMPLE_UPPER, SLICE_INDEX
 

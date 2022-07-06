@@ -2,7 +2,7 @@
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 import numpy as np
-from .params import CMAP, power_norm
+from .params import power_norm, CMAP
 
 
 def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=True, xlabel=True, ylabel=False):

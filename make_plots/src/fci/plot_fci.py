@@ -4,14 +4,16 @@ from pathlib import Path
 
 from uq4pk_fit.visualization import plot_distribution_function
 import uq4pk_src
-from .parameters import MAPFILE, GROUND_TRUTH, PCILOW, PCIUPP, FCILOW, FCIUPP, DV
-
+from ..plot_params import CW2
+from .parameters import MAPFILE, GROUND_TRUTH, PCILOW, PCIUPP, FCILOW, FCIUPP, FILTERED_MAP, DV, SCALES
 from ..util import add_colorbar_to_plot, add_colorbar_to_axis
 
 
-# Names for the plots
-pci_plot = "pci.png"
-fci_plot = "fcis.png"
+# Use consistent style.
+plt.style.use("src/uq4pk.mplstyle")
+
+# Names for the plot.
+plot_name = "credible_intervals.png"
 
 # Set up ssps-grid and other requirements.
 ssps = uq4pk_src.model_grids.MilesSSP()
@@ -19,68 +21,77 @@ ssps.logarithmically_resample(dv=DV)
 
 
 def plot_fci(src: Path, out: Path):
-    # Create figure 3.
-    _plot_pci(src, out)
-    # Create figure 4
-    _plot_fcis(src, out)
 
-
-def _plot_pci(src: Path, out: Path):
-    """
-    Creates figure 3 for the paper. Contrast ground truth and MAP reconstruction to pixelwise credible bands.
-    """
-    # Get the required arrays.
+    # -- Load data.
     f_map = np.load(str(src / MAPFILE) + ".npy")
     f_true = np.load(str(src / GROUND_TRUTH) + ".npy")
     pci_low = np.load(str(src / PCILOW) + ".npy")
     pci_upp = np.load(str(src / PCIUPP) + ".npy")
-    # Maximum value is maximum of pci upper bound.
+    # Load FCIs and filtered MAPs.
+    map_list = []
+    upper_list = []
+    lower_list = []
+    for lowname, mapname, uppname in zip(FCILOW, FILTERED_MAP, FCIUPP):
+        lower_list.append(np.load(str(src / lowname) + ".npy"))
+        map_list.append(np.load(str(src / mapname) + ".npy"))
+        upper_list.append(np.load(str(src / uppname) + ".npy"))
+
+    # -- Create figure object.
+    fig = plt.figure(figsize=(CW2, CW2))
+
+    # -- Plot ground truth in first row.
+    cb_axes = []
+    mappables = []
     vmax = pci_upp.max()
-    # Start plotting.
-    fig, ax = plt.subplots(2, 2, figsize=(10, 6))
-    plot_distribution_function(ax[0, 0], image=f_true, ssps=ssps, vmax=vmax, flip=False, xlabel=False, ylabel=True)
-    plot_distribution_function(ax[1, 0], image=f_map, ssps=ssps, vmax=vmax, flip=False, xlabel=True, ylabel=True)
-    plot_distribution_function(ax[0, 1], image=pci_upp, ssps=ssps, vmax=vmax, flip=False, xlabel=False, ylabel=False)
-    im = plot_distribution_function(ax[1, 1], image=pci_low, ssps=ssps, vmax=vmax, flip=False, xlabel=True,
-                                    ylabel=False)
-    # Add colorbar.
-    add_colorbar_to_plot(fig, ax, im)
+    ax1 = plt.subplot2grid(shape=(5, 3), loc=(0, 0), colspan=3)
+    ax1.set_title("Ground truth")
+    im1 = plot_distribution_function(ax1, image=f_true, ssps=ssps, xlabel=True, ylabel=True, vmax=vmax, flip=False)
+    mappables.append(im1)
+    cb_axes.append(ax1)
 
-    # Save and show.
-    plt.savefig(str(out / pci_plot), bbox_inches="tight")
-    plt.show()
+    # -- Second row: PCIs and MAP.
+    ax_left = plt.subplot2grid(shape=(5, 3), loc=(1, 0), colspan=1)
+    ax_left.set_title(r"$f^\mathrm{low}$")
+    plot_distribution_function(ax_left, image=pci_low, ssps=ssps, xlabel=False, ylabel=True, vmax=vmax, flip=False)
+    ax_middle = plt.subplot2grid(shape=(5, 3), loc=(1, 1), colspan=1)
+    ax_middle.set_title(r"$f^\mathrm{MAP}$")
+    plot_distribution_function(ax_middle, image=f_map, ssps=ssps, xlabel=False, ylabel=False, vmax=vmax, flip=False)
+    ax_right = plt.subplot2grid(shape=(5, 3), loc=(1, 2), colspan=1)
+    ax_right.set_title(r"$f^\mathrm{upp}$")
+    im_right = plot_distribution_function(ax_right, image=pci_upp, ssps=ssps, xlabel=False, ylabel=False, vmax=vmax,
+                                          flip=False)
+    mappables.append(im_right)
+    cb_axes.append(ax_right)
 
 
-def _plot_fcis(src: Path, out: Path):
-    """
-    Creates figure 4 for the paper. Shows filtered credible bands for 3 different scales.
-    """
-    # Get FCIs
-    fci_low_list = []
-    fci_upp_list = []
-    for lowname, uppname in zip(FCILOW, FCIUPP):
-        fci_low_list.append(np.load(str(src / lowname) + ".npy"))
-        fci_upp_list.append(np.load(str(src / uppname) + ".npy"))
-    assert len(fci_low_list) == len(fci_upp_list) == 3
-    # Create plot.
-    fig, ax = plt.subplots(3, 2, figsize=(10, 10))
+    # -- Following rows: Filtered MAP and FCIs.
     i = 0
-    for fci_low, fci_upp in zip(fci_low_list, fci_upp_list):
-        vmax_t = fci_upp.max()
+    for lower, map, upper in zip(lower_list, map_list, upper_list):
         if i == 2:
             xlabel = True
         else:
             xlabel = False
-        # Plot lower bound.
-        plot_distribution_function(ax[i, 0], image=fci_low, vmax=vmax_t, ssps=ssps, flip=False, xlabel=xlabel,
-                                   ylabel=True)
-        # Plot upper bound.
-        im = plot_distribution_function(ax[i, 1], image=fci_upp, vmax=vmax_t, ssps=ssps, flip=False, xlabel=xlabel,
-                                        ylabel=False)
-        # Add colorbar to right image.
-        add_colorbar_to_axis(fig, ax[i, 1,], im)
+        vmax = upper.max()
+        t = SCALES[i]
+        ax_left = plt.subplot2grid(shape=(5, 3), loc=(i + 2, 0), colspan=1)
+        plot_distribution_function(ax_left, image=lower, ssps=ssps, xlabel=xlabel, ylabel=True, vmax=vmax, flip=False)
+        ax_middle = plt.subplot2grid(shape=(5, 3), loc=(i + 2, 1), colspan=1)
+        plot_distribution_function(ax_middle, image=map, ssps=ssps, xlabel=xlabel, ylabel=False, vmax=vmax, flip=False)
+        ax_right = plt.subplot2grid(shape=(5, 3), loc=(i + 2, 2), colspan=1)
+        im_right = plot_distribution_function(ax_right, image=upper, ssps=ssps, xlabel=xlabel, ylabel=False, vmax=vmax,
+                                              flip=False)
+        mappables.append(im_right)
+        cb_axes.append(ax_right)
+        ax_left.set_title(r'$L_{{{:.0f}}}^\mathrm{{{}}}$'.format(t, "low"))
+        ax_middle.set_title(r'$L_{{{:.0f}}}^\mathrm{{{}}}$'.format(t, "MAP"))
+        ax_right.set_title(r'$L_{{{:.0f}}}^\mathrm{{{}}}$'.format(t, "upp"))
         i += 1
 
-    # Save and show.
-    plt.savefig(str(out / fci_plot), bbox_inches="tight")
-    plt.show()
+    # We need extra vertical space, because otherwise the axis labels overlap.
+    plt.tight_layout()
+    # Only now can we add the colorbars.
+    for i in range(5):
+        add_colorbar_to_axis(fig, cb_axes[i], mappables[i])
+
+    # Save the plot.
+    plt.savefig(str(out / plot_name), bbox_inches="tight")

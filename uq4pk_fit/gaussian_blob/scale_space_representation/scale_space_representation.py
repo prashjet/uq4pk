@@ -1,6 +1,7 @@
 
 import numpy as np
 from typing import Sequence
+from skimage.filters import gaussian
 
 from ..bessel_filter import bessel2d
 from ..scale_to_sigma import scale_to_sigma2d
@@ -22,6 +23,7 @@ def scale_space_representation(image: np.ndarray, sigmas: Sequence[np.ndarray], 
     for sigma in sigmas:
         # Note that the scale parameter h corresponds to standard deviation sigma = sqrt(2 * h).
         scaled_image = bessel2d(image, mode=mode, sigma=sigma)
+        #scaled_image = gaussian(image, sigma=sigma, mode="reflect", truncate=8.)
         scaled_images.append(scaled_image)
     ssr = np.array(scaled_images)
     return ssr

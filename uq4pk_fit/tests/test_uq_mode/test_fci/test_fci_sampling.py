@@ -13,7 +13,8 @@ def test_fci_sampling():
     # Make filter function.
     filter_function = IdentityFilterFunction(dim=d)
     # Compute filtered  credible intervals from samples.
-    fci = fci_sampling(alpha=alpha, ffunction=filter_function, samples=samples)
+    fci_obj = fci_sampling(alpha=alpha, ffunction=filter_function, samples=samples)
+    fci = np.column_stack([fci_obj.lower, fci_obj.upper])
 
     # First, check that fci has the correct format.
     assert fci.shape == (d, 2)

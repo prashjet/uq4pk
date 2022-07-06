@@ -10,4 +10,4 @@ manuscript
 */.ipynb_checkpoints
 *__pycache__*
 .idea
-*samples.npy
+*samples*.npy

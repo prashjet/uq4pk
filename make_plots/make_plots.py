@@ -17,8 +17,6 @@ OUT =  Path("out")
 PLOTS = Path("plots")
 
 
-#plot_blob_detection(src=OUT, out=PLOTS)
-#plot_comparison(src=OUT, out=PLOTS)
-#plot_computational_aspects(src=OUT, out=PLOTS)
-#plot_fci(src=OUT, out=PLOTS)
+plot_blob_detection(src=OUT, out=PLOTS)
+plot_fci(src=OUT, out=PLOTS)
 plot_m54(src=OUT, out=PLOTS)

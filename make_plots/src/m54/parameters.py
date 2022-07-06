@@ -6,23 +6,23 @@ file: m54/parameters.py
 import numpy as np
 from pathlib import Path
 
-REGFACTOR = 5000.
+REGFACTOR = 50.  #5000.
 
-THETA_V = np.array([146., 3., 1., 0., 0., 0.088, 0.187])
+THETA_V = np.array([146., 3., 1., 0., 0., 0.014, 0.169])
 RATIO = 0.5
 SIGMA_MIN = 1.
 NUM_SIGMA = 10
 STEPSIZE = 1.5
 RTHRESH1 = 0.01
-RTHRESH2 = 0.0
+RTHRESH2 = 0.01
 OVERLAP1 = 0.5
 OVERLAP2 = 0.5
 # parameters for SVD-MCMC
 SVDMCMC_BURNIN = 10000
 SVDMCMC_NSAMPLES = 10000
 # parameters for HMC
-HMC_BURNIN = 1000
-HMC_NSAMPLES = 1000
+HMC_BURNIN = 10000
+HMC_NSAMPLES = 10000
 
 sigma2_list = [SIGMA_MIN + n * STEPSIZE for n in range(NUM_SIGMA)]
 # Incorporate ratio.

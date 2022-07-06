@@ -60,7 +60,7 @@ def detect_significant_blobs(sigma_list: SigmaList, lower_stack: np.ndarray,
     blanket_laplacian_stack = scale_normalized_laplacian(ssr=blanket_stack, sigmas=sigma_list, mode="reflect")
     # Compute blanket-blobs.
     blanket_blobs = stack_to_blobs(scale_stack=blanket_stack, log_stack=blanket_laplacian_stack, sigma_list=sigma_list,
-                                   rthresh=0., max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
+                                   rthresh=rthresh2, max_overlap=overlap1, exclude_max_scale=exclude_max_scale)
     n_sig = len(blanket_blobs)
     print(f"{n_sig} blanket blobs detected.")
     # Compute mapped pairs.
@@ -96,7 +96,11 @@ def _compute_blanket_stack(lower_stack: np.ndarray, upper_stack: np.ndarray) \
         # Compute blanket at scale t.
         blanket = _compute_blanket(lower, upper)
         if SHOW_BLANKETS:
-            plt.imshow(blanket, cmap="gnuplot")
+            fig, ax = plt.subplots(3, 1)
+            vmax = upper.max()
+            ax[0].imshow(upper, cmap="gnuplot", vmax=vmax, vmin=0.)
+            ax[1].imshow(blanket, cmap="gnuplot", vmax=vmax, vmin=0.)
+            ax[2].imshow(lower, cmap="gnuplot", vmax=vmax, vmin=0.)
             plt.show()
         blanket_list.append(blanket)
     # Return blanket stack as array.

@@ -1,5 +1,6 @@
 
 from matplotlib import pyplot as plt
+plt.style.use("src/uq4pk.mplstyle")
 from labellines import labelLines
 import numpy as np
 from pathlib import Path
@@ -7,6 +8,7 @@ from pathlib import Path
 import uq4pk_src
 from uq4pk_fit.visualization import plot_significant_blobs, plot_blobs
 from uq4pk_fit.blob_detection import detect_blobs, detect_significant_blobs
+from ..plot_params import CW
 from .parameters import SIGMA_LIST, MAP, LOWER_STACK, UPPER_STACK, RTHRESH1, RTHRESH2,\
     OVERLAP1, OVERLAP2, LOWER_STACK_SPEEDUP, UPPER_STACK_SPEEDUP
 from .one_dimensional_example import one_dimensional_example
@@ -29,7 +31,6 @@ def plot_blob_detection(src: Path, out: Path):
     _log_demo(src, out)             # Creates figure 2
     _one_dimensional(src, out)      # Creates figure 5
     _ulog_demo(src, out)            # Creates figure 6
-    _speedup_comparison(src, out)   # Creates figure 10
 
 
 def _log_demo(src: Path, out: Path):
@@ -45,14 +46,13 @@ def _log_demo(src: Path, out: Path):
                              max_overlap=OVERLAP1,
                              exclude_max_scale=False)
     # Create plot.
-    fig = plt.figure(figsize=(10, 4))
+    fig = plt.figure(figsize=(CW, 0.8 * CW))
     ax = plt.gca()
     im = plot_blobs(ax=ax, image=f_map, blobs=map_blobs, ssps=ssps, flip=False)
     # Add colorbar to image.
     add_colorbar_to_axis(fig, ax, im)
 
     plt.savefig(str(out / name_log_demo), bbox_inches="tight")
-    plt.show()
 
 
 def _one_dimensional(src: Path, out: Path):
@@ -62,14 +62,14 @@ def _one_dimensional(src: Path, out: Path):
     lower1d, upper1d, map1d, second_order_string = one_dimensional_example()
     # Visualize result.
     n = lower1d.size
-    fig = plt.figure(figsize=(6, 3))
+    fig = plt.figure(figsize=(CW, 0.5 * CW))
     ax = plt.axes()
     x_span = np.arange(start=0, stop=1, step=(1 / n))
     # First, plot without strings.
     plt.rc('text', usetex=True)
     ax.plot(x_span, lower1d, color="b", linestyle="--", label=r"$L_t^\mathrm{low}$")
     ax.plot(x_span, upper1d, color="b", linestyle="-.", label=r"$L_t^\mathrm{upp}$")
-    plt.plot(x_span, map1d, label=r"$f^\mathrm{MAP}_t$", color="r")
+    plt.plot(x_span, map1d, label=r"$L^\mathrm{MAP}_t$", linestyle=":", color="r")
     ax.plot(x_span, second_order_string, label=r"$\bar B_t$", color="g")
     plt.xlabel("x")
     plt.ylabel("density")
@@ -83,14 +83,13 @@ def _one_dimensional(src: Path, out: Path):
     plt.yticks([], [])
 
     plt.savefig(str(out / name_one_dimensional), bbox_inches="tight")
-    plt.show()
 
 
 def _ulog_demo(src: Path, out: Path):
     """
     Creates figure 6 for the paper.
     """
-    fig = plt.figure(figsize=(10, 4))
+    fig = plt.figure(figsize=(CW, 0.8 * CW))
     ax = plt.axes()
     # Plot blob detection (without speedup, with colorbar).
     im = _plot_blobs_from_stack(ax, src=src, speed_up=False)
@@ -98,23 +97,6 @@ def _ulog_demo(src: Path, out: Path):
     add_colorbar_to_axis(fig, ax, im)
 
     plt.savefig(str(out / name_ulog_demo), bbox_inches="tight")
-    plt.show()
-
-
-def _speedup_comparison(src: Path, out: Path):
-    """
-    Creates figure 10 for the paper.
-    """
-    fig, ax = plt.subplots(1, 2, figsize=(10, 6))
-    # Plot blob detection without speedup
-    _plot_blobs_from_stack(ax[0], src=src, speed_up=False, xlabel=True, ylabel=True)
-    # Plot blob detection WITH speedup
-    im = _plot_blobs_from_stack(ax[1], src=src, speed_up=True, xlabel=True, ylabel=False)
-    # Add colorbar.
-    add_colorbar_to_axis(fig, ax[1], im)
-
-    plt.savefig(str(out / name_speedup_comparison), bbox_inches="tight")
-    plt.show()
 
 
 def _plot_blobs_from_stack(ax, src: Path, speed_up: bool, xlabel=True, ylabel=True):

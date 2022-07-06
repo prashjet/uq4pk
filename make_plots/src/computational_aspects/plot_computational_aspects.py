@@ -2,11 +2,12 @@
 Creates figures for the "computational_aspect" section.
 """
 
-
 import matplotlib.pyplot as plt
+plt.style.use("src/uq4pk.mplstyle")
 import numpy as np
 from pathlib import Path
 
+from ..plot_params import CW
 from .grids import plot_localization_window, plot_twolevel_discretization
 from .parameters import ERRORS_WINDOW_FILE, ERRORS_TWOLEVEL_FILE, HEURISTIC_WINDOW_FILE1, \
     HEURISTIC_WINDOW_FILE2, N1, N2
@@ -26,13 +27,12 @@ def _plot_windows(src: Path, out: Path):
     """
     Creates figure 8 in the paper.
     """
-    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+    fig, ax = plt.subplots(1, 2, figsize=(CW, 0.6 * CW))
     # Plot a pixel with its localization window.
     plot_localization_window(ax[0], w1=4, w2=4)
     plot_twolevel_discretization(ax[1], w1=1, w2=1, d1=3, d2=3)
 
     plt.savefig(str(out / grids), bbox_inches="tight")
-    plt.show()
 
 
 def _plot_error_graphs(src: Path, out: Path):
@@ -57,7 +57,7 @@ def _plot_error_graphs(src: Path, out: Path):
 
     # START PLOTTING:
 
-    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+    fig, ax = plt.subplots(1, 2, figsize=(CW, 0.6 * CW))
 
     # Plot localization vs twolevel.
     results_twolevel = np.load(src / ERRORS_TWOLEVEL_FILE)
@@ -98,9 +98,8 @@ def _plot_error_graphs(src: Path, out: Path):
     ax[1].set_ylim(ylim)
     ax[1].set_xlim(xlim)
     ax[1].legend()
-    # Save and show
+    # Save.
     plt.savefig(str(out / speedup_errors), bbox_inches="tight")
-    plt.show()
 
 
 

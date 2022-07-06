@@ -14,9 +14,11 @@ def make_filter_function(m_f, n_f, dim_theta_v=None, options: dict=None):
     """
     # Read/set options.
     sigma = options.setdefault("sigma", 1.)
-    kernel = options.setdefault("kernel", "gauss")
+    kernel = options.setdefault("kernel", "bessel")
     if kernel == "gauss":
         ffunction_f = uq_mode.GaussianFilterFunction2D(m=m_f, n=n_f, sigma=sigma, boundary="reflect")
+    elif kernel == "bessel":
+        ffunction_f = uq_mode.BesselFilterFunction2D(m=m_f, n=n_f, sigma=sigma, boundary="reflect")
     elif kernel == "pixel":
         ffunction_f = uq_mode.IdentityFilterFunction(dim=m_f * n_f)
     else:

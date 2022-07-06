@@ -1,0 +1,14 @@
+
+# This file defines some global parameters to get consistent plots.
+
+figure.dpi: 600
+
+axes.labelsize: 7
+axes.titlesize: 8
+legend.fontsize: 8
+xtick.labelsize: 8
+ytick.labelsize: 8
+lines.linewidth: 1
+
+font.size: 8
+

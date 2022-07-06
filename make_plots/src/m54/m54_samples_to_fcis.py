@@ -1,5 +1,4 @@
 
-
 import numpy as np
 from pathlib import Path
 
@@ -8,6 +7,8 @@ from uq4pk_fit.uq_mode import credible_intervals
 from .parameters import LOWER_STACK_SVDMCMC, LOWER_STACK_HMC, UPPER_STACK_SVDMCMC, UPPER_STACK_HMC, \
     SAMPLES_SVDMCMC, SAMPLES_HMC, SIGMA_LIST, MARGINAL_SVDMCMC, YSAMPLES_SVDMCMC, \
     PREDICTIVE_SVDMCMC, MARGINAL_HMC, YSAMPLES_HMC, PREDICTIVE_HMC
+
+from uq4pk_fit.visualization import plot_distribution_function
 
 
 def m54_samples_to_fcis(out: Path, sampling: str):

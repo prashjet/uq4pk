@@ -20,7 +20,7 @@ SLICE_INDEX = 7        # Index for one-dimensional visualization
 RTHRESH1 = 0.02
 RTHRESH2 = RTHRESH1
 OVERLAP1 = 0.5
-OVERLAP2 = 0.4
+OVERLAP2 = 0.5
 REGFACTOR = 500
 
 # Run options for speedup. Note that these options lead to a reduction factor >= 10 in overall computation time on

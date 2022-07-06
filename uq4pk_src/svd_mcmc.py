@@ -198,6 +198,68 @@ class SVD_MCMC:
                 return y_obs
         return beta_tilde_dr_single_model
 
+    def get_hierarchical_model(self,
+                               unscaled_prior_cov=None,
+                               regpar_scale=None,
+                               truncate_hyperprior=False):
+        mu_beta_tilde = np.zeros(self.p)
+        if self.mask is None:
+            def hierarchical_model(unscaled_prior_cov=unscaled_prior_cov,
+                                   regpar_scale=regpar_scale,
+                                   y_obs=None):
+                # hyperprior
+                inv_regpar_prior = dist.Exponential(rate=1./regpar_scale)
+                if truncate_hyperprior:
+                    inv_regpar_prior = dist.TruncatedDistribution(
+                        inv_regpar_prior,
+                        high=2./regpar_scale)
+                inv_regpar = numpyro.sample("inv_regpar", inv_regpar_prior)
+                Sigma_beta_tilde = unscaled_prior_cov * inv_regpar
+                # hack for non-negativity
+                beta_tilde = numpyro.sample("beta_tilde",
+                                            dist.TruncatedNormal(0, 10., low=0),
+                                            sample_shape=(self.p,))
+                beta_prior = dist.MultivariateNormal(mu_beta_tilde,
+                                                     Sigma_beta_tilde)
+                numpyro.factor("regulariser", beta_prior.log_prob(beta_tilde))
+                eta = jnp.dot(self.H, beta_tilde)
+                alpha = jnp.sum(beta_tilde)
+                # likelihood
+                ybar = alpha*self.mu + jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                y_obs = numpyro.sample("y_obs", nrm, obs=self.y)
+                return y_obs
+        else:
+            def hierarchical_model(unscaled_prior_cov=unscaled_prior_cov,
+                                   regpar_scale=regpar_scale,
+                                   y_obs=None):
+                # hyperprior
+                inv_regpar_prior = dist.Exponential(rate=1./regpar_scale)
+                if truncate_hyperprior:
+                    inv_regpar_prior = dist.TruncatedDistribution(
+                        inv_regpar_prior,
+                        high=2./regpar_scale)
+                inv_regpar = numpyro.sample("inv_regpar", inv_regpar_prior)
+                Sigma_beta_tilde = unscaled_prior_cov * inv_regpar
+                # hack for non-negativity
+                beta_tilde = numpyro.sample("beta_tilde",
+                                            dist.TruncatedNormal(0, 10., low=0),
+                                            sample_shape=(self.p,))
+                # prior
+                beta_prior = dist.MultivariateNormal(mu_beta_tilde,
+                                                     Sigma_beta_tilde)
+                numpyro.factor("regulariser", beta_prior.log_prob(beta_tilde))
+                # likelihood
+                eta = jnp.dot(self.H, beta_tilde)
+                alpha = jnp.sum(beta_tilde)
+                # likelihood
+                ybar = alpha*self.mu + jnp.dot(self.Z, eta)
+                nrm = dist.Normal(loc=ybar, scale=self.sigma_y)
+                masked_nrm = nrm.mask(self.mask)
+                y_obs = numpyro.sample("y_obs", masked_nrm, obs=self.y)
+                return y_obs
+        return hierarchical_model
+
     def get_beta_tilde_model(self,
                              eta_alpha_samples=None,
                              Sigma_beta_tilde=None):
@@ -277,10 +339,5 @@ class SVD_MCMC:
                         percentile=percentile,
                         lognorm=False)
         return fig
-
-
-
-
-
 
     # end

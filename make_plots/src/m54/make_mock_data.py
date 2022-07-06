@@ -1,10 +1,12 @@
+
+from matplotlib import pyplot as plt
 import numpy as np
 from pathlib import Path
 
 import uq4pk_src
-from ..mock import get_f
-from .m54_fit_model import m54_setup_operator, m54_fit_model
-from .parameters import THETA_V, MOCK1_FILE, MOCK_SD1_FILE, MOCK2_FILE, MOCK_SD2_FILE, MOCK_GT_FILE
+from make_plots.src.mock import get_f
+from make_plots.src.m54.m54_fit_model import m54_setup_operator, m54_fit_model
+from make_plots.src.m54.parameters import THETA_V, MOCK1_FILE, MOCK_SD1_FILE, MOCK2_FILE, MOCK_SD2_FILE, MOCK_GT_FILE
 from uq4pk_fit.visualization import plot_distribution_function
 
 
@@ -20,11 +22,12 @@ def make_mock_data(snr: float, theta_v: np.ndarray, y_file: Path, y_sd_file: Pat
     :param snr:
     :param ground_truth:
     """
-    # Get ground truth.
-    ground_truth = np.load(MOCK_GT_FILE)
     # Get M54 standard deviations.
     m54_data = uq4pk_src.data.M54()
     m54_data.logarithmically_resample(dv=50.)
+
+    # Ground truth = ppxf-fit.
+    ground_truth = m54_data.ppxf_map_solution.T[:, 7:]
 
     y_sd = m54_data.noise_level
 
@@ -46,16 +49,18 @@ def make_mock_data(snr: float, theta_v: np.ndarray, y_file: Path, y_sd_file: Pat
     fitted_model = m54_model.fitted_model
     f_map = fitted_model.f_map.clip(min=0.)
     vmax = ground_truth.max()
-    raise NotImplementedError("These have to be updated.")
-    plot_distribution_function(image=ground_truth, show=True, vmax=vmax)
-    plot_distribution_function(image=f_map, show=True, vmax=vmax)
+
+    fig, ax = plt.subplots(2, 1)
+    plot_distribution_function(ax=ax[0], image=ground_truth, vmax=vmax)
+    plot_distribution_function(ax=ax[1], image=f_map, vmax=vmax)
+    plt.show()
 
     np.save(str(y_file), y)
     np.save(str(y_sd_file), y_sd)
 
 
 #make_test_function()
-make_mock_data(snr=1000, theta_v=THETA_V, y_file=MOCK1_FILE, y_sd_file=MOCK_SD1_FILE)
+#make_mock_data(snr=1000, theta_v=THETA_V, y_file=MOCK1_FILE, y_sd_file=MOCK_SD1_FILE)
 make_mock_data(snr=100, theta_v=THETA_V, y_file=MOCK2_FILE, y_sd_file=MOCK_SD2_FILE)
 
 

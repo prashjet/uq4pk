@@ -45,6 +45,7 @@ def credible_intervals(samples: np.ndarray, alpha: float) -> Tuple[np.ndarray, n
     ub = x_ord[t_star]
 
     # Return the vectors lb and ub.
+    _check_t_star(k, t_star, x_ord, samples)
     return lb, ub
 
 
@@ -54,4 +55,5 @@ def _check_t_star(k, t_star, x_ord, samples):
     ub = x_ord[t_star]
     samples_inside = [x for x in samples if np.all(x >= lb) and np.all(x <= ub)]
     num_inside = len(samples_inside)
+    ratio_inside = num_inside / samples.shape[0]
     return (num_inside >= k)
