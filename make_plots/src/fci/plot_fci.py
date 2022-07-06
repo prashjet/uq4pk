@@ -52,14 +52,16 @@ def plot_fci(src: Path, out: Path):
     # -- Second row: PCIs and MAP.
     ax_left = plt.subplot2grid(shape=(5, 3), loc=(1, 0), colspan=1)
     ax_left.set_title(r"$f^\mathrm{low}$")
-    plot_distribution_function(ax_left, image=pci_low, ssps=ssps, xlabel=False, ylabel=True, vmax=vmax, flip=False)
+    plot_distribution_function(ax_left, image=pci_low, ssps=ssps, xlabel=False, ylabel=True, vmax=vmax, flip=False,
+                               xticklabels=False)
     ax_middle = plt.subplot2grid(shape=(5, 3), loc=(1, 1), colspan=1)
     ax_middle.set_title(r"$f^\mathrm{MAP}$")
-    plot_distribution_function(ax_middle, image=f_map, ssps=ssps, xlabel=False, ylabel=False, vmax=vmax, flip=False)
+    plot_distribution_function(ax_middle, image=f_map, ssps=ssps, xlabel=False, ylabel=False, vmax=vmax, flip=False,
+                               xticklabels=False, yticklabels=False)
     ax_right = plt.subplot2grid(shape=(5, 3), loc=(1, 2), colspan=1)
     ax_right.set_title(r"$f^\mathrm{upp}$")
     im_right = plot_distribution_function(ax_right, image=pci_upp, ssps=ssps, xlabel=False, ylabel=False, vmax=vmax,
-                                          flip=False)
+                                          flip=False, xticklabels=False, yticklabels=False)
     mappables.append(im_right)
     cb_axes.append(ax_right)
 
@@ -69,17 +71,21 @@ def plot_fci(src: Path, out: Path):
     for lower, map, upper in zip(lower_list, map_list, upper_list):
         if i == 2:
             xlabel = True
+            xticklabels = True
         else:
             xlabel = False
+            xticklabels = False
         vmax = upper.max()
         t = SCALES[i]
         ax_left = plt.subplot2grid(shape=(5, 3), loc=(i + 2, 0), colspan=1)
-        plot_distribution_function(ax_left, image=lower, ssps=ssps, xlabel=xlabel, ylabel=True, vmax=vmax, flip=False)
+        plot_distribution_function(ax_left, image=lower, ssps=ssps, xlabel=xlabel, ylabel=True, vmax=vmax, flip=False,
+                                   xticklabels=xticklabels, yticklabels=True)
         ax_middle = plt.subplot2grid(shape=(5, 3), loc=(i + 2, 1), colspan=1)
-        plot_distribution_function(ax_middle, image=map, ssps=ssps, xlabel=xlabel, ylabel=False, vmax=vmax, flip=False)
+        plot_distribution_function(ax_middle, image=map, ssps=ssps, xlabel=xlabel, ylabel=False, vmax=vmax, flip=False,
+                                   xticklabels=xticklabels, yticklabels=False)
         ax_right = plt.subplot2grid(shape=(5, 3), loc=(i + 2, 2), colspan=1)
         im_right = plot_distribution_function(ax_right, image=upper, ssps=ssps, xlabel=xlabel, ylabel=False, vmax=vmax,
-                                              flip=False)
+                                              flip=False, xticklabels=xticklabels, yticklabels=False)
         mappables.append(im_right)
         cb_axes.append(ax_right)
         ax_left.set_title(r'$L_{{{:.0f}}}^\mathrm{{{}}}$'.format(t, "low"))

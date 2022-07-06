@@ -11,14 +11,14 @@ from ppxf import ppxf
 import uq4pk_src
 from uq4pk_fit.special_operators import OrnsteinUhlenbeck
 from .m54_fit_model import m54_setup_operator
-from .parameters import THETA_V, SVDMCMC_BURNIN, SVDMCMC_NSAMPLES, SAMPLES_SVDMCMC, REGFACTOR, MEAN_SVDMCMC, YMEAN_SVDMCMC, \
-    YSAMPLES_SVDMCMC, HMC_NSAMPLES, HMC_BURNIN, SAMPLES_HMC, YSAMPLES_HMC, YMEAN_HMC, MEAN_HMC
+from .parameters import THETA_V, SVDMCMC_BURNIN, SVDMCMC_NSAMPLES, SAMPLES_SVDMCMC, MEAN_SVDMCMC, YMEAN_SVDMCMC, \
+    YSAMPLES_SVDMCMC, HMC_NSAMPLES, HMC_BURNIN, SAMPLES_HMC, YSAMPLES_HMC, YMEAN_HMC, MEAN_HMC, MASK
 
 
 rng_key = random.PRNGKey(32743)
 
 
-def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampling: str):
+def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampling: str, regparam: float):
 
     # Distinguish setups depending on sampler.
     if sampling == "svdmcmc":
@@ -135,27 +135,22 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
         mask=mask,
         do_log_resample=False)
 
-    svd_mcmc.set_q(15)
-
     P1 = OrnsteinUhlenbeck(m=m_f, n=n_f, h=np.array([2., 1.]))
     # Adjust regularization parameter.
-    snr = np.linalg.norm(y_loc) / np.linalg.norm(sigma_y)
-    beta1 = REGFACTOR * snr
+    beta1 = regparam
     beta_tilde_prior_cov = P1.cov / beta1
 
     # Prepare samples.
     if sampling == "svdmcmc":
-        #beta_tilde_model = svd_mcmc.get_beta_tilde_dr_single_model(Sigma_beta_tilde=beta_tilde_prior_cov)
+        svd_mcmc.set_q(15)
         beta_tilde_model = svd_mcmc.get_beta_tilde_dr_single_model(Sigma_beta_tilde=beta_tilde_prior_cov)
-        beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
-                                                       num_samples=nsample_beta_tilde)
     elif sampling == "hmc":
         beta_tilde_model = svd_mcmc.get_beta_tilde_direct_model(Sigma_beta_tilde=beta_tilde_prior_cov)
-        beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
-                                                       num_samples=nsample_beta_tilde)
     else:
         raise NotImplementedError("Unknown sampler.")
 
+    beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
+                                                   num_samples=nsample_beta_tilde)
     # Run.
     beta_tilde_sampler.run(rng_key)
     beta_tilde_sampler.print_summary()
@@ -181,7 +176,8 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
     np.save(str(out / sample_file), light_weighed_samples)
     np.save(str(out / ysample_file), y_samples)
 
-
+    # Also store mask
+    np.save(str(out / MASK), mask)
 
 
 

@@ -12,8 +12,7 @@ from uq4pk_fit.inference import StatModel
 from uq4pk_fit.inference import LightWeightedForwardOperator, fcis_from_samples2d
 import uq4pk_src
 from ..mock import load_experiment_data
-from .parameters import SIGMA_LIST, DATA, LOWER_STACK, UPPER_STACK, DV, LMD_MIN, LMD_MAX, MAP, \
-    SPEEDUP_OPTIONS, LOWER_STACK_SPEEDUP, UPPER_STACK_SPEEDUP, TIMES, REGFACTOR
+from .parameters import SIGMA_LIST, DATA, LOWER_STACK, UPPER_STACK, DV, LMD_MIN, LMD_MAX, TIMES, REGFACTOR
 from uq4pk_src import model_grids,svd_mcmc
 from uq4pk_fit.special_operators import OrnsteinUhlenbeck
 from ..mock import SimulatedExperimentData

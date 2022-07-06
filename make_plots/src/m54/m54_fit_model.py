@@ -5,7 +5,7 @@ from ppxf import ppxf
 
 import uq4pk_src
 from uq4pk_fit.inference import StatModel, FittedModel, LightWeightedForwardOperator
-from .parameters import REGFACTOR, THETA_V
+from .parameters import REGFACTORS, THETA_V
 
 
 @dataclass
@@ -108,7 +108,7 @@ def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, theta_v: np.ndarray) -> M54Mo
     # Fit the model
     model = StatModel(y=y_masked, y_sd=y_sd_masked, forward_operator=forward_operator)
     model.fix_theta_v(indices=np.arange(model.dim_theta), values=theta_v)
-    model.beta1 = REGFACTOR * snr
+    model.beta1 = REGFACTORS[0]
     fitted_model = model.fit()
 
     m54_model = M54Model(fitted_model=fitted_model, forward_operator=forward_operator,

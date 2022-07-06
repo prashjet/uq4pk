@@ -11,36 +11,35 @@ import uq4pk_src
 from uq4pk_fit.visualization import plot_distribution_function, plot_significant_blobs
 from uq4pk_fit.blob_detection import detect_significant_blobs
 from ..plot_params import CW, CW2
-from .parameters import LOWER_STACK_FILE, UPPER_STACK_FILE, RTHRESH1, RTHRESH2, \
+from .parameters import RTHRESH1, RTHRESH2, \
     OVERLAP1, OVERLAP2, SIGMA_LIST, MEAN_SVDMCMC, LOWER_STACK_SVDMCMC, UPPER_STACK_SVDMCMC, MARGINAL_HMC, \
-    MARGINAL_SVDMCMC, GROUND_TRUTH, PPXF, DATA, YMEAN_SVDMCMC, MASK, PREDICTIVE_OPT, PREDICTIVE_SVDMCMC, MEAN_HMC,\
-    YMEAN_HMC, LOWER_STACK_HMC, UPPER_STACK_HMC, MARGINAL_OPT, PREDICTIVE_HMC
+    MARGINAL_SVDMCMC, GROUND_TRUTH, PPXF, DATA, YMEAN_SVDMCMC, MASK, PREDICTIVE_SVDMCMC, MEAN_HMC,\
+    YMEAN_HMC, LOWER_STACK_HMC, UPPER_STACK_HMC, PREDICTIVE_HMC, REAL1_NAME, REAL2_NAME
 from ..util import add_colorbar_to_axis, add_colorbar_to_plot
 
 plt.style.use("src/uq4pk.mplstyle")
 
 
 # Define plot names.
-m54_real_data_name = "m54_real.png"
-m54_mock_data_name = "m54_mock.png"
-m54_age_marginals_name = "m54_age.png"
-m54_predictive_name = "m54_predictive.png"
+m54_blobs_name = "_blobs.png"
+m54_age_marginals_name = "_age.png"
+m54_predictive_name = "_predictive.png"
 
 
 def plot_m54(src: Path, out: Path):
-    _m54_real_data_plot(src, out)
-    #_m54_mock_data_plot(src, out)
-    _m54_age_marginals_plot(src, out)
-    _m54_predictive_plot(src, out)
+    for dir in [REAL1_NAME, REAL2_NAME]:
+        _m54_real_data_plot(src, out, dir=dir)
+        _m54_age_marginals_plot(src, out, dir=dir)
+        _m54_predictive_plot(src, out, dir=dir)
 
 
-def _m54_real_data_plot(src, out):
+def _m54_real_data_plot(src, out, dir: str):
     """
     Produces figure 13 in the paper,
     under the name m54_real_data
     """
     # Get path to results for real data.
-    real = src / "m54_real"
+    real = src / dir
     # Get ground truth.
     ground_truth = np.load(str(real / GROUND_TRUTH))
     # Get ppxf fit.
@@ -75,15 +74,15 @@ def _m54_real_data_plot(src, out):
     ax[1, 1].set_title("Full HMC")
     # Add colorbar to second image.
     add_colorbar_to_plot(fig, ax, im)
-    plt.savefig(str(out / m54_real_data_name), bbox_inches="tight")
+    plt.savefig(str(out / str(dir + m54_blobs_name)), bbox_inches="tight")
 
 
-def _m54_age_marginals_plot(src, out):
+def _m54_age_marginals_plot(src, out, dir: str):
     """
     Creates figure 14 in the paper.
     """
     # Get results for real data.
-    real = src / "m54_real"
+    real = src / dir
     f_mean_svdmcmc = np.load(str(real / MEAN_SVDMCMC))
     f_mean_hmc = np.load(str(real / MEAN_HMC))
     age_marginal_svdmcmc = np.load(str(real / MARGINAL_SVDMCMC))
@@ -127,15 +126,15 @@ def _m54_age_marginals_plot(src, out):
 
     # First plot gets y-label.
     axes[0].set_ylabel("Density")
-    plt.savefig(str(out / m54_age_marginals_name), bbox_inches="tight")
+    plt.savefig(str(out / str(dir + m54_age_marginals_name)), bbox_inches="tight")
 
 
-def _m54_predictive_plot(src, out):
+def _m54_predictive_plot(src, out, dir: str):
     """
     Create figure 16 in paper.
     """
     # Get results for real data.
-    real = src / "m54_real"
+    real = src / dir
     y = np.load(str(real / DATA))
     y[-1] = y[-2]  # Last value is NaN, substitute with second-to-last.
     y_mean_svdmcmc = np.load(str(real / YMEAN_SVDMCMC))
@@ -156,7 +155,7 @@ def _m54_predictive_plot(src, out):
     axes[0, 0].set_title("SVD-MCMC")
     axes[0, 1].set_title("Full HMC")
 
-    plt.savefig(str(out / m54_predictive_name), bbox_inches="tight")
+    plt.savefig(str(out / str(dir + m54_predictive_name)), bbox_inches="tight")
 
 
 def _posterior_predictive_plot(ax1, ax2, y: np.ndarray, y_est: np.ndarray, mask: np.ndarray, ci: np.ndarray):

@@ -6,15 +6,15 @@ file: m54/parameters.py
 import numpy as np
 from pathlib import Path
 
-REGFACTOR = 50.  #5000.
+REGFACTORS = [5000., 500000.]
 
 THETA_V = np.array([146., 3., 1., 0., 0., 0.014, 0.169])
 RATIO = 0.5
 SIGMA_MIN = 1.
 NUM_SIGMA = 10
 STEPSIZE = 1.5
-RTHRESH1 = 0.01
-RTHRESH2 = 0.01
+RTHRESH1 = 0.02
+RTHRESH2 = 0.02
 OVERLAP1 = 0.5
 OVERLAP2 = 0.5
 # parameters for SVD-MCMC
@@ -29,6 +29,11 @@ sigma2_list = [SIGMA_MIN + n * STEPSIZE for n in range(NUM_SIGMA)]
 SIGMA_LIST = [np.array([RATIO * sigma2, sigma2]) for sigma2 in sigma2_list]
 
 # FILE LOCATIONS
+MOCK1_NAME = "m54_mock1000"
+MOCK2_NAME = "m54_mock100"
+REAL1_NAME = "m54_real"
+REAL2_NAME = "m54_real2"
+
 MAP_FILE = Path("m54_map.npy")
 LOWER_STACK_FILE = Path("m54_lower_stack.npy")
 UPPER_STACK_FILE = Path("m54_upper_stack.npy")
@@ -60,15 +65,3 @@ PREDICTIVE_OPT = Path("m54_predictive_opt.npy")
 PREDICTIVE_HMC = Path("m54_predicitive_hmc.npy")
 
 here = Path("src/m54")
-
-MOCK1_FILE = Path("mock_data/snr1000_y.npy")
-MOCK_SD1_FILE = Path("mock_data/snr1000_y_sd.npy")
-MOCK2_FILE = Path("mock_data/snr100_y.npy")
-MOCK_SD2_FILE = Path("mock_data/snr100_y_sd.npy")
-MOCK_GT_FILE = Path("mock_data") / GROUND_TRUTH
-
-MOCK_GT = here / MOCK_GT_FILE
-MOCK1 = here / MOCK1_FILE
-MOCK_SD1 = here / MOCK_SD1_FILE
-MOCK2 = here / MOCK2_FILE
-MOCK_SD2 = here / MOCK_SD2_FILE

@@ -5,7 +5,8 @@ import numpy as np
 from .params import power_norm, CMAP
 
 
-def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=True, xlabel=True, ylabel=False):
+def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=True, xlabel=True, ylabel=False,
+                               xticklabels=True, yticklabels=True):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.
@@ -35,9 +36,15 @@ def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=Tru
         ticks = [ssps.t_ticks, ssps.z_ticks, ssps.img_t_ticks, ssps.img_z_ticks]
         t_ticks, z_ticks, img_t_ticks, img_z_ticks = ticks
         ax.set_xticks(img_t_ticks)
-        ax.set_xticklabels(t_ticks)
+        if xticklabels:
+            ax.set_xticklabels(t_ticks)
+        else:
+            ax.set_xticklabels([])
         ax.set_yticks(img_z_ticks)
-        ax.set_yticklabels(z_ticks)
+        if yticklabels:
+            ax.set_yticklabels(z_ticks)
+        else:
+            ax.set_yticklabels([])
 
     # Return "mappable" (allows colorbar creation).
     return immap
