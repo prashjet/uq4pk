@@ -71,7 +71,7 @@ def _m54_real_data_plot(src, out, dir: str):
     ax[1, 0].set_title("SVD-MCMC")
     im = plot_significant_blobs(ax=ax[1, 1], image=f_mean_hmc, blobs=significant_blobs_hmc, ssps=ssps, vmax=vmax,
                            xlabel=True, ylabel=False)
-    ax[1, 1].set_title("Full HMC")
+    ax[1, 1].set_title("Full MCMC")
     # Add colorbar to second image.
     add_colorbar_to_plot(fig, ax, im)
     plt.savefig(str(out / str(dir + m54_blobs_name)), bbox_inches="tight")
@@ -102,7 +102,7 @@ def _m54_age_marginals_plot(src, out, dir: str):
 
     # Create plot.
     fig, axes = plt.subplots(1, 2, figsize=(CW, 0.4 * CW))
-    titles = ["SVD-MCMC", "Full HMC"]
+    titles = ["SVD-MCMC", "Full MCMC"]
     for estimate, estimate_name, marginal, ax, title in zip(estimates, estimate_names, marginals, axes, titles):
         upper, lower = marginal
         # Marginalize estimate
@@ -153,7 +153,7 @@ def _m54_predictive_plot(src, out, dir: str):
     axes[0, 0].set_ylabel("Flux")
     axes[1, 0].set_ylabel("Residual [\%]")
     axes[0, 0].set_title("SVD-MCMC")
-    axes[0, 1].set_title("Full HMC")
+    axes[0, 1].set_title("Full MCMC")
 
     plt.savefig(str(out / str(dir + m54_predictive_name)), bbox_inches="tight")
 

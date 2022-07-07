@@ -13,7 +13,7 @@ from src.m54 import compute_m54
 
 
 OUT = Path("out")
-mode = "base"   # "final" for final computations.
+mode = "final"   # "final" for final computations.
 
 
 print("---------- COMPUTING: BLOB DETECTION ----------")
