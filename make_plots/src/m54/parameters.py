@@ -31,8 +31,8 @@ SIGMA_LIST = [np.array([RATIO * sigma2, sigma2]) for sigma2 in sigma2_list]
 # FILE LOCATIONS
 MOCK1_NAME = "m54_mock1000"
 MOCK2_NAME = "m54_mock100"
-REAL1_NAME = "m54_real"
-REAL2_NAME = "m54_real2"
+REAL1_NAME = "m54_lowreg"
+REAL2_NAME = "m54_highreg"
 
 MAP_FILE = Path("m54_map.npy")
 LOWER_STACK_FILE = Path("m54_lower_stack.npy")
