@@ -7,18 +7,19 @@ from jax import random
 from pathlib import Path
 import numpy as np
 from ppxf import ppxf
+from timeit import default_timer as timer
 
 import uq4pk_src
 from uq4pk_fit.special_operators import OrnsteinUhlenbeck
 from .m54_fit_model import m54_setup_operator
-from .parameters import THETA_V, SVDMCMC_BURNIN, SVDMCMC_NSAMPLES, SAMPLES_SVDMCMC, MEAN_SVDMCMC, YMEAN_SVDMCMC, \
+from .parameters import SVDMCMC_BURNIN, SVDMCMC_NSAMPLES, SAMPLES_SVDMCMC, MEAN_SVDMCMC, YMEAN_SVDMCMC, \
     YSAMPLES_SVDMCMC, HMC_NSAMPLES, HMC_BURNIN, SAMPLES_HMC, YSAMPLES_HMC, YMEAN_HMC, MEAN_HMC, MASK
 
 
 rng_key = random.PRNGKey(32743)
 
 
-def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampling: str, regparam: float):
+def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampling: str, regparam: float) -> float:
 
     # Distinguish setups depending on sampler.
     if sampling == "svdmcmc":
@@ -33,8 +34,8 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
         sample_file = SAMPLES_SVDMCMC
         ysample_file = YSAMPLES_SVDMCMC
     elif sampling == "hmc":
-        test_burnin = 50
-        test_nsamples = 100
+        test_burnin = 500
+        test_nsamples = 1000
         base_burnin = 500
         base_nsamples = 500
         final_burnin = HMC_BURNIN
@@ -105,7 +106,7 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
         mdegree=21,
         moments=moments,
         bounds=bounds,
-        regul=1e-10,
+        regul=1e-11,
         mask=ppxf_mask
     )
 
@@ -115,7 +116,8 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
     ssps_corrected = copy.deepcopy(ssps)
     ssps_corrected.Xw = (ssps_corrected.Xw.T * continuum_distorition).T
 
-    theta_v = THETA_V
+    sol = ppxf_fit.sol
+    theta_v = np.array([sol[0], sol[1], 1., 0., 0., -sol[2], sol[3]])
     y_loc = 1. * y
     y_loc[-1] = y_loc[-2]
     sigma_y = 1. * y_sd
@@ -152,7 +154,10 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
     beta_tilde_sampler = svd_mcmc.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
                                                    num_samples=nsample_beta_tilde)
     # Run.
+    start = timer()
     beta_tilde_sampler.run(rng_key)
+    end = timer()
+    time_for_sampling = end - start
     beta_tilde_sampler.print_summary()
     light_weighed_samples = beta_tilde_sampler.get_samples()["beta_tilde"].reshape(-1, m_f, n_f)
 
@@ -165,7 +170,7 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
 
     # Compute y-samples.
     observation_operator = m54_setup_operator()
-    y_sample_list = [observation_operator.fwd_unmasked(f.flatten(), THETA_V) for f in light_weighed_samples]
+    y_sample_list = [observation_operator.fwd_unmasked(f.flatten(), theta_v) for f in light_weighed_samples]
     y_samples = np.array(y_sample_list)
 
     # Compute mean prediction.
@@ -178,6 +183,9 @@ def m54_mcmc_sample(mode: str, out: Path, y: np.ndarray, y_sd: np.ndarray, sampl
 
     # Also store mask
     np.save(str(out / MASK), mask)
+
+    # Return time for sampling.
+    return time_for_sampling
 
 
 

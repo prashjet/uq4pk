@@ -15,21 +15,22 @@ def get_mcmc_samples(mode: str, sampling: str, q: int = None) -> np.ndarray:
     :returns: Array of shape (n, d), where n is the number of samples and d is the dimension.
     """
     if sampling == "svdmcmc":
-        test_burnin = 500
-        test_nsample = 1000
+        test_burnin = 250
+        test_nsample = 500
         base_burnin = 1000
         base_nsample = 1000
     elif sampling == "hmc":
-        test_burnin = 500
-        test_nsample = 1000
+        test_burnin = 250
+        test_nsample = 500
         base_burnin = 500
         base_nsample = 500
     else:
         raise NotImplementedError("Unknown 'sampling'.")
 
     if mode == "test":
-        sampling = "svdmcmc"
-        q = 15
+        if sampling == "hmc":
+            sampling = "svdmcmc"
+            q = 50
         burnin_beta_tilde = test_burnin
         nsample_beta_tilde = test_nsample
     elif mode == "base":
@@ -83,6 +84,6 @@ def get_mcmc_samples(mode: str, sampling: str, q: int = None) -> np.ndarray:
     beta_array = beta_tilde_sampler.get_samples()["beta_tilde"]
 
     # Rescale.
-    beta_array = y_sum * beta_array
+    beta_array = y_sum * beta_array.reshape(-1, 12, 53)
 
     return beta_array

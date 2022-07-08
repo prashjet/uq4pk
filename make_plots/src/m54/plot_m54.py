@@ -14,10 +14,12 @@ from ..plot_params import CW, CW2
 from .parameters import RTHRESH1, RTHRESH2, \
     OVERLAP1, OVERLAP2, SIGMA_LIST, MEAN_SVDMCMC, LOWER_STACK_SVDMCMC, UPPER_STACK_SVDMCMC, MARGINAL_HMC, \
     MARGINAL_SVDMCMC, GROUND_TRUTH, PPXF, DATA, YMEAN_SVDMCMC, MASK, PREDICTIVE_SVDMCMC, MEAN_HMC,\
-    YMEAN_HMC, LOWER_STACK_HMC, UPPER_STACK_HMC, PREDICTIVE_HMC, REAL1_NAME, REAL2_NAME
+    YMEAN_HMC, LOWER_STACK_HMC, UPPER_STACK_HMC, PREDICTIVE_HMC, REAL1_NAME, REAL2_NAME, MAP_FILE, AGE_HMC, AGE_SVDMCMC
 from ..util import add_colorbar_to_axis, add_colorbar_to_plot
 
 plt.style.use("src/uq4pk.mplstyle")
+
+use_map_as_reference = True        # If True, uses map as reference. Else, uses posterior mean.
 
 
 # Define plot names.
@@ -27,51 +29,73 @@ m54_predictive_name = "_predictive.png"
 
 
 def plot_m54(src: Path, out: Path):
-    for dir in [REAL1_NAME, REAL2_NAME]:
-        _m54_real_data_plot(src, out, dir=dir)
+    for dir, compare in zip([REAL1_NAME, REAL2_NAME], [True, False]):
+        _m54_real_data_plot(src, out, dir=dir, with_comparison=compare)
         _m54_age_marginals_plot(src, out, dir=dir)
         _m54_predictive_plot(src, out, dir=dir)
 
 
-def _m54_real_data_plot(src, out, dir: str):
+def _m54_real_data_plot(src, out, dir: str, with_comparison: bool):
     """
     Produces figure 13 in the paper,
     under the name m54_real_data
     """
     # Get path to results for real data.
     real = src / dir
+    too_young = 7
     # Get ground truth.
-    ground_truth = np.load(str(real / GROUND_TRUTH))
+    ground_truth = np.load(str(real / GROUND_TRUTH))[:, too_young:]
     # Get ppxf fit.
-    ppxf = np.load(str(real / PPXF))
+    ppxf = np.load(str(real / PPXF))[:, too_young:]
+    # Get MAP
+    f_map = np.load(str(real / MAP_FILE))
     # Get posterior means.
     f_mean_svdmcmc = np.load(str(real / MEAN_SVDMCMC))
     f_mean_hmc = np.load(str(real / MEAN_HMC))
     # Get vmax
-    vmax = max(f_mean_hmc.max(), f_mean_svdmcmc.max())
+    if use_map_as_reference:
+        vmax = f_map.max()
+    else:
+        vmax = max(f_mean_hmc.max(), f_mean_svdmcmc.max())
     # Need correct SSPS grid.
     ssps = uq4pk_src.model_grids.MilesSSP(
         miles_mod_directory='EMILES_BASTI_BASE_BI_FITS',
         imf_string='Ebi1.30',
         lmd_min=None,
         lmd_max=None,
+        age_lim=(0.1, 14)
     )
+    # Adjust x-ticks.
+    ssps.set_tick_positions([0.1, 1, 5, 13])
 
+    if use_map_as_reference:
+        ref_svdmcmc = f_map
+        ref_hmc = f_map
+    else:
+        ref_svdmcmc = f_mean_svdmcmc
+        ref_hmc = f_mean_hmc
     significant_blobs_svdmcmc, significant_blobs_hmc = \
-        _get_blobs(src=real, mean_svdmcmc=f_mean_svdmcmc, mean_hmc=f_mean_hmc)
+        _get_blobs(src=real, mean_svdmcmc=ref_svdmcmc, mean_hmc=ref_hmc)
 
     # Create plot.
-    fig, ax = plt.subplots(2, 2, figsize=(CW2, 0.5 * CW2))
-    plot_distribution_function(ax[0, 0], image=ground_truth, ssps=ssps, xlabel=False, ylabel=True)
-    ax[0, 0].set_title("Ground truth")
-    plot_distribution_function(ax[0, 1], image=ppxf, ssps=ssps, xlabel=False, ylabel=False)
-    ax[0, 1].set_title("pPXF fit")
-    plot_significant_blobs(ax=ax[1, 0], image=f_mean_svdmcmc, blobs=significant_blobs_svdmcmc, ssps=ssps, vmax=vmax,
+    if with_comparison:
+        fig, ax = plt.subplots(2, 2, figsize=(CW2, 0.5 * CW2))
+        plot_distribution_function(ax[0, 0], image=ground_truth, ssps=ssps, xlabel=False, ylabel=True)
+        ax[0, 0].set_title("Ground truth")
+        plot_distribution_function(ax[0, 1], image=ppxf, ssps=ssps, xlabel=False, ylabel=False)
+        ax[0, 1].set_title("pPXF fit")
+        i = 1
+    else:
+        fig, ax = plt.subplots(1, 2, figsize=(CW2, 0.25 * CW2))
+        ax = ax.reshape((1, 2))
+        i = 0
+
+    plot_significant_blobs(ax=ax[i, 0], image=ref_svdmcmc, blobs=significant_blobs_svdmcmc, ssps=ssps, vmax=vmax,
                            xlabel=True, ylabel=True)
-    ax[1, 0].set_title("SVD-MCMC")
-    im = plot_significant_blobs(ax=ax[1, 1], image=f_mean_hmc, blobs=significant_blobs_hmc, ssps=ssps, vmax=vmax,
+    ax[i, 0].set_title("SVD-MCMC")
+    im = plot_significant_blobs(ax=ax[i, 1], image=ref_hmc, blobs=significant_blobs_hmc, ssps=ssps, vmax=vmax,
                            xlabel=True, ylabel=False)
-    ax[1, 1].set_title("Full MCMC")
+    ax[i, 1].set_title("Full MCMC")
     # Add colorbar to second image.
     add_colorbar_to_plot(fig, ax, im)
     plt.savefig(str(out / str(dir + m54_blobs_name)), bbox_inches="tight")
@@ -83,13 +107,19 @@ def _m54_age_marginals_plot(src, out, dir: str):
     """
     # Get results for real data.
     real = src / dir
-    f_mean_svdmcmc = np.load(str(real / MEAN_SVDMCMC))
-    f_mean_hmc = np.load(str(real / MEAN_HMC))
+    f_map = np.load(str(real / MAP_FILE))
+    age_svdmcmc = np.load(str(real / AGE_SVDMCMC))
+    age_hmc = np.load(str(real / AGE_HMC))
     age_marginal_svdmcmc = np.load(str(real / MARGINAL_SVDMCMC))
     age_marginal_hmc = np.load(str(real / MARGINAL_HMC))
 
-    estimates = [f_mean_svdmcmc, f_mean_hmc]
-    estimate_names = ["Posterior mean", "Posterior mean"]
+    if use_map_as_reference:
+        age_map = np.sum(f_map, axis=0)
+        estimates = [age_map, age_map]
+        estimate_names = ["MAP estimate", "MAP estimate"]
+    else:
+        estimates = [age_svdmcmc, age_hmc]
+        estimate_names = ["Posterior mean", "Posterior mean"]
     marginals = [age_marginal_svdmcmc, age_marginal_hmc]
     uppers = [marginal[0].max() for marginal in marginals]
     vmax = max(uppers)
@@ -98,15 +128,16 @@ def _m54_age_marginals_plot(src, out, dir: str):
         imf_string='Ebi1.30',
         lmd_min=None,
         lmd_max=None,
+        age_lim=(0.1, 14)
     )
+    # Adjust x-ticks.
+    ssps.set_tick_positions([0.1, 1, 5, 13])
 
     # Create plot.
     fig, axes = plt.subplots(1, 2, figsize=(CW, 0.4 * CW))
     titles = ["SVD-MCMC", "Full MCMC"]
     for estimate, estimate_name, marginal, ax, title in zip(estimates, estimate_names, marginals, axes, titles):
         upper, lower = marginal
-        # Marginalize estimate
-        age_estimate = np.sum(estimate, axis=0)
         # Visualize result.
         n = upper.size
         ax.set_ylim(0, vmax)
@@ -115,7 +146,7 @@ def _m54_age_marginals_plot(src, out, dir: str):
         plt.rc('text', usetex=True)
         ax.plot(x_span, lower, color="b", linestyle="--", label="lower")
         ax.plot(x_span, upper, color="b", linestyle="-.", label="upper")
-        ax.plot(x_span, age_estimate, label=estimate_name, color="r")
+        ax.plot(x_span, estimate, label=estimate_name, color="r")
         ax.set_xlabel("Age [Gyr]")
         # Correct the ticks on x-axis.
         ax.set_xticks(ssps.img_t_ticks)

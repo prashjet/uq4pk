@@ -3,9 +3,10 @@ from dataclasses import dataclass
 import numpy as np
 from ppxf import ppxf
 
+from matplotlib import pyplot as plt
 import uq4pk_src
 from uq4pk_fit.inference import StatModel, FittedModel, LightWeightedForwardOperator
-from .parameters import REGFACTORS, THETA_V
+from uq4pk_fit.visualization import plot_distribution_function
 
 
 @dataclass
@@ -67,18 +68,20 @@ def m54_setup_operator():
         mdegree=21,
         moments=moments,
         bounds=bounds,
-        regul=1e-10,
+        regul=1e-11,
         mask=ppxf_mask
     )
 
     # Correct templates using fitted polynomials.
     continuum_distorition = ppxf_fit.mpoly
+    f_ppxf = np.reshape(ppxf_fit.weights, ssps.par_dims)
+    sol = ppxf_fit.sol
+    theta_v = np.array([sol[0], sol[1], 1., 0., 0., -sol[2], sol[3]])
+
     # add an extra element to the end of array to account for one that we chopped off earlier
     continuum_distorition = np.concatenate([continuum_distorition, [continuum_distorition[-1]]])
     ssps_corrected = copy.deepcopy(ssps)
     ssps_corrected.Xw = (ssps_corrected.Xw.T * continuum_distorition).T
-
-    theta_v = THETA_V
 
     forward_operator = LightWeightedForwardOperator(hermite_order=4, mask=mask, ssps=ssps_corrected,
                                                     dv=ssps_corrected.dv,
@@ -87,7 +90,7 @@ def m54_setup_operator():
 
 
 
-def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, theta_v: np.ndarray) -> M54Model:
+def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, regparam: float) -> M54Model:
     """
 
     :param y: UNMASKED data.
@@ -105,10 +108,11 @@ def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, theta_v: np.ndarray) -> M54Mo
     print(f"DATA SCALE = {np.sum(y_masked)}")
     print(f"DATA SNR = {snr}")
 
+    theta_v = forward_operator.theta_v
     # Fit the model
     model = StatModel(y=y_masked, y_sd=y_sd_masked, forward_operator=forward_operator)
     model.fix_theta_v(indices=np.arange(model.dim_theta), values=theta_v)
-    model.beta1 = REGFACTORS[0]
+    model.beta1 = regparam
     fitted_model = model.fit()
 
     m54_model = M54Model(fitted_model=fitted_model, forward_operator=forward_operator,

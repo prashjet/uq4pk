@@ -17,11 +17,13 @@ class LightWeightedForwardOperator(ForwardOperator):
         :param y: The measurement.
         """
         # Create a normal forward operator.
+        self.ssps = ssps
         mass_weigthed_fwdop = MassWeightedForwardOperator(ssps, dv, do_log_resample, hermite_order, mask)
         if mask is None:
             dim_y = mass_weigthed_fwdop.dim_y
             mask = np.full((dim_y,), True, dtype=bool)
         self.dim_theta = theta.size
+        self.theta_v = theta
         # Get the matrix representation at theta.
         self.m_f = mass_weigthed_fwdop.m_f
         self.n_f = mass_weigthed_fwdop.n_f

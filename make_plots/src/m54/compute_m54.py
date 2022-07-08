@@ -2,12 +2,12 @@
 import numpy as np
 import pandas
 from pathlib import Path
-from time import time
 
 import uq4pk_src
+from .m54_fit_model import m54_fit_model
 from .m54_mcmc_sample import m54_mcmc_sample
 from .m54_samples_to_fcis import m54_samples_to_fcis
-from .parameters import TIMES, GROUND_TRUTH, DATA, PPXF, REGFACTORS, REAL1_NAME, REAL2_NAME
+from .parameters import TIMES, GROUND_TRUTH, DATA, PPXF, REGFACTORS, REAL1_NAME, REAL2_NAME, MAP_FILE
 
 
 def compute_m54(mode: str, out: Path):
@@ -31,19 +31,18 @@ def _compute_real_data(mode: str, out: Path, regparam: float):
     # Write out ppxf solution.
     ppxf = m54_data.ppxf_map_solution.T
     np.save(str(out / PPXF), ppxf)
+    # First, compute and store the MAP.
+    m54_model = m54_fit_model(y_real, y_sd_real, regparam=regparam)
+    f_map = m54_model.fitted_model.f_map
+    np.save(str(out / MAP_FILE), f_map)
     # First, compute FCIs via SVD-MCMC.
-    t0 = time()
-    m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="svdmcmc", regparam=regparam)
+    time_svdmcmc = m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="svdmcmc", regparam=regparam)
     m54_samples_to_fcis(out=out, sampling="svdmcmc")
-    t1 = time()
-    time_svdmcmc = t1 - t0
     print(f"---------- SVD-MCMC TOOK {time_svdmcmc} seconds.")
     # Then, compute with full HMC.
-    m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="hmc", regparam=regparam)
-    m54_samples_to_fcis(out=out, sampling="hmc")
-    t2 = time()
-    time_hmc = t2 - t1
+    time_hmc = m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="hmc", regparam=regparam)
     print(f"---------- FULL HMC TOOK {time_hmc} seconds.")
+    m54_samples_to_fcis(out=out, sampling="hmc")
     times = np.array([time_svdmcmc, time_hmc]).reshape(1, 2)
     times_frame = pandas.DataFrame(data=times, columns=["SVDMCMC", "HMC"])
     times_frame.to_csv(out / TIMES)

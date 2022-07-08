@@ -51,6 +51,9 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
         phi_list.append(phi_j)
     filtered_samples = np.row_stack(phi_list)
 
+    # Evaluate mean.
+    filtered_mean = np.mean(filtered_samples, axis=0)
+
     # FIND SMALLEST BOX THAT CONTAINS (1 - alpha) OF SAMPLES.
     if mode == "classic":
         lb, ub = alpha_enclosing_box(alpha, points=filtered_samples)
@@ -58,14 +61,13 @@ def fci_sampling(alpha: float, samples, ffunction: FilterFunction, weights: np.n
         lb, ub = credible_intervals(samples=filtered_samples, alpha=alpha)
 
     # Create FCI object.
-    fci_obj = FCI(lower_stack=lb.reshape(1, -1), upper_stack=ub.reshape(1, -1))
+    fci_obj = FCI(lower_stack=lb.reshape(1, -1), upper_stack=ub.reshape(1, -1), mean=filtered_mean)
 
     # Get samples that are inside the box.
     def filter(x):
         return ffunction.evaluate(x)
     samples_inside = [x for x in samples if np.all(filter(x) >= lb) and np.all(filter(x) <= ub)]
     ratio_inside = len(samples_inside) / samples.shape[0]
-    print(f"Ratio inside = {ratio_inside}")
 
     if return_samples:
         return fci_obj, samples_inside

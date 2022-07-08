@@ -6,22 +6,21 @@ file: m54/parameters.py
 import numpy as np
 from pathlib import Path
 
-REGFACTORS = [5000., 500000.]
+REGFACTORS = [1000., 100000.]
 
-THETA_V = np.array([146., 3., 1., 0., 0., 0.014, 0.169])
 RATIO = 0.5
 SIGMA_MIN = 1.
 NUM_SIGMA = 10
-STEPSIZE = 1.5
+STEPSIZE = 1.5  # -> 1.
 RTHRESH1 = 0.02
 RTHRESH2 = 0.02
 OVERLAP1 = 0.5
 OVERLAP2 = 0.5
 # parameters for SVD-MCMC
-SVDMCMC_BURNIN = 10000
+SVDMCMC_BURNIN = 5000
 SVDMCMC_NSAMPLES = 10000
 # parameters for HMC
-HMC_BURNIN = 10000
+HMC_BURNIN = 5000
 HMC_NSAMPLES = 10000
 
 sigma2_list = [SIGMA_MIN + n * STEPSIZE for n in range(NUM_SIGMA)]
@@ -49,7 +48,8 @@ LOWER_STACK_OPT = Path("m54_lower_stack_approx.npy")
 UPPER_STACK_OPT = Path("m54_upper_stack_approx.npy")
 LOWER_STACK_HMC = Path("m54_lower_stack_hmc.npy")
 UPPER_STACK_HMC = Path("m54_upper_stack_hmc.npy")
-MARGINAL_OPT = Path("m54_marginal_opt.npy")
+AGE_SVDMCMC = Path("m54_age_svdmcmc.npy")
+AGE_HMC = Path("m54_age_hmc.npy")
 MARGINAL_SVDMCMC = Path("m54_marginal_svdmcmc.npy")
 MARGINAL_HMC = Path("m54_marginal_hmc.npy")
 TIMES = Path("m54_computation_times.csv")

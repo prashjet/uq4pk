@@ -12,6 +12,7 @@ def marginal_ci_from_samples(alpha: float, samples: np.ndarray, axis: int):
     :param samples: Of shape (k, m, n), where n is the number of samples and (m, n) their shape as image
     :return: lb, ub
         - lb: Of shape (k, ).
+        - mean: Of shape (k, ).
         - ub: Of shape (k, ).
     """
     assert axis in [0, 1]
@@ -24,6 +25,7 @@ def marginal_ci_from_samples(alpha: float, samples: np.ndarray, axis: int):
     # Compute corresponding FCI and append to list.
     fci_obj = fci_sampling(alpha=alpha, samples=flattened_samples, ffunction=filter)
     lb = fci_obj.lower
+    mean = fci_obj.mean
     ub = fci_obj.upper
 
-    return lb, ub
+    return lb, mean, ub
