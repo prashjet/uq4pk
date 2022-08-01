@@ -23,7 +23,7 @@ print("---------- COMPUTING: FCI ----------")
 #compute_fci(mode=mode, out=OUT)
 
 print("---------- COMPUTING: SVD-MCMC ----------")
-#compute_svd_mcmc(mode=mode, out=OUT)
+compute_svd_mcmc(mode=mode, out=OUT)
 
 print("---------- COMPUTING: M54----------")
-compute_m54(mode=mode, out=OUT)
+#compute_m54(mode=mode, out=OUT)

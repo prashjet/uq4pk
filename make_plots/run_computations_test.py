@@ -22,7 +22,7 @@ print("---------- TESTING: FCI----------")
 #compute_fci(mode="test", out=OUT_TEST)
 
 print("---------- COMPUTING: SVD-MCMC ----------")
-#compute_svd_mcmc(mode="test", out=OUT_TEST)
+compute_svd_mcmc(mode="test", out=OUT_TEST)
 
 print("---------- TESTING: M54----------")
-compute_m54(mode="test", out=OUT_TEST)
+#compute_m54(mode="test", out=OUT_TEST)

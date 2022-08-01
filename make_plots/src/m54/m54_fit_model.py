@@ -6,6 +6,7 @@ from ppxf import ppxf
 from matplotlib import pyplot as plt
 import uq4pk_src
 from uq4pk_fit.inference import StatModel, FittedModel, LightWeightedForwardOperator
+from uq4pk_fit.special_operators import OrnsteinUhlenbeck
 from uq4pk_fit.visualization import plot_distribution_function
 
 
@@ -74,7 +75,6 @@ def m54_setup_operator():
 
     # Correct templates using fitted polynomials.
     continuum_distorition = ppxf_fit.mpoly
-    f_ppxf = np.reshape(ppxf_fit.weights, ssps.par_dims)
     sol = ppxf_fit.sol
     theta_v = np.array([sol[0], sol[1], 1., 0., 0., -sol[2], sol[3]])
 
@@ -111,9 +111,14 @@ def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, regparam: float) -> M54Model:
     theta_v = forward_operator.theta_v
     # Fit the model
     model = StatModel(y=y_masked, y_sd=y_sd_masked, forward_operator=forward_operator)
+    model.P1 = OrnsteinUhlenbeck(m=model.m_f, n=model.n_f, h=np.array([2., 1.]))
     model.fix_theta_v(indices=np.arange(model.dim_theta), values=theta_v)
     model.beta1 = regparam
     fitted_model = model.fit()
+
+    fig, ax = plt.subplots(1, 1)
+    plot_distribution_function(ax=ax, image=fitted_model.f_map, ssps=forward_operator.ssps)
+    plt.show()
 
     m54_model = M54Model(fitted_model=fitted_model, forward_operator=forward_operator,
                          y_sd=y_sd, theta_v=theta_v, mask=mask)

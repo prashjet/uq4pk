@@ -13,7 +13,6 @@ from .parameters import TIMES, GROUND_TRUTH, DATA, PPXF, REGFACTORS, REAL1_NAME,
 def compute_m54(mode: str, out: Path):
     real1 = out / REAL1_NAME
     real2 = out / REAL2_NAME
-
     for out, regparam in zip([real1, real2], REGFACTORS):
         _compute_real_data(mode=mode, out=out, regparam=regparam)
 

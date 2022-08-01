@@ -18,5 +18,5 @@ PLOTS_TEST = Path("plots_test")
 
 #plot_blob_detection(src=OUT_TEST, out=PLOTS_TEST)
 #plot_fci(src=OUT_TEST, out=PLOTS_TEST)
-#plot_svd_mcmc(src=OUT_TEST, out=PLOTS_TEST)
-plot_m54(src=OUT_TEST, out=PLOTS_TEST)
+plot_svd_mcmc(src=OUT_TEST, out=PLOTS_TEST)
+#plot_m54(src=OUT_TEST, out=PLOTS_TEST)

@@ -35,6 +35,10 @@ def plot_svd_mcmc(src: Path, out: Path):
     q_list = QLIST
     times = np.load(str(src / TIMES))
     errors = np.load(str(src / ERRORS))
+    # extract MC error
+    mc_error = errors[-1]
+    # Complement q_list
+    q_list = np.append(q_list, [636])
 
     # If dimensions do not match, just make up q_list (this happens in test_mode).
     if q_list.size != times.size:
@@ -42,17 +46,22 @@ def plot_svd_mcmc(src: Path, out: Path):
         q_list = range(times.size)
 
     # First plot is error, measured in mean Jaccard distance.
+    # Add MC error as horizontal bar.
+    #ax_left.axhline(y=mc_error, color="r", linestyle="--")
     ax_left.plot(q_list, errors)
     ax_left.set_xlabel("q")
-    ax_left.set_ylabel("Error")
+    ax_left.set_ylabel("Mean Jaccard distance")
     ymax = 1.1 * errors.max()
+    ymax = max(ymax, mc_error)
+    ax_left.axvline(15, ls=':', color='k')
     ax_left.set_ylim(0, ymax)
 
     # Second plot is times.
     ax_right.plot(q_list, times)
     ax_right.set_xlabel("q")
-    ax_right.set_ylabel("Computation time")
+    ax_right.set_ylabel("Computation time [s]")
     ymax = 1.1 * times.max()
+    ax_right.axvline(15, ls=':', color='k')
     ax_right.set_ylim(0, ymax)
 
     # Save figure.

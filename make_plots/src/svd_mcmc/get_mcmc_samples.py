@@ -1,36 +1,36 @@
 
 from jax import random
 import numpy as np
+import ray
+from time import time
 
 from uq4pk_src import model_grids,svd_mcmc
 from uq4pk_fit.special_operators import OrnsteinUhlenbeck
 from ..mock import load_experiment_data
-from .parameters import NUM_SAMPLES, NUM_BURNIN, DATA, LMD_MIN, LMD_MAX, DV, REGFACTOR
+from .parameters import NUM_SAMPLES, NUM_BURNIN, DATA, LMD_MIN, LMD_MAX, DV, REGPARAM
 
 
-def get_mcmc_samples(mode: str, sampling: str, q: int = None) -> np.ndarray:
+def get_mcmc_samples(mode: str, sampling: str, q: int = None):
     """
     Creates samples using either SVD-MCMC or HMC.
 
-    :returns: Array of shape (n, d), where n is the number of samples and d is the dimension.
+    :returns: samples, t. samples is an array of shape (n, d), where n is the number of samples and d is the dimension.
+        t is the runtime for the sampling.
     """
     if sampling == "svdmcmc":
-        test_burnin = 250
-        test_nsample = 500
+        test_burnin = 50
+        test_nsample = 100
         base_burnin = 1000
-        base_nsample = 1000
+        base_nsample = 2000
     elif sampling == "hmc":
-        test_burnin = 250
-        test_nsample = 500
-        base_burnin = 500
-        base_nsample = 500
+        test_burnin = 50
+        test_nsample = 100
+        base_burnin = 1000
+        base_nsample = 2000
     else:
         raise NotImplementedError("Unknown 'sampling'.")
 
     if mode == "test":
-        if sampling == "hmc":
-            sampling = "svdmcmc"
-            q = 50
         burnin_beta_tilde = test_burnin
         nsample_beta_tilde = test_nsample
     elif mode == "base":
@@ -53,7 +53,7 @@ def get_mcmc_samples(mode: str, sampling: str, q: int = None) -> np.ndarray:
 
     # Setup regularization term.
     snr = np.linalg.norm(y) / np.linalg.norm(sigma_y)
-    regularization_parameter = REGFACTOR * snr
+    regularization_parameter = REGPARAM
     sigma_ou = OrnsteinUhlenbeck(m=12, n=53, h=np.array([4., 2.])).cov
     sigma_beta = sigma_ou / regularization_parameter
 
@@ -65,7 +65,7 @@ def get_mcmc_samples(mode: str, sampling: str, q: int = None) -> np.ndarray:
     # ---------------------------------------------------------- RUN THE SAMPLER
 
     # Set RNG key for reproducibility
-    rng_key = random.PRNGKey(32743)
+    rng_key = random.PRNGKey(np.random.randint(0, 999999))
 
     # Sample beta_tilde
 
@@ -79,11 +79,25 @@ def get_mcmc_samples(mode: str, sampling: str, q: int = None) -> np.ndarray:
 
     beta_tilde_sampler = svd_mcmc_sampler.get_mcmc_sampler(beta_tilde_model, num_warmup=burnin_beta_tilde,
                                                            num_samples=nsample_beta_tilde)
+    t0 = time()
     beta_tilde_sampler.run(rng_key)
+    t1 = time()
+    runtime = t1 - t0
+
     beta_tilde_sampler.print_summary()
     beta_array = beta_tilde_sampler.get_samples()["beta_tilde"]
 
     # Rescale.
     beta_array = y_sum * beta_array.reshape(-1, 12, 53)
 
-    return beta_array
+    result = [beta_array, runtime]
+    return result
+
+
+@ray.remote
+def get_mcmc_samples_remote(mode: str, sampling: str, q: int = None):
+    """
+    Simple wrapper in order to use 'get_mcmc_samples' in parallel with RAy.
+    """
+    result = get_mcmc_samples(mode, sampling, q)
+    return result
