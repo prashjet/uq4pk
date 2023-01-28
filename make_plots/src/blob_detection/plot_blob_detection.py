@@ -1,25 +1,23 @@
 
 from matplotlib import pyplot as plt
 plt.style.use("src/uq4pk.mplstyle")
-from labellines import labelLines
 import numpy as np
 from pathlib import Path
 
 import uq4pk_src
-from uq4pk_fit.visualization import plot_significant_blobs, plot_blobs
-from uq4pk_fit.blob_detection import detect_blobs, detect_significant_blobs
+from uq4pk_fit.visualization import plot_distribution_function, plot_significant_blobs, plot_blobs
+from uq4pk_fit.blob_detection import detect_blobs, detect_significant_blobs, first_order_blanket
 from ..plot_params import CW
 from .parameters import SIGMA_LIST, MAP, LOWER_STACK, UPPER_STACK, RTHRESH1, RTHRESH2,\
-    OVERLAP1, OVERLAP2
+    OVERLAP1, OVERLAP2, BLANKET_SCALE
 from .one_dimensional_example import one_dimensional_example
 
 from ..util import add_colorbar_to_axis
 
 
-LABEL_LINES = False     # Decide whether you want to label the lines directly in the one-dimensional example.
-
 # Define plot names
 name_log_demo = "log_demo.png"
+name_blanket = "blanket.png"
 name_one_dimensional = "one_dimensional_example.png"
 name_ulog_demo = "ulog_demo.png"
 name_speedup_comparison = "comparison_exact_vs_speedup.png"
@@ -29,6 +27,7 @@ ssps = uq4pk_src.model_grids.MilesSSP()
 
 def plot_blob_detection(src: Path, out: Path):
     _log_demo(src, out)             # Creates figure 2
+    _blanket(src, out)
     _one_dimensional(src, out)      # Creates figure 5
     _ulog_demo(src, out)            # Creates figure 6
 
@@ -55,6 +54,29 @@ def _log_demo(src: Path, out: Path):
     plt.savefig(str(out / name_log_demo), bbox_inches="tight")
 
 
+def _blanket(src: Path, out: Path):
+    """
+    Creates figure 5 of the paper (two-dimensional image of a t-blanket).
+    """
+    lower_stack_path = LOWER_STACK
+    upper_stack_path = UPPER_STACK
+    # Load precomputed arrays
+    lower_stack = np.load(str(src / lower_stack_path))
+    upper_stack = np.load(str(src / upper_stack_path))
+    # Get lower and upper FCI at desired scale.
+    fci_low = lower_stack[BLANKET_SCALE]
+    fci_upp = upper_stack[BLANKET_SCALE]
+    # Compute blanket.
+    blanket = first_order_blanket(lb=fci_low, ub=fci_upp)
+    # Plot blanket.
+    fig = plt.figure(figsize=(CW, 0.8 * CW))
+    ax = plt.axes()
+    im = plot_distribution_function(ax=ax, image=blanket, ssps=ssps, flip=False, xlabel=True, ylabel=True)
+    add_colorbar_to_axis(fig, ax, im)
+    # Store image.
+    plt.savefig(str(out / name_blanket), bbox_inches="tight")
+
+
 def _one_dimensional(src: Path, out: Path):
     """
     Creates figure 5 for the paper.
@@ -73,10 +95,7 @@ def _one_dimensional(src: Path, out: Path):
     ax.plot(x_span, second_order_string, label=r"$\bar B_t$", color="g")
     plt.xlabel("x")
     plt.ylabel("density")
-    if LABEL_LINES:
-        labelLines(ax.get_lines(), zorder=2.5, align=False, fontsize=15)
-    else:
-        plt.legend()
+    plt.legend()
     # Shade area between lower1d and upper1d
     ax.fill_between(x_span, lower1d, upper1d, alpha=0.2)
     # Remove ticks

@@ -1,3 +1,2 @@
 
-from .second_order_blanket import second_order_blanket
-from .zeroth_order_blanket import zeroth_order_blanket
+from .first_order_blanket import first_order_blanket

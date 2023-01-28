@@ -15,6 +15,8 @@ SIGMA_LIST = [np.array([RATIO * sigma2, sigma2]) for sigma2 in sigma2_list]
 
 SIGMA_INDEX = 1        # Index of scale for one-dimensional visualization
 SLICE_INDEX = 7        # Index for one-dimensional visualization
+BLANKET_SCALE = 4      # Index of the scale at which the blanket is visualized.
+
 
 # Parameters for blob detection
 RTHRESH1 = 0.02
