@@ -13,9 +13,8 @@ from .parameters import TIMES, GROUND_TRUTH, DATA, PPXF, REGFACTORS, REAL1_NAME,
 def compute_m54(mode: str, out: Path):
     real1 = out / REAL1_NAME
     real2 = out / REAL2_NAME
-    #for out, regparam in zip([real1, real2], REGFACTORS):
-    #    _compute_real_data(mode=mode, out=out, regparam=regparam)
-    _compute_real_data(mode=mode, out=real2, regparam=REGFACTORS[1])
+    for out, regparam in zip([real1, real2], REGFACTORS):
+        _compute_real_data(mode=mode, out=out, regparam=regparam)
 
 
 def _compute_real_data(mode: str, out: Path, regparam: float):
@@ -40,9 +39,9 @@ def _compute_real_data(mode: str, out: Path, regparam: float):
     m54_samples_to_fcis(out=out, sampling="svdmcmc")
     print(f"---------- SVD-MCMC TOOK {time_svdmcmc} seconds.")
     # Then, compute with full HMC.
-    #time_hmc = m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="hmc", regparam=regparam)
-    #print(f"---------- FULL HMC TOOK {time_hmc} seconds.")
-    #m54_samples_to_fcis(out=out, sampling="hmc")
-    #times = np.array([time_svdmcmc, time_hmc]).reshape(1, 2)
-    #times_frame = pandas.DataFrame(data=times, columns=["SVDMCMC", "HMC"])
-    #times_frame.to_csv(out / TIMES)
+    time_hmc = m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="hmc", regparam=regparam)
+    print(f"---------- FULL HMC TOOK {time_hmc} seconds.")
+    m54_samples_to_fcis(out=out, sampling="hmc")
+    times = np.array([time_svdmcmc, time_hmc]).reshape(1, 2)
+    times_frame = pandas.DataFrame(data=times, columns=["SVDMCMC", "HMC"])
+    times_frame.to_csv(out / TIMES)

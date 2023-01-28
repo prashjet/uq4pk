@@ -46,9 +46,6 @@ def _m54_real_data_plot(src, out, dir: str, with_comparison: bool):
     ppxf = np.load(str(real / PPXF))[:, too_young:]
     # Get MAP
     f_map = np.load(str(real / MAP_FILE))
-    # Get posterior means.
-    f_mean_svdmcmc = np.load(str(real / MEAN_SVDMCMC))
-    f_mean_hmc = np.load(str(real / MEAN_HMC))
     # Get vmax
     vmax = f_map.max()
     # Need correct SSPS grid.
@@ -71,7 +68,7 @@ def _m54_real_data_plot(src, out, dir: str, with_comparison: bool):
     if with_comparison:
         fig, ax = plt.subplots(2, 2, figsize=(CW2, 0.5 * CW2))
         plot_distribution_function(ax[0, 0], image=ground_truth, ssps=ssps, xlabel=False, ylabel=True)
-        ax[0, 0].set_title("Ground truth")
+        ax[0, 0].set_title("Resolved star counts")
         plot_distribution_function(ax[0, 1], image=ppxf, ssps=ssps, xlabel=False, ylabel=False)
         ax[0, 1].set_title("pPXF fit")
         i = 1
@@ -176,49 +173,53 @@ def _m54_predictive_plot(src, out, dir: str):
 
 def _posterior_predictive_plot(ax1, ax2, y: np.ndarray, y_est: np.ndarray, mask: np.ndarray, ci: np.ndarray):
     """
-    Makes a posterior predictive plot.
+    Auxiliary function for making the posterior predictive plot.
 
-    :param ax1: Axis where the data fit is plotted.
-    :param ax2: Axis where the residual is plotted.
-    :param y: (m, )-array. The real data.
-    :param y_est: (m, )-array. The predicted data.
-    :param mask: (m, )-array. Boolean mask that is False at values that weren't used in the estimation.
-    :param ci: (2, m)-array. Upper and lower bounds of the simultaneous posterior predictive credible intervals.
+    Parameters
+    ----------
+    ax1
+        Axis where the data fit is plotted.
+    ax2
+        Axis where the residual is plotted.
+    y
+        The measured spectrum.
+    y_est
+        The predicted spectrum.
+    mask
+        Boolean mask that is False at values that weren't used in the inference.
+    ci : shape (2, m)
+        Upper and lower bounds of the simultaneous posterior predictive credible intervals.
     """
     lw = 0.2    # linewidth for everything
     # Get wavelengths.
     m54_data = uq4pk_src.data.M54()
     m54_data.logarithmically_resample(dv=50.)
-    y_sd = m54_data.noise_level
     lmd = np.exp(m54_data.w)
-    # Compare y to y_med, with mask grayed out.
+
+    # Compare _y to y_med, with mask grayed out.
     ax1.plot(lmd, y, color="black", label="data", linewidth=lw)
     ax1.plot(lmd, y_est, color="red", label="fit", linewidth=lw)
-    masked_indices = np.where(mask == False)[0]
-    for i in masked_indices:
-        j = lmd[0] + i
-        ax1.axvspan(j - 0.5, j + 0.5, facecolor="gray", alpha=0.2)
+    _gray_out_mask(ax=ax1, lmd=lmd, mask=mask)
     # Plot residual in %, with mask grayed out.
-    assert np.all(y > 0.), "Cannot plot relative residual when 'y' is non-positive."
-    res = (y - y_est) / y
+    assert np.all(y > 0.), "Cannot plot relative residual when '_y' is non-positive."
+    # Residuals, ub_res and lb_res are each multiplied by 100 to get percentage values
+    res = (y - y_est) / y * 100
     ub, lb = ci
-    ub_res = (y - ub) / y
-    lb_res = (y - lb) / y
+    ub_res = (y - ub) / y * 100
+    lb_res = (y - lb) / y * 100
     ax2.plot(lmd, res, color="black", linewidth=0.2, label="residual")
     ax2.fill_between(lmd, lb_res, ub_res, alpha=.3, color="blue")
     # Also plot horizontal line.
     ax2.axhline(0., linestyle="--", color="black")
     # Here, gray out masked values aswell.
-    for i in masked_indices:
-        j = lmd[0] + i
-        ax2.axvspan(j - 0.5, j + 0.5, facecolor="gray", alpha=0.2)
-    # Configure scale of y-axis (hand-tuned).
+    _gray_out_mask(ax=ax2, lmd=lmd, mask=mask)
+    # Configure scale of _y-axis (hand-tuned).
     res_abs_max = np.max(np.abs(res))
     vmaxabs = 1.5 * res_abs_max
     vmax = vmaxabs
     vmin = -vmaxabs
     ax2.set_ylim(vmin, vmax)
-    ax2.set_xlabel("Wavelength [nm]")
+    ax2.set_xlabel(r"Wavelength [$\textrm{\AA}$]")
 
 
 def _get_blobs(src, mean_svdmcmc, mean_hmc):
@@ -248,3 +249,18 @@ def _get_blobs(src, mean_svdmcmc, mean_hmc):
                                                          overlap2=OVERLAP2)
 
     return significant_blobs_svdmcmc, significant_blobs_hmc
+
+
+def _gray_out_mask(ax, lmd, mask):
+    """
+    Grays out the masked values in the given plot.
+    """
+    masked_indices = np.where(mask == False)[0]
+    for i in masked_indices:
+        gray_start = lmd[i]
+        if i == lmd.size - 1:
+            gray_end = lmd[i]
+        else:
+            gray_end = lmd[i + 1]
+        ax.axvspan(gray_start, gray_end, facecolor="gray", alpha=0.2)
+
