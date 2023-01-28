@@ -19,9 +19,6 @@ from ..util import add_colorbar_to_axis, add_colorbar_to_plot
 
 plt.style.use("src/uq4pk.mplstyle")
 
-use_map_as_reference = True        # If True, uses map as reference. Else, uses posterior mean.
-
-
 # Define plot names.
 m54_blobs_name = "_blobs.png"
 m54_age_marginals_name = "_age.png"
@@ -53,10 +50,7 @@ def _m54_real_data_plot(src, out, dir: str, with_comparison: bool):
     f_mean_svdmcmc = np.load(str(real / MEAN_SVDMCMC))
     f_mean_hmc = np.load(str(real / MEAN_HMC))
     # Get vmax
-    if use_map_as_reference:
-        vmax = f_map.max()
-    else:
-        vmax = max(f_mean_hmc.max(), f_mean_svdmcmc.max())
+    vmax = f_map.max()
     # Need correct SSPS grid.
     ssps = uq4pk_src.model_grids.MilesSSP(
         miles_mod_directory='EMILES_BASTI_BASE_BI_FITS',
@@ -68,12 +62,8 @@ def _m54_real_data_plot(src, out, dir: str, with_comparison: bool):
     # Adjust x-ticks.
     ssps.set_tick_positions([0.1, 1, 5, 13])
 
-    if use_map_as_reference:
-        ref_svdmcmc = f_map
-        ref_hmc = f_map
-    else:
-        ref_svdmcmc = f_mean_svdmcmc
-        ref_hmc = f_mean_hmc
+    ref_svdmcmc = f_map
+    ref_hmc = f_map
     significant_blobs_svdmcmc, significant_blobs_hmc = \
         _get_blobs(src=real, mean_svdmcmc=ref_svdmcmc, mean_hmc=ref_hmc)
 
@@ -113,13 +103,8 @@ def _m54_age_marginals_plot(src, out, dir: str):
     age_marginal_svdmcmc = np.load(str(real / MARGINAL_SVDMCMC))
     age_marginal_hmc = np.load(str(real / MARGINAL_HMC))
 
-    if use_map_as_reference:
-        age_map = np.sum(f_map, axis=0)
-        estimates = [age_map, age_map]
-        estimate_names = ["MAP estimate", "MAP estimate"]
-    else:
-        estimates = [age_svdmcmc, age_hmc]
-        estimate_names = ["Posterior mean", "Posterior mean"]
+    estimates = [age_svdmcmc, age_hmc]
+    estimate_names = ["Posterior mean", "Posterior mean"]
     marginals = [age_marginal_svdmcmc, age_marginal_hmc]
     uppers = [marginal[0].max() for marginal in marginals]
     vmax = max(uppers)

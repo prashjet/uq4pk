@@ -116,10 +116,6 @@ def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, regparam: float) -> M54Model:
     model.beta1 = regparam
     fitted_model = model.fit()
 
-    fig, ax = plt.subplots(1, 1)
-    plot_distribution_function(ax=ax, image=fitted_model.f_map, ssps=forward_operator.ssps)
-    plt.show()
-
     m54_model = M54Model(fitted_model=fitted_model, forward_operator=forward_operator,
                          y_sd=y_sd, theta_v=theta_v, mask=mask)
 

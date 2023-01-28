@@ -6,6 +6,8 @@ Uncertainty Quantification for stellar Population-Kinematic galaxy decomposition
 
 - Fabian Parzer (Uni. Vienna, maths dept.)
 - Prashin Jethwa (Uni. Vienna, astronomy dept.)
+- Alina Boecker (Max-Planck Institut für Astronomie)
+- Mayte Alfaro-Cuello (Uni. Central de Chile, Facultad de Ingeniería y Arquitectura)
 - Otmar Scherzer (Uni. Vienna, maths dept.)
 - Glenn Van de Ven (Uni. Vienna, astronomy dept.)
 
@@ -13,11 +15,7 @@ Uncertainty Quantification for stellar Population-Kinematic galaxy decomposition
 
 The repository contains the following:
 
-- `data/` - contains stellar populatiotion templates
-- `experiments/` - numerical experiments
-- `notebooks/` - Jupyter notebooks with code demonstartions
+- `data/` - contains stellar population templates
+- `make_plots/` - source code for reproducing the plots in the paper
 - `uq4pk_src/` - source code for the forward model
 - `uq4pk_fit/` - source code for computational inference
-- `reports/` - PDF reports documentating project development
-
-The latest report is [here](https://github.com/prashjet/uq4pk/blob/master/reports/uq_astro_report_june.pdf).

@@ -11,6 +11,8 @@ from . observation_operator import ObservationOperator
 from . samples import Samples
 from . plotting import Plotter
 
+NUM_CPU = 10
+
 class SVD_MCMC:
 
     def __init__(self,
@@ -88,7 +90,8 @@ class SVD_MCMC:
         kernel = NUTS(model)
         mcmc_sampler = MCMC(kernel,
                             num_warmup=num_warmup,
-                            num_samples=num_samples)
+                            num_samples=int(num_samples/NUM_CPU),
+                            num_chains=NUM_CPU)
         return mcmc_sampler
 
     def get_eta_alpha_model(self,
