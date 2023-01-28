@@ -17,17 +17,17 @@ print(f"Available devices: {jax.local_device_count()}")
 
 
 OUT = Path("out")
-mode = "base"   # "final" for final computations.
+mode = "final"   # "final" for final computations.
 
 
 print("---------- COMPUTING: BLOB DETECTION ----------")
-#compute_blob_detection(mode=mode, out=OUT)
+compute_blob_detection(mode=mode, out=OUT)
 
 print("---------- COMPUTING: FCI ----------")
-#compute_fci(mode=mode, out=OUT)
+compute_fci(mode=mode, out=OUT)
 
 print("---------- COMPUTING: SVD-MCMC ----------")
-#compute_svd_mcmc(mode=mode, out=OUT)
+compute_svd_mcmc(mode=mode, out=OUT)
 
 print("---------- COMPUTING: M54----------")
 compute_m54(mode=mode, out=OUT)
