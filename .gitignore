@@ -9,3 +9,4 @@ manuscript
 *__pycache__*
 .idea
 *samples*.npy
+make_plots/run.sh

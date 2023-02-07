@@ -1,17 +1,35 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+
+
+NUM_CPU = 1         # Number of CPUs used for computations.
+# Enforce parallel usage of CPU.
+os.environ["XLA_FLAGS"] = f"--xla_force_host_platform_device_count={NUM_CPU}"
+
+# Numpyro and jax have to be imported AFTER xla flag is set.
+import numpyro
+import jax
+
+# Get number of available CPUs.
+numpyro.set_platform("cpu")
+NUM_CHAINS = jax.local_device_count()
+print(f"Using {NUM_CHAINS} CPUs for parallel sampling.")
+from jax.lib import xla_bridge
+print(f"JAX device: {xla_bridge.default_backend()}")
+
 
 import jax.numpy as jnp
 from jax import random
 import numpyro
 import numpyro.distributions as dist
+numpyro.set_platform("cpu")
 from numpyro.infer import MCMC, NUTS
 
 from . observation_operator import ObservationOperator
 from . samples import Samples
 from . plotting import Plotter
 
-NUM_CPU = 10
 
 class SVD_MCMC:
 
@@ -88,10 +106,13 @@ class SVD_MCMC:
                          num_samples=500):
         rng_key = random.PRNGKey(prngkey)
         kernel = NUTS(model)
+        samples_per_chain = np.ceil(num_samples / NUM_CHAINS).astype(int)
+        print(f"Initializing {NUM_CHAINS} parallel chains with {num_warmup} warmup samples and "
+              f"{samples_per_chain} samples per chain.")
         mcmc_sampler = MCMC(kernel,
                             num_warmup=num_warmup,
-                            num_samples=int(num_samples/NUM_CPU),
-                            num_chains=NUM_CPU)
+                            num_samples=samples_per_chain,
+                            num_chains=NUM_CHAINS)
         return mcmc_sampler
 
     def get_eta_alpha_model(self,
