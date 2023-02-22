@@ -2,8 +2,8 @@
 import numpy as np
 from pathlib import Path
 
-from uq4pk_fit.inference import fcis_from_samples2d, marginal_ci_from_samples
-from uq4pk_fit.uq_mode import credible_intervals
+from uq4pk_fit.filtered_credible_intervals import fcis_from_samples2d, marginal_ci_from_samples, \
+    predictive_cis_from_samples
 from .parameters import LOWER_STACK_SVDMCMC, LOWER_STACK_HMC, UPPER_STACK_SVDMCMC, UPPER_STACK_HMC, \
     SAMPLES_SVDMCMC, SAMPLES_HMC, SIGMA_LIST, MARGINAL_SVDMCMC, YSAMPLES_SVDMCMC, \
     PREDICTIVE_SVDMCMC, MARGINAL_HMC, YSAMPLES_HMC, PREDICTIVE_HMC, AGE_SVDMCMC, AGE_HMC
@@ -43,7 +43,7 @@ def m54_samples_to_fcis(out: Path, sampling: str):
     age_marginal = np.row_stack([age_ub, age_lb])
     # Also compute posterior predictive intervals.
     y_samples = np.load(str(out / ysamples_file))
-    lb_y, ub_y = credible_intervals(samples=y_samples, alpha=0.05)
+    lb_y, ub_y = predictive_cis_from_samples(samples=y_samples, alpha=0.05)
     ci_y = np.row_stack([ub_y, lb_y])
 
     # Store FCIs and marginal CIs.

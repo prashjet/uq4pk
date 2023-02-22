@@ -1,5 +1,4 @@
 
-from .blankets import first_order_blanket
-from .significant_blobs import detect_significant_blobs
-from uq4pk_fit.blob_detection.detect_blobs.detect_blobs import detect_blobs
-from .minimize_blobiness import minimize_blobiness
+from .blankets import compute_blanket
+from .ulog import ulog
+from uq4pk_fit.blob_detection.laplacian_of_gaussians.laplacian_of_gaussians import laplacian_of_gaussians

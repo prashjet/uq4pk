@@ -16,7 +16,9 @@ plot_name = "SVD.png"
 
 
 def plot_svd_mcmc(src: Path, out: Path):
-
+    """
+    Creates figure A.1 in the paper (influence of latent dimension on SVD-MCMC).
+    """
     fig = plt.figure(figsize=(CW, CW))
     ax_top = plt.subplot2grid(shape=(2, 2), loc=(0, 0), colspan=2)
     ax_left = plt.subplot2grid(shape=(2, 2), loc=(1, 0))
@@ -46,22 +48,27 @@ def plot_svd_mcmc(src: Path, out: Path):
         q_list = range(times.size)
 
     # First plot is error, measured in mean Jaccard distance.
-    # Add MC error as horizontal bar.
-    #ax_left.axhline(y=mc_error, color="r", linestyle="--")
-    ax_left.plot(q_list, errors)
+    ax_left.semilogx(q_list, errors)
     ax_left.set_xlabel("q")
     ax_left.set_ylabel("Mean Jaccard distance")
     ymax = 1.1 * errors.max()
     ymax = max(ymax, mc_error)
+    # Mark the q15-line.
     ax_left.axvline(15, ls=':', color='k')
+    ax_left.text(18, 0.75, 'q=15', rotation=0, transform=ax_left.get_xaxis_text1_transform(0)[0], size="small")
     ax_left.set_ylim(0, ymax)
 
     # Second plot is times.
-    ax_right.plot(q_list, times)
+    ax_right.semilogx(q_list[:-1], times[:-1])
     ax_right.set_xlabel("q")
     ax_right.set_ylabel("Computation time [s]")
+    # Enforce scientific notation on y-axis.
+    ax_right.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+    # Horizontal line for computation time of full MCMC.
+    ax_right.axhline(times[-1], ls="--", color="b", lw=1)
     ymax = 1.1 * times.max()
     ax_right.axvline(15, ls=':', color='k')
+    ax_right.text(18, 0.75, 'q=15', rotation=0, transform=ax_right.get_xaxis_text1_transform(0)[0], size="small")
     ax_right.set_ylim(0, ymax)
 
     # Save figure.

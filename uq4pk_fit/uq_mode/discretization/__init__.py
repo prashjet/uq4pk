@@ -1,6 +1,0 @@
-from .discretization import Discretization, AdaptiveDiscretization, AdaptiveDiscretizationFromList
-from .image_discretization import ImageDiscretization, AdaptiveImageDiscretization
-from .localization_window import LocalizationWindows, Window
-from .two_level_discretization import TwoLevelDiscretization, AdaptiveTwoLevelDiscretization
-from .trivial_discretization import TrivialDiscretization, TrivialAdaptiveDiscretization
-from .combine_discretizations import CombinedDiscretization

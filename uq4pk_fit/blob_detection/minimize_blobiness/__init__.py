@@ -1,2 +1,0 @@
-
-from .minimize_blobiness import minimize_blobiness

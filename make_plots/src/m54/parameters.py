@@ -1,17 +1,13 @@
-"""
-file: m54/parameters.py
-"""
-
 
 import numpy as np
 from pathlib import Path
 
-REGFACTORS = [1000., 100000.]
+REGFACTORS = [1000., 500000.]
 
 RATIO = 0.5
 SIGMA_MIN = 1.
 NUM_SIGMA = 10
-STEPSIZE = 1.5  # -> 1.
+STEPSIZE = 1.5
 RTHRESH1 = 0.02
 RTHRESH2 = 0.02
 OVERLAP1 = 0.5

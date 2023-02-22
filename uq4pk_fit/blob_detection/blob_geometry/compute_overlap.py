@@ -17,9 +17,17 @@ def compute_overlap(blob1: GaussianBlob, blob2: GaussianBlob) -> float:
 
     The implementation uses shapely (https://pypi.org/project/Shapely/).
 
-    :param blob1:
-    :param blob2:
-    :return: The relative overlap, a number between 0 and 1.
+    Parameters
+    ----------
+    blob1:
+        The first blob.
+    blob2:
+        The second blob.
+
+    Returns
+    -------
+    relative_overlap :
+        The relative overlap, a number between 0 and 1.
     """
     # Create shapely.ellipse objects
     ell1 = _create_ellipse(blob1)
@@ -43,11 +51,7 @@ def compute_overlap(blob1: GaussianBlob, blob2: GaussianBlob) -> float:
 def _create_ellipse(blob: GaussianBlob):
     """
     Creates a shapely-ellipse object from a Gaussian blob.
-
-    :param blob:
-    :return: A shapely ellipse.
     """
     circ = geom.Point(blob.position).buffer(1)
     ellipse = aff.scale(circ, 0.5 * blob.height, 0.5 * blob.width)
-    rotated_ellipse = aff.rotate(ellipse, angle=blob.angle)
-    return rotated_ellipse
+    return ellipse

@@ -9,10 +9,6 @@ def bessel_kernel(t: float, n: int) -> np.ndarray:
     Returns the one-dimensional normalized Bessel kernel for discrete analog of Gaussian:
 
     T(i, t) = exp(-t) * sum_{k=0}^infty 1 / (k!(m+k)!) * (t/2)^(2m + k).
-
-    :param t: The scale parameter.
-    :param n: The truncation parameter.
-    :returns: (2*n + 1, )-array. The (truncated) Bessel kernel.
     """
     assert t > 0.
     assert isinstance(n, (int, np.integer))
@@ -25,4 +21,3 @@ def bessel_kernel(t: float, n: int) -> np.ndarray:
 
     assert i_t_vec.shape == (2 * n + 1, )
     return i_t_vec
-

@@ -2,21 +2,39 @@
 from matplotlib import pyplot as plt
 from matplotlib.axes import Axes
 import numpy as np
+
+from uq4pk_src.model_grids import MilesSSP
 from .params import power_norm, CMAP
 
 
-def plot_distribution_function(ax: Axes, image, ssps = None, vmax=None, flip=True, xlabel=True, ylabel=False,
-                               xticklabels=True, yticklabels=True):
+def plot_distribution_function(ax: Axes, image: np.ndarray, ssps: MilesSSP = None, vmax: float = None,
+                               flip: bool = True, xlabel: bool = True, ylabel: bool = False, xticklabels: bool = True,
+                               yticklabels: bool = True):
     """
     Plots the age-metallicity distribution function with a colorbar on the side that
     shows which color belongs to which value.
-    :param ax: A matplotlib.axes.Axes object.
-    :param image: The age-metallicity distribution as 2-dimensional numpy array.
-    :param ssps: The SSPS grid.
-    :param vmax: The maximum intensity.
-    :param flip: If True, the plotted image is upside down. This is True by default, since it is more correct from a
+
+    Parameters
+    ----------
+    ax
+        A matplotlib.axes.Axes object.
+    image
+        The age-metallicity distribution as 2-dimensional numpy array.
+    ssps
+        The SSPS grid.
+    vmax
+        The maximum intensity that should be plotted.
+    flip
+        If True, the plotted image is upside down. This is True by default, since it is more correct from a
         physical point of view.
-    :param xlabel: If True, adds label to x-axis.
+    xlabel
+        Determines whether x-axis is labeled or not.
+    ylabel
+        Determines whether y-axis is labeled or not.
+    xticklabels
+        Determines whether the ticks on the x-axis are labeled.
+    yticklabels
+        Determines whether the ticks on the y-axis are labeled.
     """
     if flip:
         f_im = np.flipud(image)

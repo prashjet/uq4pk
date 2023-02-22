@@ -5,17 +5,14 @@ import ray
 from time import time
 
 from uq4pk_src import model_grids,svd_mcmc
-from uq4pk_fit.special_operators import OrnsteinUhlenbeck
+from uq4pk_fit.operators import OrnsteinUhlenbeck
 from ..mock import load_experiment_data
 from .parameters import NUM_SAMPLES, NUM_BURNIN, DATA, LMD_MIN, LMD_MAX, DV, REGPARAM
 
 
 def get_mcmc_samples(mode: str, sampling: str, q: int = None):
     """
-    Creates samples using either SVD-MCMC or HMC.
-
-    :returns: samples, t. samples is an array of shape (n, d), where n is the number of samples and d is the dimension.
-        t is the runtime for the sampling.
+    Creates samples using either SVD-MCMC or HMC, depending on the parameter `sampling`.
     """
     if sampling == "svdmcmc":
         test_burnin = 50
@@ -60,7 +57,7 @@ def get_mcmc_samples(mode: str, sampling: str, q: int = None):
 
     # ------------------------------------------------------- SETUP MCMC SAMPLER
 
-    svd_mcmc_sampler = svd_mcmc.SVD_MCMC(ssps=ssps, Theta_v_true=theta_true, y=y, ybar=y_bar, sigma_y=sigma_y, dv=DV)
+    svd_mcmc_sampler = svd_mcmc.SVD_MCMC(ssps=ssps, theta_v_true=theta_true, y=y, ybar=y_bar, sigma_y=sigma_y, dv=DV)
 
     # ---------------------------------------------------------- RUN THE SAMPLER
 
@@ -71,9 +68,9 @@ def get_mcmc_samples(mode: str, sampling: str, q: int = None):
 
     if sampling == "svdmcmc":
         svd_mcmc_sampler.set_q(q)
-        beta_tilde_model = svd_mcmc_sampler.get_beta_tilde_dr_single_model(Sigma_beta_tilde=sigma_beta)
+        beta_tilde_model = svd_mcmc_sampler.get_svd_reduced_model(Sigma_f=sigma_beta)
     elif sampling == "hmc":
-        beta_tilde_model = svd_mcmc_sampler.get_beta_tilde_direct_model(Sigma_beta_tilde=sigma_beta)
+        beta_tilde_model = svd_mcmc_sampler.get_full_model(Sigma_f=sigma_beta)
     else:
         raise NotImplementedError("Unknown sampling.")
 

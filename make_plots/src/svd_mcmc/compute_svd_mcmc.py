@@ -3,22 +3,22 @@ import numpy as np
 from pathlib import Path
 import ray
 
-from uq4pk_fit.inference.fcis_from_samples2d import fcis_from_samples2d
-from uq4pk_fit.inference import mean_jaccard_distance
+from uq4pk_fit.filtered_credible_intervals.fcis_from_samples2d import fcis_from_samples2d
+from uq4pk_fit.util import mean_jaccard_distance
 from .get_mcmc_samples import get_mcmc_samples, get_mcmc_samples_remote
 from .parameters import QLIST, HMCSAMPLES, HMCCONTROL, SVDSAMPLES, TIMES, ERRORS
 
 
 PARALLEL = True     # Toggles parallelization.
-NUM_CPUS = 7        # Number of CPUs used for parallel computation.
+NUM_CPUS = 6        # Number of CPUs used for parallel computation.
 
 
 def compute_svd_mcmc(mode: str, out: Path):
     """
-    Performs the varying q test. For different values of q, computes the Kullback-Leibler divergence between the
-    SVD-MCMC samples and the samples from full HMC.
+    Performs the varying-q test (see figure A.1). For different values of q, computes the Jaccard distance of an FCI
+    computed with SVD-MCMC and one computed with full HMC.
     """
-    #_compute_samples(mode, out)
+    _compute_samples(mode, out)
     _compute_error(mode, out)
 
 
@@ -93,6 +93,9 @@ def _compute_samples_sequential(mode: str, out: Path, q_list):
 
 
 def _compute_error(mode: str, out: Path):
+    """
+    Evaluates sampling error (in dependence on q) using the pre-computed MCMC samples.
+    """
     sigma_list = [5 * np.array([0.5, 1.])]
     # Load samples.
     svd_sample_array = np.load(str(out / SVDSAMPLES))
@@ -116,19 +119,3 @@ def _compute_error(mode: str, out: Path):
     error_list.append(mc_error)
     # Store errors.
     np.save(str(out / ERRORS), np.array(error_list))
-
-
-def jaccard_error(fci1, fci2):
-    return mean_jaccard_distance(fci1, fci2)
-
-
-def relative_l2_error(fci1, fci2):
-    fci1_low = fci1[:, 0]
-    fci1_upp = fci1[:, 1]
-    fci2_low = fci2[:, 0]
-    fci2_upp = fci2[:, 1]
-    error_low = np.linalg.norm(fci1_low - fci2_low) / np.linalg.norm(fci2_low)
-    error_upp = np.linalg.norm(fci1_upp - fci2_upp) / np.linalg.norm(fci2_upp)
-    return error_low + error_upp
-
-

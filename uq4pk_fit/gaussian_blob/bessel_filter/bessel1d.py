@@ -13,13 +13,8 @@ def bessel1d(image: np.ndarray, axis: int = 0, sigma: float = 1., truncate: floa
              cval: float = 0.):
     """
     Implements one-dimensional Bessel filter.
-
-    :param image: (m, n) array. The input image to the filter.
-    :param axis: Axis along which to perform the convolution.
-    :param sigma: Standard deviation of the kernel.
-    :param mode: How to handle values outside the image borders.
-    :param truncate: Truncate the kernel at this many standard deviations.
-    :returns: (m, n) array. The filtered image.
+    Note that the filter computations are only stable for sigma < ~25.
+    To stabilize the Bessel filter, we use the Gaussian filter for all sigma > 15.
     """
     # Translate sigma to scale.
     t = sigma * sigma

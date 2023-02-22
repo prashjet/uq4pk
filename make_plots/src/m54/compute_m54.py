@@ -11,6 +11,9 @@ from .parameters import TIMES, GROUND_TRUTH, DATA, PPXF, REGFACTORS, REAL1_NAME,
 
 
 def compute_m54(mode: str, out: Path):
+    """
+    Makes computations for the M54 section and stores results in .npy-files.
+    """
     real1 = out / REAL1_NAME
     real2 = out / REAL2_NAME
     for out, regparam in zip([real1, real2], REGFACTORS):
@@ -18,6 +21,9 @@ def compute_m54(mode: str, out: Path):
 
 
 def _compute_real_data(mode: str, out: Path, regparam: float):
+    """
+    Computes MCMC samples and FCIs for M54-data and given regularization parameter. Results are stored in .npy-files.
+    """
     # Get real data and store.
     m54_data = uq4pk_src.data.M54()
     m54_data.logarithmically_resample(dv=50.)
@@ -32,7 +38,7 @@ def _compute_real_data(mode: str, out: Path, regparam: float):
     np.save(str(out / PPXF), ppxf)
     # First, compute and store the MAP.
     m54_model = m54_fit_model(y_real, y_sd_real, regparam=regparam)
-    f_map = m54_model.fitted_model.f_map
+    f_map = m54_model.stat_model.compute_map()
     np.save(str(out / MAP_FILE), f_map)
     # First, compute FCIs via SVD-MCMC.
     time_svdmcmc = m54_mcmc_sample(mode=mode, out=out, y=y_real, y_sd=y_sd_real, sampling="svdmcmc", regparam=regparam)

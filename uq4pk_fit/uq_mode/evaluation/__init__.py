@@ -1,3 +1,0 @@
-
-from .affine_evaluation_functional import AffineEvaluationFunctional
-from .affine_evaluation_map import AffineEvaluationMap

@@ -1,2 +1,2 @@
 
-from .first_order_blanket import first_order_blanket
+from .compute_blanket import compute_blanket

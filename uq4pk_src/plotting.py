@@ -6,6 +6,7 @@ from matplotlib.collections import LineCollection
 import matplotlib.gridspec as gridspec
 
 from . samples import Samples
+
 class Plotter:
 
     def __init__(self,

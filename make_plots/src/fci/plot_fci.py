@@ -21,10 +21,13 @@ ssps.logarithmically_resample(dv=DV)
 
 
 def plot_fci(src: Path, out: Path):
+    """
+    Creates figure 4 in the paper (plot of FCIs at different scales).
+    """
 
     # -- Load data.
-    f_map = np.load(str(src / MAPFILE) + ".npy")
-    f_true = np.load(str(src / GROUND_TRUTH) + ".npy")
+    f_map = np.load(str(src / MAPFILE))
+    f_true = np.load(str(src / GROUND_TRUTH)).reshape(12, 53)
     pci_low = np.load(str(src / PCILOW) + ".npy")
     pci_upp = np.load(str(src / PCIUPP) + ".npy")
     # Load FCIs and filtered MAPs.

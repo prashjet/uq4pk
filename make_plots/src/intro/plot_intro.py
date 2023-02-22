@@ -14,7 +14,9 @@ plot_name = "ssp_templates.png"
 
 
 def plot_intro(src: Path, out: Path):
-
+    """
+    Creates figure 1 of the paper (examples of SSP templates).
+    """
     ssps = model_grids.MilesSSP(lmd_min=5000, lmd_max=5500)
 
     fig = plt.figure(figsize=(CW2, 0.4 * CW2))

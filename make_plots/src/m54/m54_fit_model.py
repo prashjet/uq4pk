@@ -3,20 +3,22 @@ from dataclasses import dataclass
 import numpy as np
 from ppxf import ppxf
 
-from matplotlib import pyplot as plt
 import uq4pk_src
-from uq4pk_fit.inference import StatModel, FittedModel, LightWeightedForwardOperator
-from uq4pk_fit.special_operators import OrnsteinUhlenbeck
-from uq4pk_fit.visualization import plot_distribution_function
+from uq4pk_fit.statistical_modeling import StatModel, LightWeightedForwardOperator
+from uq4pk_fit.operators import OrnsteinUhlenbeck
 
 
 @dataclass
 class M54Model:
-    fitted_model: FittedModel
-    forward_operator: LightWeightedForwardOperator
-    y_sd: np.ndarray
-    theta_v: np.ndarray
-    mask: np.ndarray
+    """
+    Container class for M54-model.
+    """
+    stat_model: StatModel                           # The statistical model
+    forward_operator: LightWeightedForwardOperator  # The light-weighted forward operator.
+    y_sd: np.ndarray                                # The vector of noise standard deviations.
+    theta_v: np.ndarray                             # The parameters for the Gauss-hermite expansion,
+                                                    # determined using ppxf.
+    mask: np.ndarray                                # The data mask.
 
 
 def m54_setup_operator():
@@ -92,11 +94,24 @@ def m54_setup_operator():
 
 def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, regparam: float) -> M54Model:
     """
+    Creates an `M54Model` instance from the given data.
 
-    :param y: UNMASKED data.
-    :param y_sd: UNMASKED data noise levels.
-    :param theta_v: Assumed value of theta_v.
-    :return:
+    Parameters
+    ---------
+
+    Returns
+    ------
+    y
+        The UNMASKED data.
+    y_sd
+        The UNMASKED data noise levels.
+    regparam
+        Value of the regularization parameter `beta`.
+
+    Returns
+    -------
+    m54_model : M54Model
+        Container class for M54-modelling. See the documentation of `M54Model`.
     """
     # Get forward operator.
     forward_operator = m54_setup_operator()
@@ -111,12 +126,10 @@ def m54_fit_model(y: np.ndarray, y_sd: np.ndarray, regparam: float) -> M54Model:
     theta_v = forward_operator.theta_v
     # Fit the model
     model = StatModel(y=y_masked, y_sd=y_sd_masked, forward_operator=forward_operator)
-    model.P1 = OrnsteinUhlenbeck(m=model.m_f, n=model.n_f, h=np.array([2., 1.]))
-    model.fix_theta_v(indices=np.arange(model.dim_theta), values=theta_v)
-    model.beta1 = regparam
-    fitted_model = model.fit()
+    model.P = OrnsteinUhlenbeck(m=model.m_f, n=model.n_f, h=np.array([2., 1.]))
+    model.beta = regparam
 
-    m54_model = M54Model(fitted_model=fitted_model, forward_operator=forward_operator,
+    m54_model = M54Model(stat_model=model, forward_operator=forward_operator,
                          y_sd=y_sd, theta_v=theta_v, mask=mask)
 
     return m54_model

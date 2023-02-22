@@ -17,8 +17,8 @@ SIGMA_LIST = [np.array([ratio * sigma2, sigma2]) for sigma2 in sigma2_list]
 
 # FILE LOCATIONS
 DATAFILE = Path("src/mock_data/snr100")
-MAPFILE = Path("pci_map")
-GROUND_TRUTH = Path("pci_ground_truth")
+MAPFILE = Path("pci_map.npy")
+GROUND_TRUTH = Path("pci_ground_truth.npy")
 PCILOW = Path("pci_low")
 PCIUPP = Path("pci_upp")
 
@@ -28,7 +28,7 @@ FCIUPP = [Path(f"fci_upp_{int(t)}") for t in SCALES]
 FILTERED_MAP = [Path(f"fci_map_{int(t)}") for t in SCALES]
 FILTERED_TRUTH = [Path(f"fci_ground_truth_{int(t)}") for t in SCALES]
 SAMPLES = Path("samples.npy")
-NUM_BURNIN = 10000
+NUM_BURNIN = 5000
 NUM_SAMPLES = 10000
 Q = 15
 RATIO = 0.5

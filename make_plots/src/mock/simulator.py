@@ -3,7 +3,7 @@ Contains the class "ExperimentData" and the functions "simulate_data" and "forwa
 """
 import numpy as np
 
-from uq4pk_fit.inference import MassWeightedForwardOperator, LightWeightedForwardOperator
+from uq4pk_fit.statistical_modeling import MassWeightedForwardOperator, LightWeightedForwardOperator
 
 from .simulated_experiment_data import SimulatedExperimentData
 
@@ -17,9 +17,6 @@ def simulate(name: str, snr: float, ssps, f_im: np.array, theta_v: np.array, lig
     Simulates a dataset. Generates a measurement from the provided distribution function, while
     theta_v is fixed to [30, 100, 1, 0, 0, -0.05, 0.1]. Then adds artificial noise to generate the simulated
     noisy measurement.
-
-    :return: ExperimentData
-        All the relevant parameters combined in an object of type "ExperimentData".
     """
     hermite_order = theta_v.size - 3
     if light_weighted:

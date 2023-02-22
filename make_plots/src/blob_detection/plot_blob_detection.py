@@ -6,7 +6,7 @@ from pathlib import Path
 
 import uq4pk_src
 from uq4pk_fit.visualization import plot_distribution_function, plot_significant_blobs, plot_blobs
-from uq4pk_fit.blob_detection import detect_blobs, detect_significant_blobs, first_order_blanket
+from uq4pk_fit.blob_detection import laplacian_of_gaussians, ulog, compute_blanket
 from ..plot_params import CW
 from .parameters import SIGMA_LIST, MAP, LOWER_STACK, UPPER_STACK, RTHRESH1, RTHRESH2,\
     OVERLAP1, OVERLAP2, BLANKET_SCALE
@@ -39,11 +39,8 @@ def _log_demo(src: Path, out: Path):
     # Get MAP.
     f_map = np.load(str(src / MAP))
     # Apply deterministic LoG.
-    map_blobs = detect_blobs(image=f_map,
-                             sigma_list=SIGMA_LIST,
-                             rthresh=RTHRESH1,
-                             max_overlap=OVERLAP1,
-                             exclude_max_scale=False)
+    map_blobs = laplacian_of_gaussians(image=f_map, sigma_list=SIGMA_LIST, rthresh=RTHRESH1, max_overlap=OVERLAP1,
+                                       exclude_max_scale=False)
     # Create plot.
     fig = plt.figure(figsize=(CW, 0.8 * CW))
     ax = plt.gca()
@@ -67,7 +64,7 @@ def _blanket(src: Path, out: Path):
     fci_low = lower_stack[BLANKET_SCALE]
     fci_upp = upper_stack[BLANKET_SCALE]
     # Compute blanket.
-    blanket = first_order_blanket(lb=fci_low, ub=fci_upp)
+    blanket = compute_blanket(lb=fci_low, ub=fci_upp)
     # Plot blanket.
     fig = plt.figure(figsize=(CW, 0.8 * CW))
     ax = plt.axes()
@@ -79,7 +76,7 @@ def _blanket(src: Path, out: Path):
 
 def _one_dimensional(src: Path, out: Path):
     """
-    Creates figure 5 for the paper.
+    Creates figure 6 for the paper.
     """
     lower1d, upper1d, map1d, second_order_string = one_dimensional_example()
     # Visualize result.
@@ -106,7 +103,7 @@ def _one_dimensional(src: Path, out: Path):
 
 def _ulog_demo(src: Path, out: Path):
     """
-    Creates figure 6 for the paper.
+    Creates figure 3 for the paper.
     """
     fig = plt.figure(figsize=(CW, 0.8 * CW))
     ax = plt.axes()
@@ -129,15 +126,9 @@ def _plot_blobs_from_stack(ax, src: Path, xlabel=True, ylabel=True):
     upper_stack = np.load(str(src / upper_stack_path))
 
     # Perform uncertainty-aware blob detection.
-    significant_blobs = detect_significant_blobs(sigma_list=SIGMA_LIST,
-                                                 lower_stack=lower_stack,
-                                                 upper_stack=upper_stack,
-                                                 reference=f_map,
-                                                 rthresh1=RTHRESH1,
-                                                 rthresh2=RTHRESH2,
-                                                 overlap1=OVERLAP1,
-                                                 overlap2=OVERLAP2,
-                                                 exclude_max_scale=False)
+    significant_blobs = ulog(sigma_list=SIGMA_LIST, lower_stack=lower_stack, upper_stack=upper_stack, reference=f_map,
+                             rthresh1=RTHRESH1, rthresh2=RTHRESH2, overlap1=OVERLAP1, overlap2=OVERLAP2,
+                             exclude_max_scale=False)
 
     # Create plot.
     im = plot_significant_blobs(ax=ax, image=f_map, blobs=significant_blobs, ssps=ssps, flip=False, xlabel=xlabel,

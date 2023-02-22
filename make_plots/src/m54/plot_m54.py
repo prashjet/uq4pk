@@ -9,7 +9,7 @@ from pathlib import Path
 
 import uq4pk_src
 from uq4pk_fit.visualization import plot_distribution_function, plot_significant_blobs
-from uq4pk_fit.blob_detection import detect_significant_blobs
+from uq4pk_fit.blob_detection import ulog
 from ..plot_params import CW, CW2
 from .parameters import RTHRESH1, RTHRESH2, \
     OVERLAP1, OVERLAP2, SIGMA_LIST, MEAN_SVDMCMC, LOWER_STACK_SVDMCMC, UPPER_STACK_SVDMCMC, MARGINAL_HMC, \
@@ -26,16 +26,18 @@ m54_predictive_name = "_predictive.png"
 
 
 def plot_m54(src: Path, out: Path):
+    """
+    Creates figures 8 to 12 from the paper.
+    """
     for dir, compare in zip([REAL1_NAME, REAL2_NAME], [True, False]):
-        _m54_real_data_plot(src, out, dir=dir, with_comparison=compare)
+        _m54_blob_plot(src, out, dir=dir, with_comparison=compare)
         _m54_age_marginals_plot(src, out, dir=dir)
         _m54_predictive_plot(src, out, dir=dir)
 
 
-def _m54_real_data_plot(src, out, dir: str, with_comparison: bool):
+def _m54_blob_plot(src, out, dir: str, with_comparison: bool):
     """
-    Produces figure 13 in the paper,
-    under the name m54_real_data
+    Produces figures 8/11 in the paper.
     """
     # Get path to results for real data.
     real = src / dir
@@ -90,7 +92,7 @@ def _m54_real_data_plot(src, out, dir: str, with_comparison: bool):
 
 def _m54_age_marginals_plot(src, out, dir: str):
     """
-    Creates figure 14 in the paper.
+    Plot the age marginals (figure 10/12).
     """
     # Get results for real data.
     real = src / dir
@@ -144,7 +146,7 @@ def _m54_age_marginals_plot(src, out, dir: str):
 
 def _m54_predictive_plot(src, out, dir: str):
     """
-    Create figure 16 in paper.
+    Plot the integrated M54 spectrum/residuals (figure 9, the plot for high regularization is not in the paper).
     """
     # Get results for real data.
     real = src / dir
@@ -223,30 +225,23 @@ def _posterior_predictive_plot(ax1, ax2, y: np.ndarray, y_est: np.ndarray, mask:
 
 
 def _get_blobs(src, mean_svdmcmc, mean_hmc):
+    """
+    Applies ULoG using the precomputed FCI-stack.
+    Parameters
+    """
     # Perform ULoG based on MCMC.
     lower_stack_svdmcmc = np.load(str(src / LOWER_STACK_SVDMCMC))
     upper_stack_svdmcmc = np.load(str(src / UPPER_STACK_SVDMCMC))
-    significant_blobs_svdmcmc = detect_significant_blobs(reference=mean_svdmcmc,
-                                                         sigma_list=SIGMA_LIST,
-                                                         lower_stack=lower_stack_svdmcmc,
-                                                         upper_stack=upper_stack_svdmcmc,
-                                                         rthresh1=RTHRESH1,
-                                                         rthresh2=RTHRESH2,
-                                                         overlap1=OVERLAP1,
-                                                         overlap2=OVERLAP2,
-                                                         exclude_max_scale=True)
+    significant_blobs_svdmcmc = ulog(reference=mean_svdmcmc, sigma_list=SIGMA_LIST, lower_stack=lower_stack_svdmcmc,
+                                     upper_stack=upper_stack_svdmcmc, rthresh1=RTHRESH1, rthresh2=RTHRESH2,
+                                     overlap1=OVERLAP1, overlap2=OVERLAP2, exclude_max_scale=True)
 
     # Perform ULoG based on full HMC.
     lower_stack_hmc = np.load(str(src / LOWER_STACK_HMC))
     upper_stack_hmc = np.load(str(src / UPPER_STACK_HMC))
-    significant_blobs_hmc = detect_significant_blobs(reference=mean_hmc,
-                                                         sigma_list=SIGMA_LIST,
-                                                         lower_stack=lower_stack_hmc,
-                                                         upper_stack=upper_stack_hmc,
-                                                         rthresh1=RTHRESH1,
-                                                         rthresh2=RTHRESH2,
-                                                         overlap1=OVERLAP1,
-                                                         overlap2=OVERLAP2)
+    significant_blobs_hmc = ulog(reference=mean_hmc, sigma_list=SIGMA_LIST, lower_stack=lower_stack_hmc,
+                                 upper_stack=upper_stack_hmc, rthresh1=RTHRESH1, rthresh2=RTHRESH2, overlap1=OVERLAP1,
+                                 overlap2=OVERLAP2)
 
     return significant_blobs_svdmcmc, significant_blobs_hmc
 

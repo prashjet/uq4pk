@@ -11,9 +11,6 @@ nticks = 5          # Desired number of ticks in colorbar.
 def add_colorbar_to_axis(fig, ax, im):
     """
     Adds colorbar next to given axis.
-    :param ax:
-    :param im:
-    :return:
     """
     cbar_width = ax.get_position().height / cbar_aspect
     cax = fig.add_axes([ax.get_position().x1 + 0.01, ax.get_position().y0, cbar_width, ax.get_position().height])

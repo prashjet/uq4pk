@@ -6,9 +6,9 @@ from typing import Union
 
 class GaussianBlob:
     """
-    Represents a two-dimensional anisotropic Gaussian blob.
+    Represents a two-dimensional Gaussian blob.
     """
-    def __init__(self, x1: int, x2: int, sigma: Union[float, np.ndarray], log: float, angle: float = 0):
+    def __init__(self, x1: int, x2: int, sigma: Union[float, np.ndarray], log: float):
         """
         We always use the axes
         0----> x2
@@ -17,13 +17,16 @@ class GaussianBlob:
         v
         x1
         (even if pyplot is too stupid to recognize this).
-
-        :param x: Vertical position of the blob.
-        :param y: Horizontal position of the blob.
-        :param sigma_x: Vertical extend (standard deviation) of the blob.
-        :param sigma_y: Horizontal extend (standard deviation) of the blob.
-        :param log: The value of the Laplacian-of-Gaussian at the blob.
-        :param angle: The blob's angle.
+        Parameters
+        ----------
+        x1 : int
+            The vertical position of the blob center.
+        x2 : int
+            The horizontal position of the blob center.
+        sigma :
+            The standard deviation associated to the blob.
+        log :
+            The Laplacian-of-Gaussians value associated to the blob.
         """
         self._x1 = x1
         self._x2 = x2
@@ -34,7 +37,6 @@ class GaussianBlob:
             self._sigma1 = sigma
             self._sigma2 = sigma
         self._log = log
-        self._angle = angle
 
     @property
     def position(self) -> np.ndarray:
@@ -58,13 +60,6 @@ class GaussianBlob:
         the width, which is two-times the radius, is given by :math:'w = 2 \\sqrt{2} \\sigma_y`.
         """
         return 2 * sqrt(2) * self._sigma2
-
-    @property
-    def angle(self) -> float:
-        """
-        The blob's angle (in degrees). The blob is rotated by 'angle' degrees in the counter-clockwise direction.
-        """
-        return self._angle
 
     @property
     def height(self) -> float:

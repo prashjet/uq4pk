@@ -5,7 +5,6 @@ import numpy as np
 def get_f(location, numbers: list=None):
     """
     Reads the stored test functions from the csv files and returns them as list of numpy arrays.
-    :return: list
     """
     f_list = []
     if numbers is not None:
