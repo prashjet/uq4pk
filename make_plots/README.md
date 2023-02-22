@@ -9,13 +9,13 @@ The programs assume that they are executed with `make_plots` as working director
 - `make_plots.py`: This program creates the actual plots. It is necessary that `run_computations.py`
   has been run beforehand, with the matching mode. The created plots are stored in the `plots` directory.
 - `src`: This directory contains the programs behind the various figures in the paper.
-    - `intro`: Source code for figure 1.
-    - `blob_detection`: Source code for figures 2,4, 5 and 6.
-    - `fci`: Source code for figure 3.
+    - `intro`: Source code for figure 4.
+    - `blob_detection`: Source code for figures 2, 3, 6 and 7.
+    - `fci`: Source code for figure 5.
     - `m54`: Source code for figures 8 - 12.
     - `mock`: Source code for generating the mock datasets.
     - `mock_data`: Contains various mock datasets.
-    - `svd_mcmc`: Source code figure 7.
+    - `svd_mcmc`: Source code figure A.1.
     - `util`: Contains auxiliary functions.
 
 For example, to reproduce the plots from the precomputed data (in bash):
