@@ -1,6 +1,6 @@
 This directory contains the code for making all figures in "Uncertainty-aware blob detection with an 
 Application to Integrated-Light Stellar Population Recoveries"
-The programs assume that they are executed with `make_plots.py` as working directory and `PYTHONPATH=/path/to/uq4pk`.
+The programs assume that they are executed with `make_plots` as working directory and `PYTHONPATH=/path/to/uq4pk`.
 
 - `run_computations.py`: This program runs all the necessary computations from which 
   the plots can be created. There are three modes of deployment: `test`, `base` and `final`. 
