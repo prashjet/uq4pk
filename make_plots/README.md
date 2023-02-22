@@ -6,7 +6,7 @@ The programs assume that they are executed with `make_plots.py` as working direc
   the plots can be created. There are three modes of deployment: `test`, `base` and `final`. 
 `final` reproduces the plots in the paper, but takes a lot of time to finish. 
   The results are stored in the `out` directory.
-- `make_plots.py`: This program creates the actual plots. It is necessary that `run_computations.py`
+- `make_plots`: This program creates the actual plots. It is necessary that `run_computations.py`
   has been run beforehand, with the matching mode. The created plots are stored in the `plots` directory.
 - `src`: This directory contains the programs behind the various figures in the paper.
     - `intro`: Source code for figure 1.
